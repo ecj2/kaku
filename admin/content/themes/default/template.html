@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="{%blog_language%}">
+  <head>
+    <meta charset="utf-8">
+    <title>{%page_title%} - Kaku</title>
+    <link rel="shortcut icon" href="{%blog_url%}/admin/content/themes/default/img/bookmark.ico">
+    <link rel="stylesheet" href="{%blog_url%}/admin/content/themes/default/css/main.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans%7CPT+Serif">
+  </head>
+  <body>
+    <div id="wrap">
+      <header class="top">
+        <h1><a href="./">Kaku</a></h1>
+        <nav>
+          <ul>
+            <li><a href="tags.php">Tags</a></li>
+            <li><a href="links.php">Links</a></li>
+            <li><a href="pages.php">Pages</a></li>
+            <li><a href="posts.php">Posts</a></li>
+            <li><a href="users.php">Users</a></li>
+            <li><a href="logout.php">Logout</a></li>
+          </ul>
+        </nav>
+      </header>
+      <main>
+        <article>
+          <header>
+            <h2>{%page_title%}</h2>
+          </header>
+          {%page_body%}
+        </article>
+      </main>
+      <footer>Powered by Kaku</footer>
+    </div>
+  </body>
+</html>
