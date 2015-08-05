@@ -80,7 +80,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
   else if ($query->rowCount() == 0) {
 
     // Username doesn't exist.
-    header("Location: ./login.php?error=Incorrect login credentials!");
+    header("Location: ./login.php?error=That username doesn't exist!");
   }
   else {
 
@@ -93,12 +93,13 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 
       $_SESSION["username"] = $_POST["username"];
 
+      // Redirect to dashboard.
       header("Location: ./index.php");
     }
     else {
 
       // Incorrect password.
-      header("Location: ./login.php?error=Incorrect login credentials!");
+      header("Location: ./login.php?error=Incorrect password!");
     }
   }
 }
