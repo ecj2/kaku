@@ -4,7 +4,7 @@ Kaku is a simple, lightweight Weblog content management system written in PHP. I
 ## Credits
 Code by Eric Johnson.
 
-Bookmark icons by Yannick Lung (from Iconfinder)
+Bookmark icons by Yannick Lung (from Iconfinder).
 
 ## License
 See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
