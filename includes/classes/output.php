@@ -15,6 +15,7 @@ class Output extends Utility {
 
   public function flushBuffer() {
 
+    // Flush contents of buffer to the page.
     ob_get_flush();
   }
 
@@ -40,6 +41,7 @@ class Output extends Utility {
 
     for ($i = 0; $i < $recursion_depth; ++$i) {
 
+      // Get tags from database.
       $statement = "SELECT * FROM " . DB_PREF . "tags ORDER BY id DESC";
 
       $query = $this->DatabaseHandle->query($statement);
@@ -56,6 +58,7 @@ class Output extends Utility {
 
         if (strpos($buffer_contents, $tag->title) !== false) {
 
+          // Replace tag call with value from database.
           $this->addTagReplacement($tag->title, $tag->body);
         }
       }
@@ -131,6 +134,8 @@ class Output extends Utility {
             if (method_exists($class_name, "getTags")) {
 
               if (method_exists($class_name, "getReplacements")) {
+
+                // Identify and replace the tags called by the extension.
 
                 foreach ($Extension->getTags() as $key) {
 

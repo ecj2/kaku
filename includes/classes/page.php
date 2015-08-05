@@ -33,6 +33,7 @@ class Page extends Utility {
 
     if (!isset($_GET["page_url"])) {
 
+      // Disallow this method from being used if not viewing a page.
       return;
     }
 
@@ -55,16 +56,18 @@ class Page extends Utility {
       // Query failed.
       Utility::displayError("failed to get page");
     }
-
-    if ($query->rowCount() == 0) {
+    else if ($query->rowCount() == 0) {
 
       $address = Utility::getRootAddress();
 
       // Query returned zero rows.
       header("Location: {$address}/error.php?code=404");
     }
+    else {
 
-    return $query->fetch(PDO::FETCH_OBJ)->$column;
+      // Get the desired data.
+      return $query->fetch(PDO::FETCH_OBJ)->$column;
+    }
   }
 }
 

@@ -37,10 +37,12 @@ class Theme extends Utility {
 
     if (file_exists($file_path)) {
 
+      // Return contents of theme file.
       return file_get_contents($file_path);
     }
     else {
 
+      // Theme file doesn't exist.
       Utility::displayError("{$file_path} does not exist");
     }
   }
@@ -73,6 +75,7 @@ class Theme extends Utility {
 
       while ($link = $query->fetch(PDO::FETCH_OBJ)) {
 
+        // Create a list item for each link.
         $markup .= "<li>";
         $markup .= "<a href=\"{$link->uri}\" target=\"{$link->target}\">";
         $markup .= "{$link->title}</a>";

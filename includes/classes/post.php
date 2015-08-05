@@ -13,6 +13,7 @@ class Post extends Utility {
 
     if ($body == "") {
 
+      // Remove truncate tag when viewing full post.
       return str_replace("{%truncate%}", "", $this->getData("body"));
     }
     else {

@@ -44,9 +44,11 @@ class Database extends Utility {
       // Query failed.
       return false;
     }
+    else {
 
-    // Query was successful.
-    return true;
+      // Query was successful.
+      return true;
+    }
   }
 
   public function checkTableExistence($table_name) {
@@ -60,9 +62,11 @@ class Database extends Utility {
       // Table doesn't exist.
       return false;
     }
+    else {
 
-    // Table exists.
-    return true;
+      // Table exists.
+      return true;
+    }
   }
 }
 

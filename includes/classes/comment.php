@@ -13,6 +13,7 @@ class Comment extends Utility {
 
     if (!isset($_GET["post_url"])) {
 
+      // Disallow this method from being used if not viewing a post.
       return;
     }
 
@@ -38,17 +39,21 @@ class Comment extends Utility {
 
     if ($query->fetch(PDO::FETCH_OBJ)->allow_comments) {
 
+      // Display comment block.
       return $comment_block_markup;
     }
+    else {
 
-    return str_replace(
+      // Comments are disabled on this post.
+      return str_replace(
 
-      "{%comment_source%}",
+        "{%comment_source%}",
 
-      "{%comment_disabled_text%}",
+        "{%comment_disabled_text%}",
 
-      $comment_block_markup
-    );
+        $comment_block_markup
+      );
+    }
   }
 
   public function setDatabaseHandle($handle) {

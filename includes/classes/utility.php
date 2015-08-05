@@ -12,6 +12,7 @@ class Utility {
     // Clear the buffer.
     ob_end_clean();
 
+    // Terminate with an error message.
     exit("Error: {$message}.");
   }
 
@@ -28,6 +29,7 @@ class Utility {
       strlen($_SERVER["DOCUMENT_ROOT"])
     );
 
+    // Get absolute URL of where Kaku is installed.
     return $protocol . $host . $sub_directory;
   }
 }
