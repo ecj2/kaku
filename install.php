@@ -16,7 +16,9 @@ if (!$Database->checkTableExistence("tags")) {
 
       title VARCHAR(99) NOT NULL,
 
-      body TEXT NOT NULL
+      body TEXT NOT NULL,
+
+      evaluate BOOL NOT NULL
     )"
   )) {
 
@@ -34,13 +36,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'blog_title',
 
-      'Kaku'
+      'Kaku',
+
+      '0'
     )"
   )) {
 
@@ -58,13 +64,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'blog_language',
 
-      'en'
+      'en',
+
+      '0'
     )"
   )) {
 
@@ -82,13 +92,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'blog_description',
 
-      'Just your average blog.'
+      'Just your average blog.',
+
+      '0'
     )"
   )) {
 
@@ -106,13 +120,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'theme_name',
 
-      'default'
+      'default',
+
+      '0'
     )"
   )) {
 
@@ -130,13 +148,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'admin_theme_name',
 
-      'default'
+      'default',
+
+      '0'
     )"
   )) {
 
@@ -154,13 +176,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'posts_per_page',
 
-      '3'
+      '3',
+
+      '0'
     )"
   )) {
 
@@ -178,13 +204,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'footer',
 
-      'Powered by Kaku'
+      'Powered by Kaku',
+
+      '0'
     )"
   )) {
 
@@ -202,13 +232,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'date_format',
 
-      'F jS, Y'
+      'F jS, Y',
+
+      '0'
     )"
   )) {
 
@@ -226,13 +260,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'recursion_depth',
 
-      '2'
+      '2',
+
+      '0'
     )"
   )) {
 
@@ -250,13 +288,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'lure_text',
 
-      'Read more...'
+      'Read more...',
+
+      '0'
     )"
   )) {
 
@@ -274,13 +316,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'comment_disabled_text',
 
-      'Comments have been disabled on this post.'
+      'Comments have been disabled on this post.',
+
+      '0'
     )"
   )) {
 
@@ -298,13 +344,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'next_page_text',
 
-      'Older posts'
+      'Older posts',
+
+      '0'
     )"
   )) {
 
@@ -322,13 +372,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'previous_page_text',
 
-      'Newer posts'
+      'Newer posts',
+
+      '0'
     )"
   )) {
 
@@ -346,13 +400,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'disqus_forum_name',
 
-      ''
+      '',
+
+      '0'
     )"
   )) {
 
@@ -370,13 +428,17 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body
+      body,
+
+      evaluate
     )
     VALUES (
 
       'blog_url',
 
-      '{$this_url}'
+      '{$this_url}',
+
+      '0'
     )"
   )) {
 

@@ -23,7 +23,7 @@ class Output extends Utility {
 
     $statement = "
 
-      SELECT body
+      SELECT body, evaluate
       FROM " . DB_PREF . "tags
       WHERE title = 'recursion_depth'
       ORDER BY id DESC
@@ -59,7 +59,17 @@ class Output extends Utility {
         if (strpos($buffer_contents, $tag->title) !== false) {
 
           // Replace tag call with value from database.
-          $this->addTagReplacement($tag->title, $tag->body);
+
+          if ($tag->evaluate) {
+
+            // Evaluate the tag contents as if it were PHP code.
+            $this->addTagReplacement($tag->title, eval($tag->body));
+          }
+          else {
+
+            // Do not evaluate tag contents as if PHP code.
+            $this->addTagReplacement($tag->title, $tag->body);
+          }
         }
       }
     }
