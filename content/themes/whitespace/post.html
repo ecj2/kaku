@@ -2,11 +2,11 @@
 <html lang="{%blog_language%}">
   <head>
     <meta charset="utf-8">
-    <title>{%page_title%} - {%blog_title%}</title>
-    <link rel="shortcut icon" href="{%blog_url%}/content/themes/default/img/bookmark.ico">
-    <link rel="stylesheet" href="{%blog_url%}/content/themes/default/css/main.css">
+    <title>{%post_title%} - {%blog_title%}</title>
+    <link rel="shortcut icon" href="{%blog_url%}/content/themes/whitespace/img/bookmark.ico">
+    <link rel="stylesheet" href="{%blog_url%}/content/themes/whitespace/css/main.css">
     <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Droid+Sans%7CPT+Serif">
-    <meta name="description" content="{%page_description%}">
+    <meta name="description" content="{%post_description%}">
     {%head_content%}
   </head>
   <body>
@@ -20,10 +20,15 @@
       <main>
         <article>
           <header>
-            <h2>{%page_title%}</h2>
+            <h2>{%post_title%}</h2>
           </header>
-          {%page_body%}
+          {%post_body%}
+          <div class="info">
+            Posted {%post_relative_epoch%} ago under
+            <div class="tags">{%post_tags%}</div>
+          </div>
         </article>
+        {%comments%}
       </main>
       <footer>
         {%footer%}

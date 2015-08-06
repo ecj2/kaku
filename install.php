@@ -128,7 +128,7 @@ if (!$Database->checkTableExistence("tags")) {
 
       'theme_name',
 
-      'default',
+      'whitespace',
 
       '0'
     )"
