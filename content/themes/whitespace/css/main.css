@@ -230,3 +230,15 @@ input[type="submit"]:hover {
   background: #f9f9f9;
   cursor: pointer;
 }
+
+h1, h2, h3, h4, h5, h6 {
+
+  font-family: "PT Sans", sans-serif;
+  font-weight: normal;
+  margin: 0;
+}
+
+h3 {
+
+  font-size: 26px;
+}
