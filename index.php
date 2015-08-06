@@ -172,6 +172,14 @@ $Output->addTagReplacement(
   ""
 );
 
+// Remove body_content tag if no extension uses it.
+$Output->addTagReplacement(
+
+  "body_content",
+
+  ""
+);
+
 $Output->replaceTags();
 
 $Output->flushBuffer();
