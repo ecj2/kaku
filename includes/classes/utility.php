@@ -15,7 +15,11 @@ class Utility {
 
     $host = $_SERVER["HTTP_HOST"];
 
-    $protocol = "http://";
+    $protocol = $_SERVER["SERVER_PROTOCOL"];
+
+    $protocol =  strtolower(substr($protocol, 0, strpos($protocol, "/")));
+
+    $protocol .= "://";
 
     $sub_directory = substr(
 
