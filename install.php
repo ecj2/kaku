@@ -679,8 +679,8 @@ if (!$Database->checkTableExistence("posts")) {
 
   $body = "Hi there. Welcome to Kaku. This is the very first post. ";
   $body .= "Head over to the <a href=\"{%blog_url%}/admin\">admin ";
-  $body .= "panel</a> to get started. The default username is <b>admin</b>";
-  $body .= ", and the password is <b>password</b>.";
+  $body .= "panel</a> to get started. The username is <b>admin</b>";
+  $body .= " and the password is <b>password</b>.";
 
   if (!$Database->performQuery(
 
