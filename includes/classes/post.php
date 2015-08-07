@@ -135,7 +135,8 @@ class Post extends Utility {
           "{%post_tags%}",
           "{%post_title%}",
           "{%post_relative_epoch%}",
-          "{%post_absolute_epoch%}"
+          "{%post_absolute_epoch%}",
+          "{%post_date_time_epoch%}"
         );
 
         $replace = array(
@@ -145,7 +146,8 @@ class Post extends Utility {
           $this->getTags($post->tags),
           $post->title,
           $this->getRelativeEpoch($post->epoch),
-          $this->getAbsoluteEpoch($post->epoch)
+          $this->getAbsoluteEpoch($post->epoch),
+          $this->getDateTimeEpoch($post->epoch)
         );
 
         $markup .= str_replace($search, $replace, $post_block_markup);
@@ -211,7 +213,8 @@ class Post extends Utility {
           "{%post_tags%}",
           "{%post_title%}",
           "{%post_relative_epoch%}",
-          "{%post_absolute_epoch%}"
+          "{%post_absolute_epoch%}",
+          "{%post_date_time_epoch%}"
         );
 
         $replace = array(
@@ -221,7 +224,8 @@ class Post extends Utility {
           $this->getTags($post->tags),
           $post->title,
           $this->getRelativeEpoch($post->epoch),
-          $this->getAbsoluteEpoch($post->epoch)
+          $this->getAbsoluteEpoch($post->epoch),
+          $this->getDateTimeEpoch($post->epoch)
         );
 
         $markup .= str_replace($search, $replace, $post_block_markup);
@@ -259,6 +263,16 @@ class Post extends Utility {
     }
 
     return date($query->fetch(PDO::FETCH_OBJ)->body, $epoch);
+  }
+
+  public function getDateTimeEpoch($epoch = "") {
+
+    if ($epoch == "") {
+
+      $epoch = $this->getData("epoch");
+    }
+
+    return date("Y-m-d H:i:sP", $epoch);
   }
 
   public function getRelativeEpoch($epoch = 0) {

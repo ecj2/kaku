@@ -86,6 +86,13 @@ switch (array_keys($_GET)[0]) {
 
     $Output->addTagReplacement(
 
+      "post_date_time_epoch",
+
+      $Post->getDateTimeEpoch()
+    );
+
+    $Output->addTagReplacement(
+
       "comments",
 
       $Comment->getSource(
