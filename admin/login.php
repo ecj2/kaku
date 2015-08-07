@@ -60,7 +60,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 
   $statement = "
 
-    SELECT password
+    SELECT id, password
     FROM " . DB_PREF . "users
     WHERE username = ?
   ";
@@ -91,6 +91,7 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 
       // Correct password.
 
+      $_SESSION["user_id"] = $result->id;
       $_SESSION["username"] = $_POST["username"];
 
       // Redirect to dashboard.

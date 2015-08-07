@@ -65,6 +65,13 @@ switch (array_keys($_GET)[0]) {
 
     $Output->addTagReplacement(
 
+      "post_author",
+
+      $Post->getAuthor()
+    );
+
+    $Output->addTagReplacement(
+
       "post_description",
 
       $Post->getDescription()

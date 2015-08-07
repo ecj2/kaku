@@ -96,6 +96,8 @@ if (isset($_POST["url"]) && isset($_POST["title"]) && isset($_POST["body"])) {
 
       title,
 
+      author_id,
+
       description,
 
       allow_comments
@@ -111,6 +113,8 @@ if (isset($_POST["url"]) && isset($_POST["title"]) && isset($_POST["body"])) {
       ?,
 
       UNIX_TIMESTAMP(),
+
+      ?,
 
       ?,
 
@@ -156,8 +160,9 @@ if (isset($_POST["url"]) && isset($_POST["title"]) && isset($_POST["body"])) {
   $query->bindParam(3, $tags);
   $query->bindParam(4, $draft);
   $query->bindParam(5, $_POST["title"]);
-  $query->bindParam(6, $description);
-  $query->bindParam(7, $allow_comments);
+  $query->bindParam(6, $_SESSION["user_id"]);
+  $query->bindParam(7, $description);
+  $query->bindParam(8, $allow_comments);
 
   $query->execute();
 

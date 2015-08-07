@@ -8,6 +8,7 @@ if (!isset($_SESSION["username"])) {
   header("Location: ./login.php");
 }
 
+unset($_SESSION["user_id"]);
 unset($_SESSION["username"]);
 
 // Redirect to login.

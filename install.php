@@ -663,6 +663,8 @@ if (!$Database->checkTableExistence("posts")) {
 
       title VARCHAR(99) NOT NULL,
 
+      author_id INT NOT NULL,
+
       description VARCHAR(160) NOT NULL,
 
       allow_comments BOOL NOT NULL
@@ -698,6 +700,8 @@ if (!$Database->checkTableExistence("posts")) {
 
       title,
 
+      author_id,
+
       description,
 
       allow_comments
@@ -715,6 +719,8 @@ if (!$Database->checkTableExistence("posts")) {
       UNIX_TIMESTAMP(),
 
       'Welcome to Kaku',
+
+      '1',
 
       'The very first.',
 

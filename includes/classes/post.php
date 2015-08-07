@@ -106,7 +106,7 @@ class Post extends Utility {
 
     $statement = "
 
-      SELECT url, body, tags, title, epoch
+      SELECT url, body, tags, title, epoch, author_id
       FROM " . DB_PREF . "posts
       WHERE draft = '0'
       ORDER BY id DESC
@@ -136,7 +136,8 @@ class Post extends Utility {
           "{%post_title%}",
           "{%post_relative_epoch%}",
           "{%post_absolute_epoch%}",
-          "{%post_date_time_epoch%}"
+          "{%post_date_time_epoch%}",
+          "{%post_author%}"
         );
 
         $replace = array(
@@ -147,7 +148,8 @@ class Post extends Utility {
           $post->title,
           $this->getRelativeEpoch($post->epoch),
           $this->getAbsoluteEpoch($post->epoch),
-          $this->getDateTimeEpoch($post->epoch)
+          $this->getDateTimeEpoch($post->epoch),
+          $this->getAuthor($post->author_id)
         );
 
         $markup .= str_replace($search, $replace, $post_block_markup);
@@ -160,6 +162,41 @@ class Post extends Utility {
       $address = Utility::getRootAddress();
 
       header("Location: {$address}");
+    }
+  }
+
+  public function getAuthor($author_id = "") {
+
+    if ($author_id == "") {
+
+      $author_id = $this->getData("author_id");
+    }
+
+    $statement = "
+
+      SELECT nickname
+      FROM " . DB_PREF . "users
+      WHERE id = '{$author_id}'
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query) {
+
+      // Query failed.
+      Utility::displayError("failed to get post author");
+    }
+    else if ($query->rowCount() == 0) {
+
+      // The author doesn't exist.
+      return "Unknown";
+    }
+    else {
+
+      // Fetch the result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      return $result->nickname;
     }
   }
 
@@ -185,7 +222,7 @@ class Post extends Utility {
 
     $statement = "
 
-      SELECT url, body, tags, title, epoch
+      SELECT url, body, tags, title, epoch, author_id
       FROM " . DB_PREF . "posts
       WHERE draft = '0'
       ORDER BY id DESC
@@ -214,7 +251,8 @@ class Post extends Utility {
           "{%post_title%}",
           "{%post_relative_epoch%}",
           "{%post_absolute_epoch%}",
-          "{%post_date_time_epoch%}"
+          "{%post_date_time_epoch%}",
+          "{%post_author%}"
         );
 
         $replace = array(
@@ -225,7 +263,8 @@ class Post extends Utility {
           $post->title,
           $this->getRelativeEpoch($post->epoch),
           $this->getAbsoluteEpoch($post->epoch),
-          $this->getDateTimeEpoch($post->epoch)
+          $this->getDateTimeEpoch($post->epoch),
+          $this->getAuthor($post->author_id)
         );
 
         $markup .= str_replace($search, $replace, $post_block_markup);
