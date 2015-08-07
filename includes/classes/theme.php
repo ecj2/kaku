@@ -4,11 +4,6 @@ class Theme extends Utility {
 
   private $DatabaseHandle;
 
-  public function __construct() {
-
-    //
-  }
-
   public function getFileContents($file_name) {
 
     $statement = "

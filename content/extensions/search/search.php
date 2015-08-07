@@ -4,11 +4,6 @@ class Search {
 
   private $DatabaseHandle;
 
-  public function __construct() {
-
-    //
-  }
-
   public function getTags() {
 
     return array(

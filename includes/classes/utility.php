@@ -2,11 +2,6 @@
 
 class Utility {
 
-  public function __construct() {
-
-    //
-  }
-
   public static function displayError($message) {
 
     // Clear the buffer.

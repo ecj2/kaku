@@ -4,11 +4,6 @@ class Post extends Utility {
 
   private $DatabaseHandle;
 
-  public function __construct() {
-
-    //
-  }
-
   public function getBody($url = "", $body = "") {
 
     if ($body == "") {

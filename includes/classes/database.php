@@ -4,11 +4,6 @@ class Database extends Utility {
 
   private $Handle;
 
-  public function __construct() {
-
-    //
-  }
-
   public function connect() {
 
     try {

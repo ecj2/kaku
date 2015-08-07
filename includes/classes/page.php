@@ -4,11 +4,6 @@ class Page extends Utility {
 
   private $DatabaseHandle;
 
-  public function __construct() {
-
-    //
-  }
-
   public function getBody() {
 
     return $this->getData("body");

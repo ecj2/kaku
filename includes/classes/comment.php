@@ -4,11 +4,6 @@ class Comment extends Utility {
 
   private $DatabaseHandle;
 
-  public function __construct() {
-
-    //
-  }
-
   public function getSource($comment_block_markup) {
 
     if (!isset($_GET["post_url"])) {

@@ -4,11 +4,6 @@ class DisqusForum {
 
   private $DatabaseHandle;
 
-  public function __construct() {
-
-    //
-  }
-
   public function getTags() {
 
     return array(
