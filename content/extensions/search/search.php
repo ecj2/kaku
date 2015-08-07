@@ -29,7 +29,7 @@ class Search {
 
     if (isset($_GET["term"])) {
 
-      //
+      // Select from posts and pages where something is like the search term.
       $statement = "
 
         (
@@ -103,16 +103,18 @@ class Search {
 
         while ($result = $query->fetch(PDO::FETCH_OBJ)) {
 
+          // Get a link and description for each search result.
+
           $markup .= "<br><br><a href=\"{%blog_url%}/";
 
           if ($result->table_name == "pages") {
 
-            //
+            // Result is a page.
             $markup .= "page/{$result->url}\">";
           }
           else {
 
-            //
+            // Result is a post.
             $markup .= "post/{$result->url}\">";
           }
 
@@ -120,10 +122,12 @@ class Search {
 
           if (empty($result->description)) {
 
+            // The resource has no description.
             $markup .= "No description.";
           }
           else {
 
+            // The resource has a description.
             $markup .= "{$result->description}";
           }
         }
