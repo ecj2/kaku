@@ -449,6 +449,34 @@ if (!$Database->checkTableExistence("tags")) {
       "failed to insert blog_url into " . DB_PREF . "tags"
     );
   }
+
+  if (!$Database->performQuery(
+
+    "INSERT INTO " . DB_PREF . "tags (
+
+      title,
+
+      body,
+
+      evaluate
+    )
+    VALUES (
+
+      '404_url',
+
+      '{$this_url}/page/page-not-found',
+
+      '0'
+    )"
+  )) {
+
+    array_push(
+
+      $errors,
+
+      "failed to insert 404_url into " . DB_PREF . "tags"
+    );
+  }
 }
 
 if (!$Database->checkTableExistence("links")) {
