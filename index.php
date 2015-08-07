@@ -51,9 +51,9 @@ switch (array_keys($_GET)[0]) {
 
     $Output->addTagReplacement(
 
-      "post_tags",
+      "post_keywords",
 
-      $Post->getTags()
+      $Post->getKeywords()
     );
 
     $Output->addTagReplacement(

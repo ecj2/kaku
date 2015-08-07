@@ -574,7 +574,7 @@ if (!$Database->checkTableExistence("pages")) {
 
       body MEDIUMTEXT NOT NULL,
 
-      tags TEXT NOT NULL,
+      keywords TEXT NOT NULL,
 
       description VARCHAR(160) NOT NULL,
 
@@ -600,7 +600,7 @@ if (!$Database->checkTableExistence("pages")) {
 
       body,
 
-      tags,
+      keywords,
 
       description,
 
@@ -640,7 +640,7 @@ if (!$Database->checkTableExistence("pages")) {
 
       body,
 
-      tags,
+      keywords,
 
       description,
 
@@ -683,13 +683,13 @@ if (!$Database->checkTableExistence("posts")) {
 
       body MEDIUMTEXT NOT NULL,
 
-      tags TEXT NOT NULL,
-
       draft BOOL NOT NULL,
 
       epoch INT(11) NOT NULL,
 
       title VARCHAR(99) NOT NULL,
+
+      keywords TEXT NOT NULL,
 
       author_id INT NOT NULL,
 
@@ -720,13 +720,13 @@ if (!$Database->checkTableExistence("posts")) {
 
       body,
 
-      tags,
-
       draft,
 
       epoch,
 
       title,
+
+      keywords,
 
       author_id,
 
@@ -740,13 +740,13 @@ if (!$Database->checkTableExistence("posts")) {
 
       '{$body}',
 
-      'first, post',
-
       '0',
 
       UNIX_TIMESTAMP(),
 
       'Welcome to Kaku',
+
+      'first, post',
 
       '1',
 

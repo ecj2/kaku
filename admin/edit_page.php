@@ -74,18 +74,18 @@ else if (isset($_POST["url"]) && isset($_POST["body"]) && isset($_POST["title"])
   $statement = "
 
     UPDATE " . DB_PREF . "pages
-    SET url = ?, body = ?, tags = ?, title = ?, description = ?,
+    SET url = ?, body = ?, keywords = ?, title = ?, description = ?,
     show_on_search = ?
     WHERE id = ?
   ";
 
   $query = $Database->getHandle()->prepare($statement);
 
-  $tags = "";
+  $keywords = "";
 
-  if (isset($_POST["tags"])) {
+  if (isset($_POST["keywords"])) {
 
-    $tags = $_POST["tags"];
+    $keywords = $_POST["keywords"];
   }
 
   $description = "";
@@ -105,7 +105,7 @@ else if (isset($_POST["url"]) && isset($_POST["body"]) && isset($_POST["title"])
   // Prevent SQL injections.
   $query->bindParam(1, $_POST["url"]);
   $query->bindParam(2, $_POST["body"]);
-  $query->bindParam(3, $tags);
+  $query->bindParam(3, $keywords);
   $query->bindParam(4, $_POST["title"]);
   $query->bindParam(5, $description);
   $query->bindParam(6, $show_on_search);
@@ -126,7 +126,7 @@ else {
 
   $statement = "
 
-    SELECT url, body, tags, title, description, show_on_search
+    SELECT url, body, keywords, title, description, show_on_search
     FROM " . DB_PREF . "pages
     WHERE id = ?
   ";
@@ -156,7 +156,7 @@ else {
 
     $url = $page->url;
     $body = $page->body;
-    $tags = $page->tags;
+    $keywords = $page->keywords;
     $title = $page->title;
     $description = $page->description;
     $show_on_search = $page->show_on_search;
@@ -170,8 +170,8 @@ else {
         <label for=\"title\">Title</label>
         <input type=\"text\" id=\"title\" name=\"title\"
          value=\"{$title}\" required>
-        <label for=\"tags\">Tags (Optional)</label>
-        <input type=\"text\" id=\"tags\" name=\"tags\" value=\"{$tags}\">
+        <label for=\"keywords\">Keywords (Optional)</label>
+        <input type=\"text\" id=\"keywords\" name=\"keywords\" value=\"{$keywords}\">
         <label for=\"body\">Body</label>
         <textarea id=\"body\" name=\"body\" required>{$body}</textarea>
         <label for=\"description\">Description (Optional)</label>

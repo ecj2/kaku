@@ -88,7 +88,7 @@ if (isset($_POST["url"]) && isset($_POST["title"]) && isset($_POST["body"])) {
 
       body,
 
-      tags,
+      keywords,
 
       title,
 
@@ -114,11 +114,11 @@ if (isset($_POST["url"]) && isset($_POST["title"]) && isset($_POST["body"])) {
 
   $query = $Database->getHandle()->prepare($statement);
 
-  $tags = "";
+  $keywords = "";
 
-  if (isset($_POST["tags"])) {
+  if (isset($_POST["keywords"])) {
 
-    $tags = $_POST["tags"];
+    $keywords = $_POST["keywords"];
   }
 
   $description = "";
@@ -138,7 +138,7 @@ if (isset($_POST["url"]) && isset($_POST["title"]) && isset($_POST["body"])) {
   // Prevent SQL injections.
   $query->bindParam(1, $_POST["url"]);
   $query->bindParam(2, $_POST["body"]);
-  $query->bindParam(3, $tags);
+  $query->bindParam(3, $keywords);
   $query->bindParam(4, $_POST["title"]);
   $query->bindParam(5, $description);
   $query->bindParam(6, $show_on_search);
@@ -163,8 +163,8 @@ else {
       <input type=\"text\" id=\"url\" name=\"url\" required>
       <label for=\"title\">Title</label>
       <input type=\"text\" id=\"title\" name=\"title\" required>
-      <label for=\"tags\">Tags (Optional)</label>
-      <input type=\"text\" id=\"tags\" name=\"tags\">
+      <label for=\"keywords\">Keywords (Optional)</label>
+      <input type=\"text\" id=\"keywords\" name=\"keywords\">
       <label for=\"body\">Body</label>
       <textarea id=\"body\" name=\"body\" required></textarea>
       <label for=\"description\">Description (Optional)</label>

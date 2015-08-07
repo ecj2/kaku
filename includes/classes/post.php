@@ -31,11 +31,11 @@ class Post extends Utility {
     }
   }
 
-  public function getTags($post_tags = null) {
+  public function getKeywords($post_tags = null) {
 
     if ($post_tags == null) {
 
-      $post_tags = $this->getData("tags");
+      $post_tags = $this->getData("keywords");
     }
 
     $tags_markup = "";
@@ -106,7 +106,7 @@ class Post extends Utility {
 
     $statement = "
 
-      SELECT url, body, tags, title, epoch, author_id
+      SELECT url, body, title, keywords, epoch, author_id
       FROM " . DB_PREF . "posts
       WHERE draft = '0'
       ORDER BY id DESC
@@ -132,8 +132,8 @@ class Post extends Utility {
 
           "{%post_url%}",
           "{%post_body%}",
-          "{%post_tags%}",
           "{%post_title%}",
+          "{%post_keywords%}",
           "{%post_relative_epoch%}",
           "{%post_absolute_epoch%}",
           "{%post_date_time_epoch%}",
@@ -144,8 +144,8 @@ class Post extends Utility {
 
           $post->url,
           $this->getBody($post->url, $post->body),
-          $this->getTags($post->tags),
           $post->title,
+          $this->getKeywords($post->keywords),
           $this->getRelativeEpoch($post->epoch),
           $this->getAbsoluteEpoch($post->epoch),
           $this->getDateTimeEpoch($post->epoch),
@@ -222,7 +222,7 @@ class Post extends Utility {
 
     $statement = "
 
-      SELECT url, body, tags, title, epoch, author_id
+      SELECT url, body, title, keywords, epoch, author_id
       FROM " . DB_PREF . "posts
       WHERE draft = '0'
       ORDER BY id DESC
@@ -247,8 +247,8 @@ class Post extends Utility {
 
           "{%post_url%}",
           "{%post_body%}",
-          "{%post_tags%}",
           "{%post_title%}",
+          "{%post_keywords%}",
           "{%post_relative_epoch%}",
           "{%post_absolute_epoch%}",
           "{%post_date_time_epoch%}",
@@ -259,8 +259,8 @@ class Post extends Utility {
 
           $post->url,
           $this->getBody($post->url, $post->body),
-          $this->getTags($post->tags),
           $post->title,
+          $this->getKeywords($post->keywords),
           $this->getRelativeEpoch($post->epoch),
           $this->getAbsoluteEpoch($post->epoch),
           $this->getDateTimeEpoch($post->epoch),

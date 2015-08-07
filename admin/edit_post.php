@@ -74,18 +74,18 @@ else if (isset($_POST["url"]) && isset($_POST["body"]) && isset($_POST["title"])
   $statement = "
 
     UPDATE " . DB_PREF . "posts
-    SET url = ?, body = ?, tags = ?, draft = ?, title = ?, description = ?,
+    SET url = ?, body = ?, keywords = ?, draft = ?, title = ?, description = ?,
     allow_comments = ?, epoch = ?
     WHERE id = ?
   ";
 
   $query = $Database->getHandle()->prepare($statement);
 
-  $tags = "";
+  $keywords = "";
 
-  if (isset($_POST["tags"])) {
+  if (isset($_POST["keywords"])) {
 
-    $tags = $_POST["tags"];
+    $keywords = $_POST["keywords"];
   }
 
   $description = "";
@@ -112,7 +112,7 @@ else if (isset($_POST["url"]) && isset($_POST["body"]) && isset($_POST["title"])
   // Prevent SQL injections.
   $query->bindParam(1, $_POST["url"]);
   $query->bindParam(2, $_POST["body"]);
-  $query->bindParam(3, $tags);
+  $query->bindParam(3, $keywords);
   $query->bindParam(4, $draft);
   $query->bindParam(5, $_POST["title"]);
   $query->bindParam(6, $description);
@@ -135,7 +135,7 @@ else {
 
   $statement = "
 
-    SELECT url, body, tags, epoch, title, draft, description, allow_comments
+    SELECT url, body, keywords, epoch, title, draft, description, allow_comments
     FROM " . DB_PREF . "posts
     WHERE id = ?
   ";
@@ -165,7 +165,7 @@ else {
 
     $url = $post->url;
     $body = $post->body;
-    $tags = $post->tags;
+    $keywords = $post->keywords;
     $epoch = $post->epoch;
     $draft = $post->draft;
     $title = $post->title;
@@ -181,8 +181,8 @@ else {
         <label for=\"title\">Title</label>
         <input type=\"text\" id=\"title\" name=\"title\"
          value=\"{$title}\" required>
-        <label for=\"tags\">Tags (Optional)</label>
-        <input type=\"text\" id=\"tags\" name=\"tags\" value=\"{$tags}\">
+        <label for=\"keywords\">Keywords (Optional)</label>
+        <input type=\"text\" id=\"keywords\" name=\"keywords\" value=\"{$keywords}\">
         <label for=\"body\">Body</label>
         <textarea id=\"body\" name=\"body\" required>{$body}</textarea>
         <label for=\"description\">Description (Optional)</label>

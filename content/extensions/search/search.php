@@ -35,7 +35,7 @@ class Search {
         (
           SELECT url, title, description, 'posts' AS table_name
           FROM " . DB_PREF . "posts
-          WHERE draft = '0' AND (tags LIKE ? OR title LIKE ?)
+          WHERE draft = '0' AND (keywords LIKE ? OR title LIKE ?)
         )
 
         UNION ALL
@@ -43,7 +43,7 @@ class Search {
         (
           SELECT url, title, description, 'pages' AS table_name
           FROM " . DB_PREF . "pages
-          WHERE show_on_search = '1' AND (tags LIKE ? OR title LIKE ?)
+          WHERE show_on_search = '1' AND (keywords LIKE ? OR title LIKE ?)
         )
 
         ORDER BY title ASC

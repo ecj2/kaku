@@ -166,17 +166,17 @@ a:hover {
   color: #888;
 }
 
-.tags {
+.keywords {
 
   display: inline;
 }
 
-.tags a {
+.keywords a {
 
   text-decoration: none;
 }
 
-.tags ul {
+.keywords ul {
 
   list-style-type: none;
   display: inline;
@@ -184,7 +184,7 @@ a:hover {
   padding: 0;
 }
 
-.tags ul li {
+.keywords ul li {
 
   display: inline;
   padding: 0 0 0 4px;
