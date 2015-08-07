@@ -212,7 +212,7 @@ if (!$Database->checkTableExistence("tags")) {
 
       'footer',
 
-      'Powered by Kaku',
+      'Powered by <a href=\"https://github.com/ecj2/kaku\">Kaku</a>',
 
       '0'
     )"
