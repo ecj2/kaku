@@ -177,6 +177,7 @@ class Output extends Utility {
 
   public function replaceBufferContents($contents) {
 
+    // Compress final output by removing new lines and double spaces.
     return str_replace(
 
       array(

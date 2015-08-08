@@ -31,8 +31,7 @@ class Comment extends Utility {
       // Query failed or returned zero rows.
       Utility::displayError("failed to get comments");
     }
-
-    if ($query->fetch(PDO::FETCH_OBJ)->allow_comments) {
+    else if ($query->fetch(PDO::FETCH_OBJ)->allow_comments) {
 
       // Display comment block.
       return $comment_block_markup;

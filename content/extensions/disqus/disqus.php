@@ -52,9 +52,17 @@ class DisqusForum {
           // Disqus forum name hasn't been configured.
           return "Comments have not been configured.";
         }
+        else {
 
-        return file_get_contents($disqus_markup_file);
+          // Display the Disqus forum.
+          return file_get_contents($disqus_markup_file);
+        }
       }
+    }
+    else {
+
+      // Disqus markup file does not exist.
+      return "Failed to load Disqus forum.";
     }
   }
 }

@@ -66,8 +66,7 @@ class Search {
         // Query failed.
         return "An error occurred.";
       }
-
-      if ($query->rowCount() == 0) {
+      else if ($query->rowCount() == 0) {
 
         // Query returned zero rows.
         $markup = "No results found for \"{$_GET["term"]}\".<br><br>";
@@ -132,10 +131,13 @@ class Search {
           }
         }
 
+        // Display the results.
         return $markup;
       }
     }
     else {
+
+      // Display the search form.
 
       $markup = "Use the form below to search for posts and pages.<br><br>";
 

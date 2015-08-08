@@ -48,6 +48,7 @@ class Database extends Utility {
 
   public function checkTableExistence($table_name) {
 
+    // Check if the given table exists.
     $statement = "SHOW TABLES LIKE '" . DB_PREF . "{$table_name}'";
 
     $query = $this->Handle->query($statement);

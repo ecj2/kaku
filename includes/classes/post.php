@@ -119,7 +119,7 @@ class Post extends Utility {
     if (!$query) {
 
       // Query failed.
-      Utility::displayError("failed to get recent posts");
+      Utility::displayError("failed to get latest posts by range");
     }
 
     if ($query->rowCount() > 0) {
@@ -234,7 +234,7 @@ class Post extends Utility {
     if (!$query) {
 
       // Query failed.
-      Utility::displayError("failed to get recent posts");
+      Utility::displayError("failed to get latest posts");
     }
 
     if ($query->rowCount() > 0) {

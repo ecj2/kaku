@@ -22,6 +22,7 @@ switch ($_GET["code"]) {
 
   case 404:
 
+    // Select URL for 404 page.
     $statement = "
 
       SELECT body
