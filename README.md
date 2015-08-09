@@ -31,7 +31,7 @@ RewriteEngine On
 RewriteRule ^(.*)/feed$ $1/feed.php
 RewriteRule ^(.*)/post/(.*)$ $1/?post_url=$2
 RewriteRule ^(.*)/page/([0-9]+)$ $1/?page_number=$2
-RewriteRule ^(.*)/page/(.*)$ $1/?page_url=$2
+RewriteRule ^(.*)/page/(.*)$ $1/?page_url=$2 [QSA]
 ```
 
 You should also redirect 404 errors to `error.php?code=404`.
