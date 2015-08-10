@@ -133,25 +133,31 @@ switch (array_keys($_GET)[0]) {
     // Viewing a page.
     echo $Theme->getFileContents("page.html");
 
+    $Hook->addAction("page_body", $Page, "getBody");
+
     $Output->addTagReplacement(
 
       "page_body",
 
-      $Page->getBody()
+      $Hook->doAction("page_body")
     );
+
+    $Hook->addAction("page_title", $Page, "getTitle");
 
     $Output->addTagReplacement(
 
       "page_title",
 
-      $Page->getTitle()
+      $Hook->doAction("page_title")
     );
+
+    $Hook->addAction("page_description", $Page, "getDescription");
 
     $Output->addTagReplacement(
 
       "page_description",
 
-      $Page->getDescription()
+      $Hook->doAction("page_description")
     );
   break;
 
