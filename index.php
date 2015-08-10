@@ -120,7 +120,16 @@ switch (array_keys($_GET)[0]) {
       $Hook->doAction("post_date_time_epoch")
     );
 
-    $Hook->addAction("comments", $Comment, "getSource", $Theme->getFileContents("comment_block.html"));
+    $Hook->addAction(
+
+      "comments",
+
+      $Comment,
+
+      "getSource",
+
+      $Theme->getFileContents("comment_block.html")
+    );
 
     $Output->addTagReplacement(
 
