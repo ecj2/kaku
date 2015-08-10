@@ -7,10 +7,15 @@ class Output extends Utility {
 
   private $DatabaseHandle;
 
+  private $required_extensions;
+
   public function __construct() {
 
     $this->search = array();
     $this->replace = array();
+
+    // List of already required extensions.
+    $this->required_extensions = array();
   }
 
   public function flushBuffer() {
@@ -166,9 +171,6 @@ class Output extends Utility {
 
     $recursion_depth = $query->fetch(PDO::FETCH_OBJ)->body;
 
-    // List of already required extensions.
-    $required_extensions = array();
-
     for ($i = 0; $i < $recursion_depth; ++$i) {
 
       // Get extension directories.
@@ -184,13 +186,13 @@ class Output extends Utility {
           // Get the names of already declared classes.
           $classes = get_declared_classes();
 
-          if (!in_array($directory_name, $required_extensions)) {
+          if (!in_array($directory_name, $this->required_extensions)) {
 
             // Require extension source file.
             require "{$directory}/{$directory_name}.php";
 
             // Add extension to the list, so it won't be required again.
-            array_push($required_extensions, $directory_name);
+            array_push($this->required_extensions, $directory_name);
           }
 
           // Get name of newly required class.
