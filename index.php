@@ -37,6 +37,8 @@ if (file_exists("install.php")) {
   require "install.php";
 }
 
+$Output->loadPlugins();
+
 $_GET[""] = "";
 
 switch (array_keys($_GET)[0]) {
