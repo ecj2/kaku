@@ -34,10 +34,7 @@ class Hook {
 
       if (method_exists($object, $method)) {
 
-        $method = get_class($object) . "::" . $method;
-
-        // @TODO: return for output buffer.
-        call_user_func($method);
+        return call_user_func(array($object, $method));
       }
     }
   }
