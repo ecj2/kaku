@@ -190,14 +190,22 @@ switch (array_keys($_GET)[0]) {
     // Viewing latest posts.
     echo $Theme->getFileContents("latest.html");
 
+    $Hook->addAction(
+
+      "latest_posts",
+
+      $Post,
+
+      "getLatest",
+
+      $Theme->getFileContents("post_block.html")
+    );
+
     $Output->addTagReplacement(
 
       "latest_posts",
 
-      $Post->getLatest(
-
-        $Theme->getFileContents("post_block.html")
-      )
+      $Hook->doAction("latest_posts")
     );
   break;
 }
