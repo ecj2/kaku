@@ -166,14 +166,22 @@ switch (array_keys($_GET)[0]) {
     // Viewing posts by range.
     echo $Theme->getFileContents("range.html");
 
+    $Hook->addAction(
+
+      "posts_range",
+
+      $Post,
+
+      "getRange",
+
+      $Theme->getFileContents("post_block.html")
+    );
+
     $Output->addTagReplacement(
 
       "posts_range",
 
-      $Post->getRange(
-
-        $Theme->getFileContents("post_block.html")
-      )
+      $Hook->doAction("posts_range")
     );
   break;
 
