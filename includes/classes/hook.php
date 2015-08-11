@@ -6,6 +6,7 @@ class Hook {
   private $methods;
   private $objects;
   private $arguments;
+  private $callback_contents;
 
   public function __construct() {
 
@@ -13,6 +14,7 @@ class Hook {
     $this->methods = array();
     $this->objects = array();
     $this->arguments = array();
+    $this->callback_contents = array();
   }
 
   public function doAction($action) {
@@ -40,6 +42,10 @@ class Hook {
       array_push($this->methods, $method);
       array_push($this->objects, $object);
       array_push($this->arguments, $argument);
+
+      $callback_content = call_user_func(array($object, $method), $argument);
+
+      array_push($this->callback_contents, $callback_content);
     }
   }
 
@@ -51,6 +57,16 @@ class Hook {
     }
 
     return false;
+  }
+
+  public function getCallback($action) {
+
+    if (in_array($action, $this->actions)) {
+
+      $array_position = array_search($action, $this->actions);
+
+      return $this->callback_contents[$array_position];
+    }
   }
 
   public function removeAction($action) {
