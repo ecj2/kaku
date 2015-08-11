@@ -345,6 +345,29 @@ switch (array_keys($_GET)[0]) {
 
       ++$count;
     }
+
+    $Hook->addAction(
+
+      "post_bodies",
+
+      $Post,
+
+      "getBodies"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_bodies") as $body) {
+
+      $Output->addTagReplacement(
+
+        "post_body_{$count}",
+
+        $body
+      );
+
+      ++$count;
+    }
   break;
 }
 
