@@ -299,6 +299,29 @@ switch (array_keys($_GET)[0]) {
 
       $Hook->doAction("latest_posts")
     );
+
+    $Hook->addAction(
+
+      "post_titles",
+
+      $Post,
+
+      "getTitles"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_titles") as $title) {
+
+      $Output->addTagReplacement(
+
+        "post_title_{$count}",
+
+        $title
+      );
+
+      ++$count;
+    }
   break;
 }
 
