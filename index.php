@@ -322,6 +322,29 @@ switch (array_keys($_GET)[0]) {
 
       ++$count;
     }
+
+    $Hook->addAction(
+
+      "post_urls",
+
+      $Post,
+
+      "getUrls"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_urls") as $url) {
+
+      $Output->addTagReplacement(
+
+        "post_url_{$count}",
+
+        $url
+      );
+
+      ++$count;
+    }
   break;
 }
 
