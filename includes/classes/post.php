@@ -352,6 +352,56 @@ class Post extends Utility {
     }
   }
 
+  public function getRelativeEpochs() {
+
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = 'posts_per_page'
+      ORDER BY id DESC
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or returned zero rows.
+      Utility::displayError("failed to get posts per page");
+    }
+
+    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
+
+    $statement = "
+
+      SELECT epoch
+      FROM " . DB_PREF . "posts
+      WHERE draft = '0'
+      ORDER BY id DESC
+      LIMIT {$posts_per_page}
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query) {
+
+      // Query failed.
+      Utility::displayError("failed to get latest posts");
+    }
+
+    if ($query->rowCount() > 0) {
+
+      $epochs = array();
+
+      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+
+        $epochs[] = $this->getRelativeEpoch($post->epoch);
+      }
+
+      return $epochs;
+    }
+  }
+
   public function getUrls() {
 
     $statement = "

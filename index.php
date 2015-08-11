@@ -391,6 +391,29 @@ switch (array_keys($_GET)[0]) {
 
       ++$count;
     }
+
+    $Hook->addAction(
+
+      "post_relative_epochs",
+
+      $Post,
+
+      "getRelativeEpochs"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_relative_epochs") as $relative_epoch) {
+
+      $Output->addTagReplacement(
+
+        "post_relative_epoch_{$count}",
+
+        $relative_epoch
+      );
+
+      ++$count;
+    }
   break;
 }
 
