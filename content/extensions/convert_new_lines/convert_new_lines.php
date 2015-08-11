@@ -40,6 +40,33 @@
         );
       }
     }
+    else if (isset($_GET["page_url"])) {
+
+      if ($Hook->hasAction("page_body")) {
+
+        $Hook->addAction(
+
+          "page_body",
+
+          $this,
+
+          "singleConvertNewLines",
+
+          $Hook->getCallback("page_body")
+        );
+      }
+      else {
+
+        $Hook->addAction(
+
+          "page_body",
+
+          $this,
+
+          "singleConvertNewLines"
+        );
+      }
+    }
     else {
 
       if ($Hook->hasAction("post_bodies")) {
@@ -73,17 +100,36 @@
 
     if ($callback_content == "") {
 
-      $statement = "
+      $statement = "";
 
-        SELECT body
-        FROM " . DB_PREF . "posts
-        WHERE url = ?
-      ";
+      if (isset($_GET["post_url"])) {
 
-      $query = $this->DatabaseHandle->prepare($statement);
+        $statement = "
 
-      // Prevent SQL injections.
-      $query->bindParam(1, $_GET["post_url"]);
+          SELECT body
+          FROM " . DB_PREF . "posts
+          WHERE url = ?
+        ";
+
+        $query = $this->DatabaseHandle->prepare($statement);
+
+        // Prevent SQL injections.
+        $query->bindParam(1, $_GET["post_url"]);
+      }
+      else if (isset($_GET["page_url"])) {
+
+        $statement = "
+
+          SELECT body
+          FROM " . DB_PREF . "pages
+          WHERE url = ?
+        ";
+
+        $query = $this->DatabaseHandle->prepare($statement);
+
+        // Prevent SQL injections.
+        $query->bindParam(1, $_GET["page_url"]);
+      }
 
       $query->execute();
 
