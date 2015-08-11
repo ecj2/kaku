@@ -49,23 +49,23 @@ class Hook {
 
       if (is_string($object)) {
 
-        array_push($this->types, "string");
+        $this->types[] = "string";
 
-        array_push($this->callback_contents, $object);
+        $this->callback_contents[] = $object;
       }
       else if (is_object($object)) {
 
-        array_push($this->types, "object");
+        $this->types[] = "object";
 
         $callback_content = call_user_func(array($object, $method), $argument);
 
-        array_push($this->callback_contents, $callback_content);
+        $this->callback_contents[] = $callback_content;
       }
 
-      array_push($this->actions, $action);
-      array_push($this->methods, $method);
-      array_push($this->objects, $object);
-      array_push($this->arguments, $argument);
+      $this->actions[] = $action;
+      $this->methods[] = $method;
+      $this->objects[] = $object;
+      $this->arguments[] = $argument;
     }
   }
 
