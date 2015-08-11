@@ -15,17 +15,6 @@ class Hook {
     $this->arguments = array();
   }
 
-  public function addAction($action, $object, $method, $argument = null) {
-
-    if (!in_array($action, $this->actions)) {
-
-      array_push($this->actions, $action);
-      array_push($this->methods, $method);
-      array_push($this->objects, $object);
-      array_push($this->arguments, $argument);
-    }
-  }
-
   public function doAction($action) {
 
     if (in_array($action, $this->actions)) {
@@ -40,6 +29,27 @@ class Hook {
 
         return call_user_func(array($object, $method), $argument);
       }
+    }
+  }
+
+  public function addAction($action, $object, $method, $argument = null) {
+
+    if (!in_array($action, $this->actions)) {
+
+      array_push($this->actions, $action);
+      array_push($this->methods, $method);
+      array_push($this->objects, $object);
+      array_push($this->arguments, $argument);
+    }
+  }
+
+  public function removeAction($action) {
+
+    if (in_array($action, $this->actions)) {
+
+      $array_position = array_search($action, $this->actions);
+
+      unset($this->actions[$array_position]);
     }
   }
 }
