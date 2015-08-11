@@ -33,34 +33,110 @@ class Post extends Utility {
 
   public function getKeywords($post_tags = null) {
 
-    if ($post_tags == null) {
+    if (isset($_GET["page_number"]) || !isset($_GET["post_url"])) {
 
-      $post_tags = $this->getData("keywords");
-    }
+      $statement = "
 
-    $tags_markup = "";
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+        ORDER BY id DESC
+      ";
 
-    if (!empty($post_tags)) {
+      $query = $this->DatabaseHandle->query($statement);
 
-      $tags_markup .= "<ul>";
+      if (!$query || $query->rowCount() == 0) {
 
-      foreach (explode(", ", $post_tags) as $tag) {
-
-        // Encode spaces to work with URLs.
-        $tag_url = str_replace(" ", "%20", $tag);
-
-        $tags_markup .= "
-
-          <li>
-            <a href=\"{%blog_url%}/page/search?term={$tag_url}\">#{$tag}</a>
-          </li>
-        ";
+        // Query failed or returned zero rows.
+        Utility::displayError("failed to get posts per page");
       }
 
-      $tags_markup .= "</ul>";
-    }
+      $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
 
-    return $tags_markup;
+      $statement = "
+
+        SELECT keywords
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query) {
+
+        // Query failed.
+        Utility::displayError("failed to get latest posts");
+      }
+
+      if ($query->rowCount() > 0) {
+
+        $keywords = array();
+
+        while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+
+          $tags_markup = "";
+
+          $post_tags = $post->keywords;
+
+          if (!empty($post_tags)) {
+
+            $tags_markup .= "<ul>";
+
+            foreach (explode(", ", $post_tags) as $tag) {
+
+              // Encode spaces to work with URLs.
+              $tag_url = str_replace(" ", "%20", $tag);
+
+              $tags_markup .= "
+
+                <li>
+                  <a href=\"{%blog_url%}/page/search?term={$tag_url}\">#{$tag}</a>
+                </li>
+              ";
+            }
+
+            $tags_markup .= "</ul>";
+          }
+
+          $keywords[] = $tags_markup;
+        }
+
+        return $keywords;
+      }
+    }
+    else {
+
+      //
+      if ($post_tags == null) {
+
+        $post_tags = $this->getData("keywords");
+      }
+
+      $tags_markup = "";
+
+      if (!empty($post_tags)) {
+
+        $tags_markup .= "<ul>";
+
+        foreach (explode(", ", $post_tags) as $tag) {
+
+          // Encode spaces to work with URLs.
+          $tag_url = str_replace(" ", "%20", $tag);
+
+          $tags_markup .= "
+
+            <li>
+              <a href=\"{%blog_url%}/page/search?term={$tag_url}\">#{$tag}</a>
+            </li>
+          ";
+        }
+
+        $tags_markup .= "</ul>";
+      }
+
+      return $tags_markup;
+    }
   }
 
   public function getTitle() {

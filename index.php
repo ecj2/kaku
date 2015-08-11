@@ -368,6 +368,29 @@ switch (array_keys($_GET)[0]) {
 
       ++$count;
     }
+
+    $Hook->addAction(
+
+      "post_keywords",
+
+      $Post,
+
+      "getKeywords"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_keywords") as $keywords) {
+
+      $Output->addTagReplacement(
+
+        "post_keywords_{$count}",
+
+        $keywords
+      );
+
+      ++$count;
+    }
   break;
 }
 
