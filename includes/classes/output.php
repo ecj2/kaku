@@ -149,6 +149,11 @@ class Output extends Utility {
             $Extension->setDatabaseHandle($this->DatabaseHandle);
           }
 
+          if (method_exists($class_name, "manageHooks")) {
+
+            $Extension->manageHooks();
+          }
+
           if (method_exists($class_name, "getTags")) {
 
             if (method_exists($class_name, "getReplacements")) {
