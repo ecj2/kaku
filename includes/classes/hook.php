@@ -25,21 +25,9 @@ class Hook {
 
       $array_position = array_search($action, $this->actions);
 
-      $method = $this->methods[$array_position];
-      $object = $this->objects[$array_position];
-      $argument = $this->arguments[$array_position];
+      $callback_content = $this->callback_contents[$array_position];
 
-      if ($this->types[$array_position] == "string") {
-
-        return $object;
-      }
-      else if ($this->types[$array_position] == "object") {
-
-        if (method_exists($object, $method)) {
-
-          return call_user_func(array($object, $method), $argument);
-        }
-      }
+      return $this->callback_contents[$array_position];
     }
   }
 
