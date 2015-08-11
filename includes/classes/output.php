@@ -66,15 +66,33 @@ class Output extends Utility {
 
           // Replace tag call with value from database.
 
+          global $Hook;
+
           if ($tag->evaluate) {
 
             // Evaluate the tag contents as if it were PHP code.
-            $this->addTagReplacement($tag->title, eval($tag->body));
+
+            $Hook->addAction("{$tag->title}_tag", eval($tag->body));
+
+            $this->addTagReplacement(
+
+              $tag->title,
+
+              $Hook->doAction("{$tag->title}_tag")
+            );
           }
           else {
 
             // Do not evaluate tag contents as if PHP code.
-            $this->addTagReplacement($tag->title, $tag->body);
+
+            $Hook->addAction("{$tag->title}_tag", $tag->body);
+
+            $this->addTagReplacement(
+
+              $tag->title,
+
+              $Hook->doAction("{$tag->title}_tag")
+            );
           }
         }
       }
