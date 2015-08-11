@@ -5,17 +5,18 @@ class Output extends Utility {
   private $search;
   private $replace;
 
-  private $DatabaseHandle;
+  private $class_name;
+  private $class_file;
 
-  private $required_extensions;
+  private $DatabaseHandle;
 
   public function __construct() {
 
     $this->search = array();
     $this->replace = array();
 
-    // List of already required extensions.
-    $this->required_extensions = array();
+    $this->class_name = array();
+    $this->class_file = array();
   }
 
   public function flushBuffer() {
@@ -115,49 +116,53 @@ class Output extends Utility {
         // Get directory name without path.
         $directory_name = str_replace("content/extensions/", "", $directory);
 
-        if (file_exists("{$directory}/{$directory_name}.php")) {
+        $extension_full_path = "{$directory}/{$directory_name}.php";
+
+        if (file_exists($extension_full_path)) {
 
           // Get the names of already declared classes.
           $classes = get_declared_classes();
 
-          if (!in_array($directory_name, $this->required_extensions)) {
-
-            // Require extension source file.
-            require "{$directory}/{$directory_name}.php";
-
-            // Add extension to the list, so it won't be required again.
-            array_push($this->required_extensions, $directory_name);
-          }
+          // Require extension source file.
+          require_once $extension_full_path;
 
           // Get name of newly required class.
           $class_name = reset(array_diff(get_declared_classes(), $classes));
 
-          if (class_exists($class_name)) {
+          if (!in_array($class_name, $this->class_name)) {
 
-            // Instantiate the extension.
-            $Extension = new $class_name;
+            // Save class name and file path.
+            array_push($this->class_name, $class_name);
+            array_push($this->class_file, $extension_full_path);
+          }
 
-            if (method_exists($class_name, "setDatabaseHandle")) {
+          $position = array_search($extension_full_path, $this->class_file);
 
-              // Pass the database handle over to the extension.
-              $Extension->setDatabaseHandle($this->DatabaseHandle);
-            }
+          $class_name = $this->class_name[$position];
 
-            if (method_exists($class_name, "getTags")) {
+          // Instantiate the extension.
+          $Extension = new $class_name;
 
-              if (method_exists($class_name, "getReplacements")) {
+          if (method_exists($class_name, "setDatabaseHandle")) {
 
-                // Identify and replace the tags called by the extension.
+            // Pass the database handle over to the extension.
+            $Extension->setDatabaseHandle($this->DatabaseHandle);
+          }
 
-                foreach ($Extension->getTags() as $key) {
+          if (method_exists($class_name, "getTags")) {
 
-                  array_push($this->search, "{%{$key}%}");
-                }
+            if (method_exists($class_name, "getReplacements")) {
 
-                foreach ($Extension->getReplacements() as $key) {
+              // Identify and replace the tags called by the extension.
 
-                  array_push($this->replace, $key);
-                }
+              foreach ($Extension->getTags() as $key) {
+
+                array_push($this->search, "{%{$key}%}");
+              }
+
+              foreach ($Extension->getReplacements() as $key) {
+
+                array_push($this->replace, $key);
               }
             }
           }
