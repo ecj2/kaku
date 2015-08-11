@@ -252,6 +252,190 @@ switch (array_keys($_GET)[0]) {
 
       $Hook->doAction("posts_range")
     );
+
+    $Hook->addAction(
+
+      "post_titles",
+
+      $Post,
+
+      "getTitlesRange"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_titles") as $title) {
+
+      $Output->addTagReplacement(
+
+        "post_title_{$count}",
+
+        $title
+      );
+
+      ++$count;
+    }
+
+    $Hook->addAction(
+
+      "post_urls",
+
+      $Post,
+
+      "getUrlsRange"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_urls") as $url) {
+
+      $Output->addTagReplacement(
+
+        "post_url_{$count}",
+
+        $url
+      );
+
+      ++$count;
+    }
+
+    $Hook->addAction(
+
+      "post_bodies",
+
+      $Post,
+
+      "getBodiesRange"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_bodies") as $body) {
+
+      $Output->addTagReplacement(
+
+        "post_body_{$count}",
+
+        $body
+      );
+
+      ++$count;
+    }
+
+    $Hook->addAction(
+
+      "post_keywords",
+
+      $Post,
+
+      "getKeywords"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_keywords") as $keywords) {
+
+      $Output->addTagReplacement(
+
+        "post_keywords_{$count}",
+
+        $keywords
+      );
+
+      ++$count;
+    }
+
+    $Hook->addAction(
+
+      "post_relative_epochs",
+
+      $Post,
+
+      "getRelativeEpochsRange"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_relative_epochs") as $relative_epoch) {
+
+      $Output->addTagReplacement(
+
+        "post_relative_epoch_{$count}",
+
+        $relative_epoch
+      );
+
+      ++$count;
+    }
+
+    $Hook->addAction(
+
+      "post_absolute_epochs",
+
+      $Post,
+
+      "getAbsoluteEpochsRange"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_absolute_epochs") as $absolute_epoch) {
+
+      $Output->addTagReplacement(
+
+        "post_absolute_epoch_{$count}",
+
+        $absolute_epoch
+      );
+
+      ++$count;
+    }
+
+    $Hook->addAction(
+
+      "post_date_time_epochs",
+
+      $Post,
+
+      "getDateTimeEpochsRange"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_date_time_epochs") as $date_time_epoch) {
+
+      $Output->addTagReplacement(
+
+        "post_date_time_epoch_{$count}",
+
+        $date_time_epoch
+      );
+
+      ++$count;
+    }
+
+    $Hook->addAction(
+
+      "post_authors",
+
+      $Post,
+
+      "getAuthorsRange"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_authors") as $author) {
+
+      $Output->addTagReplacement(
+
+        "post_author_{$count}",
+
+        $author
+      );
+
+      ++$count;
+    }
   break;
 
   default:

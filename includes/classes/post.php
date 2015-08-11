@@ -33,7 +33,7 @@ class Post extends Utility {
 
   public function getKeywords($post_tags = null) {
 
-    if (isset($_GET["page_number"]) || !isset($_GET["post_url"])) {
+    if (!isset($_GET["post_url"])) {
 
       $statement = "
 
@@ -53,13 +53,32 @@ class Post extends Utility {
 
       $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
 
-      $statement = "
+      $statement = "";
 
-        SELECT keywords
-        FROM " . DB_PREF . "posts
-        ORDER BY id DESC
-        LIMIT {$posts_per_page}
-      ";
+      if (isset($_GET["page_number"])) {
+
+        $offset = $posts_per_page * ($_GET["page_number"] - 1);
+
+        $statement = "
+
+          SELECT url, body, title, keywords, epoch, author_id
+          FROM " . DB_PREF . "posts
+          WHERE draft = '0'
+          ORDER BY id DESC
+          LIMIT {$posts_per_page}
+          OFFSET {$offset}
+        ";
+      }
+      else {
+
+        $statement = "
+
+          SELECT keywords
+          FROM " . DB_PREF . "posts
+          ORDER BY id DESC
+          LIMIT {$posts_per_page}
+        ";
+      }
 
       $query = $this->DatabaseHandle->query($statement);
 
@@ -202,33 +221,35 @@ class Post extends Utility {
 
       $markup = "";
 
+      $count = 1;
+
       while ($post = $query->fetch(PDO::FETCH_OBJ)) {
 
-        $search = array(
+        $search = array();
 
-          "{%post_url%}",
-          "{%post_body%}",
-          "{%post_title%}",
-          "{%post_keywords%}",
-          "{%post_relative_epoch%}",
-          "{%post_absolute_epoch%}",
-          "{%post_date_time_epoch%}",
-          "{%post_author%}"
-        );
+        $replace = array();
 
-        $replace = array(
+        $search[] = "{%post_url%}";
+        $search[] = "{%post_body%}";
+        $search[] = "{%post_title%}";
+        $search[] = "{%post_keywords%}";
+        $search[] = "{%post_relative_epoch%}";
+        $search[] = "{%post_absolute_epoch%}";
+        $search[] = "{%post_date_time_epoch%}";
+        $search[] = "{%post_author%}";
 
-          $post->url,
-          $this->getBody($post->url, $post->body),
-          $post->title,
-          $this->getKeywords($post->keywords),
-          $this->getRelativeEpoch($post->epoch),
-          $this->getAbsoluteEpoch($post->epoch),
-          $this->getDateTimeEpoch($post->epoch),
-          $this->getAuthor($post->author_id)
-        );
+        $replace[] = "{%post_url_{$count}%}";
+        $replace[] = "{%post_body_{$count}%}";
+        $replace[] = "{%post_title_{$count}%}";
+        $replace[] = "{%post_keywords_{$count}%}";
+        $replace[] = "{%post_relative_epoch_{$count}%}";
+        $replace[] = "{%post_absolute_epoch_{$count}%}";
+        $replace[] = "{%post_date_time_epoch_{$count}%}";
+        $replace[] = "{%post_author_{$count}%}";
 
         $markup .= str_replace($search, $replace, $post_block_markup);
+
+        ++$count;
       }
 
       return $markup;
@@ -402,6 +423,59 @@ class Post extends Utility {
     }
   }
 
+  public function getRelativeEpochsRange() {
+
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = 'posts_per_page'
+      ORDER BY id DESC
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or returned zero rows.
+      Utility::displayError("failed to get posts per page");
+    }
+
+    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
+
+    $offset = $posts_per_page * ($_GET["page_number"] - 1);
+
+    $statement = "
+
+      SELECT url, body, title, keywords, epoch, author_id
+      FROM " . DB_PREF . "posts
+      WHERE draft = '0'
+      ORDER BY id DESC
+      LIMIT {$posts_per_page}
+      OFFSET {$offset}
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query) {
+
+      // Query failed.
+      Utility::displayError("failed to get latest posts");
+    }
+
+    if ($query->rowCount() > 0) {
+
+      $epochs = array();
+
+      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+
+        $epochs[] = $this->getRelativeEpoch($post->epoch);
+      }
+
+      return $epochs;
+    }
+  }
+
   public function getDateTimeEpochs() {
 
     $statement = "
@@ -429,6 +503,59 @@ class Post extends Utility {
       WHERE draft = '0'
       ORDER BY id DESC
       LIMIT {$posts_per_page}
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query) {
+
+      // Query failed.
+      Utility::displayError("failed to get latest posts");
+    }
+
+    if ($query->rowCount() > 0) {
+
+      $epochs = array();
+
+      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+
+        $epochs[] = $this->getDateTimeEpoch($post->epoch);
+      }
+
+      return $epochs;
+    }
+  }
+
+  public function getDateTimeEpochsRange() {
+
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = 'posts_per_page'
+      ORDER BY id DESC
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or returned zero rows.
+      Utility::displayError("failed to get posts per page");
+    }
+
+    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
+
+    $offset = $posts_per_page * ($_GET["page_number"] - 1);
+
+    $statement = "
+
+      SELECT url, body, title, keywords, epoch, author_id
+      FROM " . DB_PREF . "posts
+      WHERE draft = '0'
+      ORDER BY id DESC
+      LIMIT {$posts_per_page}
+      OFFSET {$offset}
     ";
 
     $query = $this->DatabaseHandle->query($statement);
@@ -502,6 +629,59 @@ class Post extends Utility {
     }
   }
 
+  public function getAbsoluteEpochsRange() {
+
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = 'posts_per_page'
+      ORDER BY id DESC
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or returned zero rows.
+      Utility::displayError("failed to get posts per page");
+    }
+
+    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
+
+    $offset = $posts_per_page * ($_GET["page_number"] - 1);
+
+    $statement = "
+
+      SELECT url, body, title, keywords, epoch, author_id
+      FROM " . DB_PREF . "posts
+      WHERE draft = '0'
+      ORDER BY id DESC
+      LIMIT {$posts_per_page}
+      OFFSET {$offset}
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query) {
+
+      // Query failed.
+      Utility::displayError("failed to get latest posts");
+    }
+
+    if ($query->rowCount() > 0) {
+
+      $epochs = array();
+
+      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+
+        $epochs[] = $this->getAbsoluteEpoch($post->epoch);
+      }
+
+      return $epochs;
+    }
+  }
+
   public function getUrls() {
 
     $statement = "
@@ -529,6 +709,59 @@ class Post extends Utility {
       WHERE draft = '0'
       ORDER BY id DESC
       LIMIT {$posts_per_page}
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query) {
+
+      // Query failed.
+      Utility::displayError("failed to get latest posts");
+    }
+
+    if ($query->rowCount() > 0) {
+
+      $urls = array();
+
+      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+
+        $urls[] = $post->url;
+      }
+
+      return $urls;
+    }
+  }
+
+  public function getUrlsRange() {
+
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = 'posts_per_page'
+      ORDER BY id DESC
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or returned zero rows.
+      Utility::displayError("failed to get posts per page");
+    }
+
+    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
+
+    $offset = $posts_per_page * ($_GET["page_number"] - 1);
+
+    $statement = "
+
+      SELECT url, body, title, keywords, epoch, author_id
+      FROM " . DB_PREF . "posts
+      WHERE draft = '0'
+      ORDER BY id DESC
+      LIMIT {$posts_per_page}
+      OFFSET {$offset}
     ";
 
     $query = $this->DatabaseHandle->query($statement);
@@ -602,6 +835,59 @@ class Post extends Utility {
     }
   }
 
+  public function getAuthorsRange() {
+
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = 'posts_per_page'
+      ORDER BY id DESC
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or returned zero rows.
+      Utility::displayError("failed to get posts per page");
+    }
+
+    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
+
+    $offset = $posts_per_page * ($_GET["page_number"] - 1);
+
+    $statement = "
+
+      SELECT url, body, title, keywords, epoch, author_id
+      FROM " . DB_PREF . "posts
+      WHERE draft = '0'
+      ORDER BY id DESC
+      LIMIT {$posts_per_page}
+      OFFSET {$offset}
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query) {
+
+      // Query failed.
+      Utility::displayError("failed to get latest posts");
+    }
+
+    if ($query->rowCount() > 0) {
+
+      $authors = array();
+
+      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+
+        $authors[] = $this->getAuthor($post->author_id);
+      }
+
+      return $authors;
+    }
+  }
+
   public function getBodies() {
 
     $statement = "
@@ -649,6 +935,112 @@ class Post extends Utility {
       }
 
       return $bodies;
+    }
+  }
+
+  public function getBodiesRange() {
+
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = 'posts_per_page'
+      ORDER BY id DESC
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or returned zero rows.
+      Utility::displayError("failed to get posts per page");
+    }
+
+    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
+
+    $offset = $posts_per_page * ($_GET["page_number"] - 1);
+
+    $statement = "
+
+      SELECT url, body, title, keywords, epoch, author_id
+      FROM " . DB_PREF . "posts
+      WHERE draft = '0'
+      ORDER BY id DESC
+      LIMIT {$posts_per_page}
+      OFFSET {$offset}
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query) {
+
+      // Query failed.
+      Utility::displayError("failed to get latest posts");
+    }
+
+    if ($query->rowCount() > 0) {
+
+      $bodies = array();
+
+      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+
+        $bodies[] = $post->body;
+      }
+
+      return $bodies;
+    }
+  }
+
+  public function getTitlesRange() {
+
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = 'posts_per_page'
+      ORDER BY id DESC
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or returned zero rows.
+      Utility::displayError("failed to get posts per page");
+    }
+
+    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
+
+    $offset = $posts_per_page * ($_GET["page_number"] - 1);
+
+    $statement = "
+
+      SELECT url, body, title, keywords, epoch, author_id
+      FROM " . DB_PREF . "posts
+      WHERE draft = '0'
+      ORDER BY id DESC
+      LIMIT {$posts_per_page}
+      OFFSET {$offset}
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query) {
+
+      // Query failed.
+      Utility::displayError("failed to get latest posts");
+    }
+
+    if ($query->rowCount() > 0) {
+
+      $titles = array();
+
+      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+
+        $titles[] = $post->title;
+      }
+
+      return $titles;
     }
   }
 
