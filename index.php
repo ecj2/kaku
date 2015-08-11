@@ -5,12 +5,16 @@ require "includes/configuration.php";
 require "includes/classes/utility.php";
 require "includes/classes/database.php";
 
+require "includes/classes/hook.php";
 require "includes/classes/page.php";
 require "includes/classes/post.php";
 require "includes/classes/theme.php";
 require "includes/classes/output.php";
 require "includes/classes/comment.php";
 
+global $Hook;
+
+$Hook = new Hook;
 $Page = new Page;
 $Post = new Post;
 $Theme = new Theme;
@@ -33,6 +37,8 @@ if (file_exists("install.php")) {
   require "install.php";
 }
 
+$Output->loadExtensions();
+
 $_GET[""] = "";
 
 switch (array_keys($_GET)[0]) {
@@ -42,70 +48,94 @@ switch (array_keys($_GET)[0]) {
     // Viewing a post.
     echo $Theme->getFileContents("post.html");
 
+    $Hook->addAction("post_body", $Post, "getBody");
+
     $Output->addTagReplacement(
 
       "post_body",
 
-      $Post->getBody()
+      $Hook->doAction("post_body")
     );
+
+    $Hook->addAction("post_keywords", $Post, "getKeywords");
 
     $Output->addTagReplacement(
 
       "post_keywords",
 
-      $Post->getKeywords()
+      $Hook->doAction("post_keywords")
     );
+
+    $Hook->addAction("post_title", $Post, "getTitle");
 
     $Output->addTagReplacement(
 
       "post_title",
 
-      $Post->getTitle()
+      $Hook->doAction("post_title")
     );
+
+    $Hook->addAction("post_author", $Post, "getAuthor");
 
     $Output->addTagReplacement(
 
       "post_author",
 
-      $Post->getAuthor()
+      $Hook->doAction("post_author")
     );
+
+    $Hook->addAction("post_description", $Post, "getDescription");
 
     $Output->addTagReplacement(
 
       "post_description",
 
-      $Post->getDescription()
+      $Hook->doAction("post_description")
     );
+
+    $Hook->addAction("post_absolute_epoch", $Post, "getAbsoluteEpoch");
 
     $Output->addTagReplacement(
 
       "post_absolute_epoch",
 
-      $Post->getAbsoluteEpoch()
+      $Hook->doAction("post_absolute_epoch")
     );
+
+    $Hook->addAction("post_relative_epoch", $Post, "getRelativeEpoch");
 
     $Output->addTagReplacement(
 
       "post_relative_epoch",
 
-      $Post->getRelativeEpoch()
+      $Hook->doAction("post_relative_epoch")
     );
+
+    $Hook->addAction("post_date_time_epoch", $Post, "getDateTimeEpoch");
 
     $Output->addTagReplacement(
 
       "post_date_time_epoch",
 
-      $Post->getDateTimeEpoch()
+      $Hook->doAction("post_date_time_epoch")
+    );
+
+    $Hook->addAction(
+
+      "comments",
+
+      $Comment,
+
+      "getSource",
+
+      $Theme->getFileContents("comment_block.html")
     );
 
     $Output->addTagReplacement(
 
       "comments",
 
-      $Comment->getSource(
-
-        $Theme->getFileContents("comment_block.html")
-      )
+      $Hook->doAction("comments")
     );
   break;
 
@@ -114,25 +144,31 @@ switch (array_keys($_GET)[0]) {
     // Viewing a page.
     echo $Theme->getFileContents("page.html");
 
+    $Hook->addAction("page_body", $Page, "getBody");
+
     $Output->addTagReplacement(
 
       "page_body",
 
-      $Page->getBody()
+      $Hook->doAction("page_body")
     );
+
+    $Hook->addAction("page_title", $Page, "getTitle");
 
     $Output->addTagReplacement(
 
       "page_title",
 
-      $Page->getTitle()
+      $Hook->doAction("page_title")
     );
+
+    $Hook->addAction("page_description", $Page, "getDescription");
 
     $Output->addTagReplacement(
 
       "page_description",
 
-      $Page->getDescription()
+      $Hook->doAction("page_description")
     );
   break;
 
@@ -141,14 +177,22 @@ switch (array_keys($_GET)[0]) {
     // Viewing posts by range.
     echo $Theme->getFileContents("range.html");
 
+    $Hook->addAction(
+
+      "posts_range",
+
+      $Post,
+
+      "getRange",
+
+      $Theme->getFileContents("post_block.html")
+    );
+
     $Output->addTagReplacement(
 
       "posts_range",
 
-      $Post->getRange(
-
-        $Theme->getFileContents("post_block.html")
-      )
+      $Hook->doAction("posts_range")
     );
   break;
 
@@ -157,14 +201,22 @@ switch (array_keys($_GET)[0]) {
     // Viewing latest posts.
     echo $Theme->getFileContents("latest.html");
 
+    $Hook->addAction(
+
+      "latest_posts",
+
+      $Post,
+
+      "getLatest",
+
+      $Theme->getFileContents("post_block.html")
+    );
+
     $Output->addTagReplacement(
 
       "latest_posts",
 
-      $Post->getLatest(
-
-        $Theme->getFileContents("post_block.html")
-      )
+      $Hook->doAction("latest_posts")
     );
   break;
 }
