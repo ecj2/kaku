@@ -460,6 +460,29 @@ switch (array_keys($_GET)[0]) {
 
       ++$count;
     }
+
+    $Hook->addAction(
+
+      "post_authors",
+
+      $Post,
+
+      "getAuthors"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_authors") as $author) {
+
+      $Output->addTagReplacement(
+
+        "post_author_{$count}",
+
+        $author
+      );
+
+      ++$count;
+    }
   break;
 }
 

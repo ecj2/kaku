@@ -552,6 +552,56 @@ class Post extends Utility {
     }
   }
 
+  public function getAuthors() {
+
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = 'posts_per_page'
+      ORDER BY id DESC
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or returned zero rows.
+      Utility::displayError("failed to get posts per page");
+    }
+
+    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
+
+    $statement = "
+
+      SELECT author_id
+      FROM " . DB_PREF . "posts
+      WHERE draft = '0'
+      ORDER BY id DESC
+      LIMIT {$posts_per_page}
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query) {
+
+      // Query failed.
+      Utility::displayError("failed to get latest posts");
+    }
+
+    if ($query->rowCount() > 0) {
+
+      $authors = array();
+
+      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+
+        $authors[] = $this->getAuthor($post->author_id);
+      }
+
+      return $authors;
+    }
+  }
+
   public function getBodies() {
 
     $statement = "
