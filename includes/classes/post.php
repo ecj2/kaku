@@ -241,6 +241,8 @@ class Post extends Utility {
 
       $markup = "";
 
+      $count = 1;
+
       while ($post = $query->fetch(PDO::FETCH_OBJ)) {
 
         $search = array();
@@ -256,16 +258,18 @@ class Post extends Utility {
         $search[] = "{%post_date_time_epoch%}";
         $search[] = "{%post_author%}";
 
-        $replace[] = $post->url;
-        $replace[] = $this->getBody($post->url, $post->body);
-        $replace[] = $post->title;
-        $replace[] = $this->getKeywords($post->keywords);
-        $replace[] = $this->getRelativeEpoch($post->epoch);
-        $replace[] = $this->getAbsoluteEpoch($post->epoch);
-        $replace[] = $this->getDateTimeEpoch($post->epoch);
-        $replace[] = $this->getAuthor($post->author_id);
+        $replace[] = "{%post_url_{$count}}";
+        $replace[] = "{%post_body_{$count}%}";
+        $replace[] = "{%post_title_{$count}%}";
+        $replace[] = "{%post_keywords_{$count}%}";
+        $replace[] = "{%post_relative_epoch_{$count}%}";
+        $replace[] = "{%post_absolute_epoch_{$count}%}";
+        $replace[] = "{%post_date_time_epoch_{$count}%}";
+        $replace[] = "{%post_author_{$count}%}";
 
         $markup .= str_replace($search, $replace, $post_block_markup);
+
+        ++$count;
       }
 
       return $markup;
