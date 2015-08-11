@@ -43,6 +43,16 @@ class Hook {
     }
   }
 
+  public function hasAction($action) {
+
+    if (in_array($action, $this->actions)) {
+
+      return true;
+    }
+
+    return false;
+  }
+
   public function removeAction($action) {
 
     if (in_array($action, $this->actions)) {
