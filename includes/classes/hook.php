@@ -71,6 +71,8 @@ class Hook {
 
     if (in_array($action, $this->actions)) {
 
+      $this->removeAction($action);
+
       $array_position = array_search($action, $this->actions);
 
       return $this->callback_contents[$array_position];
