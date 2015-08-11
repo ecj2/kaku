@@ -258,7 +258,7 @@ class Post extends Utility {
         $search[] = "{%post_date_time_epoch%}";
         $search[] = "{%post_author%}";
 
-        $replace[] = "{%post_url_{$count}}";
+        $replace[] = "{%post_url_{$count}%}";
         $replace[] = "{%post_body_{$count}%}";
         $replace[] = "{%post_title_{$count}%}";
         $replace[] = "{%post_keywords_{$count}%}";
