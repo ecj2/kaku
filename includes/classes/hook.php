@@ -2,6 +2,7 @@
 
 class Hook {
 
+  private $types;
   private $actions;
   private $methods;
   private $objects;
@@ -10,6 +11,7 @@ class Hook {
 
   public function __construct() {
 
+    $this->types = array();
     $this->actions = array();
     $this->methods = array();
     $this->objects = array();
@@ -27,25 +29,43 @@ class Hook {
       $object = $this->objects[$array_position];
       $argument = $this->arguments[$array_position];
 
-      if (method_exists($object, $method)) {
+      if ($this->types[$array_position] == "string") {
 
-        return call_user_func(array($object, $method), $argument);
+        return $object;
+      }
+      else if ($this->types[$array_position] == "object") {
+
+        if (method_exists($object, $method)) {
+
+          return call_user_func(array($object, $method), $argument);
+        }
       }
     }
   }
 
-  public function addAction($action, $object, $method, $argument = null) {
+  public function addAction($action, $object, $method = "", $argument = "") {
 
     if (!in_array($action, $this->actions)) {
+
+      if (is_string($object)) {
+
+        array_push($this->types, "string");
+
+        array_push($this->callback_contents, $object);
+      }
+      else if (is_object($object)) {
+
+        array_push($this->types, "object");
+
+        $callback_content = call_user_func(array($object, $method), $argument);
+
+        array_push($this->callback_contents, $callback_content);
+      }
 
       array_push($this->actions, $action);
       array_push($this->methods, $method);
       array_push($this->objects, $object);
       array_push($this->arguments, $argument);
-
-      $callback_content = call_user_func(array($object, $method), $argument);
-
-      array_push($this->callback_contents, $callback_content);
     }
   }
 
