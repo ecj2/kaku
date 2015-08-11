@@ -243,29 +243,27 @@ class Post extends Utility {
 
       while ($post = $query->fetch(PDO::FETCH_OBJ)) {
 
-        $search = array(
+        $search = array();
 
-          "{%post_url%}",
-          "{%post_body%}",
-          "{%post_title%}",
-          "{%post_keywords%}",
-          "{%post_relative_epoch%}",
-          "{%post_absolute_epoch%}",
-          "{%post_date_time_epoch%}",
-          "{%post_author%}"
-        );
+        $replace = array();
 
-        $replace = array(
+        $search[] = "{%post_url%}";
+        $search[] = "{%post_body%}";
+        $search[] = "{%post_title%}";
+        $search[] = "{%post_keywords%}";
+        $search[] = "{%post_relative_epoch%}";
+        $search[] = "{%post_absolute_epoch%}";
+        $search[] = "{%post_date_time_epoch%}";
+        $search[] = "{%post_author%}";
 
-          $post->url,
-          $this->getBody($post->url, $post->body),
-          $post->title,
-          $this->getKeywords($post->keywords),
-          $this->getRelativeEpoch($post->epoch),
-          $this->getAbsoluteEpoch($post->epoch),
-          $this->getDateTimeEpoch($post->epoch),
-          $this->getAuthor($post->author_id)
-        );
+        $replace[] = $post->url;
+        $replace[] = $this->getBody($post->url, $post->body);
+        $replace[] = $post->title;
+        $replace[] = $this->getKeywords($post->keywords);
+        $replace[] = $this->getRelativeEpoch($post->epoch);
+        $replace[] = $this->getAbsoluteEpoch($post->epoch);
+        $replace[] = $this->getDateTimeEpoch($post->epoch);
+        $replace[] = $this->getAuthor($post->author_id);
 
         $markup .= str_replace($search, $replace, $post_block_markup);
       }
