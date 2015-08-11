@@ -414,6 +414,29 @@ switch (array_keys($_GET)[0]) {
 
       ++$count;
     }
+
+    $Hook->addAction(
+
+      "post_absolute_epochs",
+
+      $Post,
+
+      "getAbsoluteEpochs"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_absolute_epochs") as $absolute_epoch) {
+
+      $Output->addTagReplacement(
+
+        "post_absolute_epoch_{$count}",
+
+        $absolute_epoch
+      );
+
+      ++$count;
+    }
   break;
 }
 
