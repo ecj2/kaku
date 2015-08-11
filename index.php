@@ -46,7 +46,19 @@ switch (array_keys($_GET)[0]) {
   case "post_url":
 
     // Viewing a post.
-    echo $Theme->getFileContents("post.html");
+
+    $Hook->addAction(
+
+      "post_file_contents",
+
+      $Theme,
+
+      "getFileContents",
+
+      "post.html"
+    );
+
+    echo $Hook->doAction("post_file_contents");
 
     $Hook->addAction("post_body", $Post, "getBody");
 
@@ -122,13 +134,24 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
+      "comment_block_file_contents",
+
+      $Theme,
+
+      "getFileContents",
+
+      "comment_block.html"
+    );
+
+    $Hook->addAction(
+
       "comments",
 
       $Comment,
 
       "getSource",
 
-      $Theme->getFileContents("comment_block.html")
+      $Hook->doAction("comment_block_file_contents")
     );
 
     $Output->addTagReplacement(
@@ -142,7 +165,19 @@ switch (array_keys($_GET)[0]) {
   case "page_url":
 
     // Viewing a page.
-    echo $Theme->getFileContents("page.html");
+
+    $Hook->addAction(
+
+      "page_file_contents",
+
+      $Theme,
+
+      "getFileContents",
+
+      "page.html"
+    );
+
+    echo $Hook->doAction("page_file_contents");
 
     $Hook->addAction("page_body", $Page, "getBody");
 
@@ -175,7 +210,30 @@ switch (array_keys($_GET)[0]) {
   case "page_number":
 
     // Viewing posts by range.
-    echo $Theme->getFileContents("range.html");
+
+    $Hook->addAction(
+
+      "range_file_contents",
+
+      $Theme,
+
+      "getFileContents",
+
+      "range.html"
+    );
+
+    echo $Hook->doAction("range_file_contents");
+
+    $Hook->addAction(
+
+      "post_block_file_contents",
+
+      $Theme,
+
+      "getFileContents",
+
+      "post_block.html"
+    );
 
     $Hook->addAction(
 
@@ -185,7 +243,7 @@ switch (array_keys($_GET)[0]) {
 
       "getRange",
 
-      $Theme->getFileContents("post_block.html")
+      $Hook->doAction("post_block_file_contents")
     );
 
     $Output->addTagReplacement(
@@ -199,7 +257,30 @@ switch (array_keys($_GET)[0]) {
   default:
 
     // Viewing latest posts.
-    echo $Theme->getFileContents("latest.html");
+
+    $Hook->addAction(
+
+      "latest_file_contents",
+
+      $Theme,
+
+      "getFileContents",
+
+      "latest.html"
+    );
+
+    echo $Hook->doAction("latest_file_contents");
+
+    $Hook->addAction(
+
+      "post_block_file_contents",
+
+      $Theme,
+
+      "getFileContents",
+
+      "post_block.html"
+    );
 
     $Hook->addAction(
 
@@ -209,7 +290,7 @@ switch (array_keys($_GET)[0]) {
 
       "getLatest",
 
-      $Theme->getFileContents("post_block.html")
+      $Hook->doAction("post_block_file_contents")
     );
 
     $Output->addTagReplacement(
