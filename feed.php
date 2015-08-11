@@ -5,8 +5,12 @@ require "includes/configuration.php";
 require "includes/classes/utility.php";
 require "includes/classes/database.php";
 
+require "includes/classes/hook.php";
 require "includes/classes/output.php";
 
+global $Hook;
+
+$Hook = new Hook();
 $Output = new Output();
 $Database = new Database();
 
