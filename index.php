@@ -437,6 +437,29 @@ switch (array_keys($_GET)[0]) {
 
       ++$count;
     }
+
+    $Hook->addAction(
+
+      "post_date_time_epochs",
+
+      $Post,
+
+      "getDateTimeEpochs"
+    );
+
+    $count = 1;
+
+    foreach ($Hook->doAction("post_date_time_epochs") as $date_time_epoch) {
+
+      $Output->addTagReplacement(
+
+        "post_date_time_epoch_{$count}",
+
+        $date_time_epoch
+      );
+
+      ++$count;
+    }
   break;
 }
 
