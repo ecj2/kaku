@@ -989,109 +989,6 @@ class Post extends Utility {
     }
   }
 
-  public function getAbsoluteEpochs() {
-
-    $statement = "
-
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'posts_per_page'
-      ORDER BY id DESC
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query || $query->rowCount() == 0) {
-
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get posts per page");
-    }
-
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
-
-    $statement = "
-
-      SELECT epoch
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
-      ORDER BY id DESC
-      LIMIT {$posts_per_page}
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get latest posts");
-    }
-
-    if ($query->rowCount() > 0) {
-
-      $epochs = array();
-
-      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
-
-        $epochs[] = $this->getAbsoluteEpoch($post->epoch);
-      }
-
-      return $epochs;
-    }
-  }
-
-  public function getAbsoluteEpochsRange() {
-
-    $statement = "
-
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'posts_per_page'
-      ORDER BY id DESC
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query || $query->rowCount() == 0) {
-
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get posts per page");
-    }
-
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
-
-    $offset = $posts_per_page * ($_GET["page_number"] - 1);
-
-    $statement = "
-
-      SELECT url, body, title, keywords, epoch, author_id
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
-      ORDER BY id DESC
-      LIMIT {$posts_per_page}
-      OFFSET {$offset}
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get latest posts");
-    }
-
-    if ($query->rowCount() > 0) {
-
-      $epochs = array();
-
-      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
-
-        $epochs[] = $this->getAbsoluteEpoch($post->epoch);
-      }
-
-      return $epochs;
-    }
-  }
-
   public function getUniformResourceLocator() {
 
     if (isset($_GET["page_number"])) {
@@ -1209,29 +1106,221 @@ class Post extends Utility {
     return $this->getData("description");
   }
 
-  public function getAbsoluteEpoch($epoch = 0) {
+  public function getAbsoluteEpoch() {
 
-    if ($epoch == 0) {
+    if (isset($_GET["post_url"])) {
 
-      $epoch = $this->getData("epoch");
+      // Select date format.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'date_format'
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or date format does not exist.
+        Utility::displayError("failed to select date format");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get date format.
+      $date_format = $result->body;
+
+      // Select post epoch.
+      $statement = "
+
+        SELECT epoch
+        FROM " . DB_PREF . "posts
+        WHERE url = ?
+      ";
+
+      $query = $this->DatabaseHandle->prepare($statement);
+
+      // Prevent SQL injections.
+      $query->bindParam(1, $_GET["post_url"]);
+
+      $query->execute();
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post epoch does not exist.
+        Utility::displayError("failed to select post epoch");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get post epoch.
+      return date($date_format, $result->epoch);
     }
+    else if (isset($_GET["page_number"])) {
 
-    $statement = "
+      // Select posts per page.
+      $statement = "
 
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'date_format'
-    ";
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
 
-    $query = $this->DatabaseHandle->query($statement);
+      $query = $this->DatabaseHandle->query($statement);
 
-    if (!$query || $query->rowCount() == 0) {
+      if (!$query || $query->rowCount() == 0) {
 
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get date format");
+        // Query failed or post title does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get posts per page.
+      $posts_per_page = $result->body;
+
+      // Get range offset.
+      $offset = $posts_per_page * ($_GET["page_number"] - 1);
+
+      // Select date format.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'date_format'
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or date format does not exist.
+        Utility::displayError("failed to select date format");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get date format.
+      $date_format = $result->body;
+
+      // Select post epoch.
+      $statement = "
+
+        SELECT epoch
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+        OFFSET {$offset}
+      ";
+
+      $query = $this->DatabaseHandle->prepare($statement);
+
+      // Prevent SQL injections.
+      $query->bindParam(1, $_GET["post_url"]);
+
+      $query->execute();
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post epoch does not exist.
+        Utility::displayError("failed to select post epoch");
+      }
+
+      $epochs = null;
+
+      // Fetch result as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
+
+        // Get post epochs.
+        $epochs[] = date($date_format, $result->epoch);
+      }
+
+      return $epochs;
     }
+    else {
 
-    return date($query->fetch(PDO::FETCH_OBJ)->body, $epoch);
+      // Select posts per page.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post title does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get posts per page.
+      $posts_per_page = $result->body;
+
+      // Select date format.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'date_format'
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or date format does not exist.
+        Utility::displayError("failed to select date format");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get date format.
+      $date_format = $result->body;
+
+      // Select post epoch.
+      $statement = "
+
+        SELECT epoch
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+      ";
+
+      $query = $this->DatabaseHandle->prepare($statement);
+
+      // Prevent SQL injections.
+      $query->bindParam(1, $_GET["post_url"]);
+
+      $query->execute();
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post epoch does not exist.
+        Utility::displayError("failed to select post epoch");
+      }
+
+      $epochs = null;
+
+      // Fetch result as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
+
+        // Get post epochs.
+        $epochs[] = date($date_format, $result->epoch);
+      }
+
+      return $epochs;
+    }
   }
 
   public function getDateTimeEpoch() {

@@ -374,7 +374,7 @@ switch (array_keys($_GET)[0]) {
 
       $Post,
 
-      "getAbsoluteEpochsRange"
+      "getAbsoluteEpoch"
     );
 
     $count = 1;
@@ -605,7 +605,7 @@ switch (array_keys($_GET)[0]) {
 
       $Post,
 
-      "getAbsoluteEpochs"
+      "getAbsoluteEpoch"
     );
 
     $count = 1;
