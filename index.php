@@ -62,6 +62,22 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction("post_body", $Post, "getBody");
 
+    $Hook->addAction(
+
+      "post_url",
+
+      $Post,
+
+      "getUniformResourceLocator"
+    );
+
+    $Output->addTagReplacement(
+
+      "post_url",
+
+      $Hook->doAction("post_url")
+    );
+
     $Output->addTagReplacement(
 
       "post_body",
@@ -255,16 +271,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_titles",
+      "post_title",
 
       $Post,
 
-      "getTitlesRange"
+      "getTitle"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_titles") as $title) {
+    foreach ($Hook->doAction("post_title") as $title) {
 
       $Output->addTagReplacement(
 
@@ -278,16 +294,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_urls",
+      "post_url",
 
       $Post,
 
-      "getUrlsRange"
+      "getUniformResourceLocator"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_urls") as $url) {
+    foreach ($Hook->doAction("post_url") as $url) {
 
       $Output->addTagReplacement(
 
@@ -301,16 +317,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_bodies",
+      "post_body",
 
       $Post,
 
-      "getBodiesRange"
+      "getBody"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_bodies") as $body) {
+    foreach ($Hook->doAction("post_body") as $body) {
 
       $Output->addTagReplacement(
 
@@ -347,16 +363,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_relative_epochs",
+      "post_relative_epoch",
 
       $Post,
 
-      "getRelativeEpochsRange"
+      "getRelativeEpoch"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_relative_epochs") as $relative_epoch) {
+    foreach ($Hook->doAction("post_relative_epoch") as $relative_epoch) {
 
       $Output->addTagReplacement(
 
@@ -370,16 +386,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_absolute_epochs",
+      "post_absolute_epoch",
 
       $Post,
 
-      "getAbsoluteEpochsRange"
+      "getAbsoluteEpoch"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_absolute_epochs") as $absolute_epoch) {
+    foreach ($Hook->doAction("post_absolute_epoch") as $absolute_epoch) {
 
       $Output->addTagReplacement(
 
@@ -393,16 +409,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_date_time_epochs",
+      "post_date_time_epoch",
 
       $Post,
 
-      "getDateTimeEpochsRange"
+      "getDateTimeEpoch"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_date_time_epochs") as $date_time_epoch) {
+    foreach ($Hook->doAction("post_date_time_epoch") as $date_time_epoch) {
 
       $Output->addTagReplacement(
 
@@ -416,16 +432,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_authors",
+      "post_author",
 
       $Post,
 
-      "getAuthorsRange"
+      "getAuthor"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_authors") as $author) {
+    foreach ($Hook->doAction("post_author") as $author) {
 
       $Output->addTagReplacement(
 
@@ -486,16 +502,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_titles",
+      "post_title",
 
       $Post,
 
-      "getTitles"
+      "getTitle"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_titles") as $title) {
+    foreach ($Hook->doAction("post_title") as $title) {
 
       $Output->addTagReplacement(
 
@@ -509,16 +525,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_urls",
+      "post_url",
 
       $Post,
 
-      "getUrls"
+      "getUniformResourceLocator"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_urls") as $url) {
+    foreach ($Hook->doAction("post_url") as $url) {
 
       $Output->addTagReplacement(
 
@@ -532,16 +548,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_bodies",
+      "post_body",
 
       $Post,
 
-      "getBodies"
+      "getBody"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_bodies") as $body) {
+    foreach ($Hook->doAction("post_body") as $body) {
 
       $Output->addTagReplacement(
 
@@ -578,16 +594,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_relative_epochs",
+      "post_relative_epoch",
 
       $Post,
 
-      "getRelativeEpochs"
+      "getRelativeEpoch"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_relative_epochs") as $relative_epoch) {
+    foreach ($Hook->doAction("post_relative_epoch") as $relative_epoch) {
 
       $Output->addTagReplacement(
 
@@ -601,16 +617,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_absolute_epochs",
+      "post_absolute_epoch",
 
       $Post,
 
-      "getAbsoluteEpochs"
+      "getAbsoluteEpoch"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_absolute_epochs") as $absolute_epoch) {
+    foreach ($Hook->doAction("post_absolute_epoch") as $absolute_epoch) {
 
       $Output->addTagReplacement(
 
@@ -624,16 +640,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_date_time_epochs",
+      "post_date_time_epoch",
 
       $Post,
 
-      "getDateTimeEpochs"
+      "getDateTimeEpoch"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_date_time_epochs") as $date_time_epoch) {
+    foreach ($Hook->doAction("post_date_time_epoch") as $date_time_epoch) {
 
       $Output->addTagReplacement(
 
@@ -647,16 +663,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_authors",
+      "post_author",
 
       $Post,
 
-      "getAuthors"
+      "getAuthor"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_authors") as $author) {
+    foreach ($Hook->doAction("post_author") as $author) {
 
       $Output->addTagReplacement(
 
