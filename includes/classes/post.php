@@ -991,7 +991,36 @@ class Post extends Utility {
 
   public function getUniformResourceLocator() {
 
-    if (isset($_GET["page_number"])) {
+    if (isset($_GET["post_url"])) {
+
+      // Select post url.
+      $statement = "
+
+        SELECT url
+        FROM " . DB_PREF . "posts
+        WHERE url = ?
+      ";
+
+      $query = $this->DatabaseHandle->prepare($statement);
+
+      // Prevent SQL injections.
+      $query->bindParam(1, $_GET["post_url"]);
+
+      $query->execute();
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post URL does not exist.
+        Utility::displayError("failed to select post URL");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get post url.
+      return $result->url;
+    }
+    else if (isset($_GET["page_number"])) {
 
       // Select posts per page.
       $statement = "

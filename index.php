@@ -62,6 +62,22 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction("post_body", $Post, "getBody");
 
+    $Hook->addAction(
+
+      "post_url",
+
+      $Post,
+
+      "getUniformResourceLocator"
+    );
+
+    $Output->addTagReplacement(
+
+      "post_url",
+
+      $Hook->doAction("post_url")
+    );
+
     $Output->addTagReplacement(
 
       "post_body",
