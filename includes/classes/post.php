@@ -254,9 +254,9 @@ class Post extends Utility {
 
         $keywords_markup = null;
 
-        if (!empty($keywords)) {
+        $keywords_markup .= "<ul>";
 
-          $keywords_markup .= "<ul>";
+        if (!empty($keywords)) {
 
           foreach (explode(", ", $keywords) as $keyword) {
 
@@ -269,11 +269,11 @@ class Post extends Utility {
             $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
             $keywords_markup .= "</li>";
           }
-
-          $keywords_markup .= "</ul>";
-
-          $keywords_array[] = $keywords_markup;
         }
+
+        $keywords_markup .= "</ul>";
+
+        $keywords_array[] = $keywords_markup;
       }
 
       return $keywords_array;
@@ -329,9 +329,9 @@ class Post extends Utility {
 
         $keywords_markup = null;
 
-        if (!empty($keywords)) {
+        $keywords_markup .= "<ul>";
 
-          $keywords_markup .= "<ul>";
+        if (!empty($keywords)) {
 
           foreach (explode(", ", $keywords) as $keyword) {
 
@@ -344,11 +344,11 @@ class Post extends Utility {
             $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
             $keywords_markup .= "</li>";
           }
-
-          $keywords_markup .= "</ul>";
-
-          $keywords_array[] = $keywords_markup;
         }
+
+        $keywords_markup .= "</ul>";
+
+        $keywords_array[] = $keywords_markup;
       }
 
       return $keywords_array;
