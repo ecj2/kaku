@@ -397,7 +397,7 @@ switch (array_keys($_GET)[0]) {
 
       $Post,
 
-      "getDateTimeEpochsRange"
+      "getDateTimeEpoch"
     );
 
     $count = 1;
@@ -628,7 +628,7 @@ switch (array_keys($_GET)[0]) {
 
       $Post,
 
-      "getDateTimeEpochs"
+      "getDateTimeEpoch"
     );
 
     $count = 1;
