@@ -3,17 +3,13 @@
 class Hook {
 
   private $actions;
-  private $methods;
   private $objects;
-  private $arguments;
   private $callback_contents;
 
   public function __construct() {
 
     $this->actions = array();
-    $this->methods = array();
     $this->objects = array();
-    $this->arguments = array();
     $this->callback_contents = array();
   }
 
@@ -45,9 +41,7 @@ class Hook {
       }
 
       $this->actions[] = $action;
-      $this->methods[] = $method;
       $this->objects[] = $object;
-      $this->arguments[] = $argument;
     }
   }
 
