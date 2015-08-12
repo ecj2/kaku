@@ -129,7 +129,7 @@ class Post extends Utility {
       if (!$query || $query->rowCount() == 0) {
 
         // Query failed or post body does not exist.
-        Utility::displayError("failed to select post body");
+        return [];
       }
 
       $bodies = null;
@@ -316,7 +316,7 @@ class Post extends Utility {
       if (!$query || $query->rowCount() == 0) {
 
         // Query failed or post keywords does not exist.
-        Utility::displayError("failed to select post keywords");
+        return [];
       }
 
       $keywords_array = null;
@@ -480,7 +480,7 @@ class Post extends Utility {
       if (!$query || $query->rowCount() == 0) {
 
         // Query failed or post title does not exist.
-        Utility::displayError("failed to select post title");
+        return [];
       }
 
       $titles = null;
@@ -774,7 +774,7 @@ class Post extends Utility {
       if (!$query || $query->rowCount() == 0) {
 
         // Query failed or author ID does not exist.
-        Utility::displayError("failed to select post author ID");
+        return [];
       }
 
       $authors = null;
@@ -1013,7 +1013,7 @@ class Post extends Utility {
       if (!$query || $query->rowCount() == 0) {
 
         // Query failed or post URL does not exist.
-        Utility::displayError("failed to select post URL");
+        return [];
       }
 
       $uniform_resource_locators = null;
@@ -1235,7 +1235,7 @@ class Post extends Utility {
       if (!$query || $query->rowCount() == 0) {
 
         // Query failed or post epoch does not exist.
-        Utility::displayError("failed to select post epoch");
+        return [];
       }
 
       $epochs = null;
@@ -1376,7 +1376,7 @@ class Post extends Utility {
       if (!$query || $query->rowCount() == 0) {
 
         // Query failed or post epoch does not exist.
-        Utility::displayError("failed to select post epoch");
+        return [];
       }
 
       $epochs = null;
@@ -1617,7 +1617,7 @@ class Post extends Utility {
       if (!$query || $query->rowCount() == 0) {
 
         // Query failed or post epoch does not exist.
-        Utility::displayError("failed to select post epoch");
+        return [];
       }
 
       $epochs = null;
