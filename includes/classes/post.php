@@ -4,30 +4,144 @@ class Post extends Utility {
 
   private $DatabaseHandle;
 
-  public function getBody($url = "", $body = "") {
+  public function getBody() {
 
-    if ($body == "") {
+    if (isset($_GET["post_url"])) {
 
-      // Remove truncate tag when viewing full post.
-      return str_replace("{%truncate%}", "", $this->getData("body"));
+      // Select post body.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "posts
+        WHERE url = ?
+      ";
+
+      $query = $this->DatabaseHandle->prepare($statement);
+
+      // Prevent SQL injections.
+      $query->bindParam(1, $_GET["post_url"]);
+
+      $query->execute();
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post body does not exist.
+        Utility::displayError("failed to select post body");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get post body.
+      return $result->body;
+    }
+    else if (isset($_GET["page_number"])) {
+
+      // Select posts per page.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or posts per page does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get posts per page.
+      $posts_per_page = $result->body;
+
+      // Get range offset.
+      $offset = $posts_per_page * ($_GET["page_number"] - 1);
+
+      // Select post body.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+        OFFSET {$offset}
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post body does not exist.
+        Utility::displayError("failed to select post body");
+      }
+
+      $bodies = null;
+
+      // Fetch result as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
+
+        // Get post body;
+        $bodies[] = $result->body;
+      }
+
+      return $bodies;
     }
     else {
 
-      if (strpos($body, "{%truncate%}") !== false) {
+      // Select posts per page.
+      $statement = "
 
-        $truncate_position = strpos($body, "{%truncate%}");
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
 
-        // Cut the post at the truncate length.
-        $body = substr($body, 0, $truncate_position);
+      $query = $this->DatabaseHandle->query($statement);
 
-        // Include a "read more" link to the full post.
-        $body .= "
+      if (!$query || $query->rowCount() == 0) {
 
-          <a href=\"{%blog_url%}/post/{$url}\">{%lure_text%}</a>
-        ";
+        // Query failed or posts per page does not exist.
+        Utility::displayError("failed to select posts per page");
       }
 
-      return $body;
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get posts per page.
+      $posts_per_page = $result->body;
+
+      // Select post body.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post body does not exist.
+        Utility::displayError("failed to select post body");
+      }
+
+      $bodies = null;
+
+      // Fetch result as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
+
+        // Get post body;
+        $bodies[] = $result->body;
+      }
+
+      return $bodies;
     }
   }
 
@@ -1100,109 +1214,6 @@ class Post extends Utility {
       }
 
       return $urls;
-    }
-  }
-
-  public function getBodies() {
-
-    $statement = "
-
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'posts_per_page'
-      ORDER BY id DESC
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query || $query->rowCount() == 0) {
-
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get posts per page");
-    }
-
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
-
-    $statement = "
-
-      SELECT body
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
-      ORDER BY id DESC
-      LIMIT {$posts_per_page}
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get latest posts");
-    }
-
-    if ($query->rowCount() > 0) {
-
-      $bodies = array();
-
-      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
-
-        $bodies[] = $post->body;
-      }
-
-      return $bodies;
-    }
-  }
-
-  public function getBodiesRange() {
-
-    $statement = "
-
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'posts_per_page'
-      ORDER BY id DESC
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query || $query->rowCount() == 0) {
-
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get posts per page");
-    }
-
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
-
-    $offset = $posts_per_page * ($_GET["page_number"] - 1);
-
-    $statement = "
-
-      SELECT url, body, title, keywords, epoch, author_id
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
-      ORDER BY id DESC
-      LIMIT {$posts_per_page}
-      OFFSET {$offset}
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get latest posts");
-    }
-
-    if ($query->rowCount() > 0) {
-
-      $bodies = array();
-
-      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
-
-        $bodies[] = $post->body;
-      }
-
-      return $bodies;
     }
   }
 

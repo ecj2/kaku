@@ -301,16 +301,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_bodies",
+      "post_body",
 
       $Post,
 
-      "getBodiesRange"
+      "getBody"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_bodies") as $body) {
+    foreach ($Hook->doAction("post_body") as $body) {
 
       $Output->addTagReplacement(
 
@@ -532,16 +532,16 @@ switch (array_keys($_GET)[0]) {
 
     $Hook->addAction(
 
-      "post_bodies",
+      "post_body",
 
       $Post,
 
-      "getBodies"
+      "getBody"
     );
 
     $count = 1;
 
-    foreach ($Hook->doAction("post_bodies") as $body) {
+    foreach ($Hook->doAction("post_body") as $body) {
 
       $Output->addTagReplacement(
 
