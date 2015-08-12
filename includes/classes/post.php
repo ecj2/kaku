@@ -244,35 +244,36 @@ class Post extends Utility {
         Utility::displayError("failed to select post keywords");
       }
 
-      // Fetch result as an object.
-      $result = $query->fetch(PDO::FETCH_OBJ);
-
-      // Get post keywords.
-      $keywords = $result->keywords;
-
       $keywords_array = null;
 
-      $keywords_markup = null;
+      // Fetch result as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
 
-      if (!empty($keywords)) {
+        // Get post keywords.
+        $keywords = $result->keywords;
 
-        $keywords_markup .= "<ul>";
+        $keywords_markup = null;
 
-        foreach (explode(", ", $keywords) as $keyword) {
+        if (!empty($keywords)) {
 
-          // Encode spaces.
-          $keyword_url = str_replace(" ", "%20", $keyword);
+          $keywords_markup .= "<ul>";
 
-          // Create a list item for each keyword.
-          $keywords_markup .= "<li>";
-          $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
-          $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
-          $keywords_markup .= "</li>";
+          foreach (explode(", ", $keywords) as $keyword) {
+
+            // Encode spaces.
+            $keyword_url = str_replace(" ", "%20", $keyword);
+
+            // Create a list item for each keyword.
+            $keywords_markup .= "<li>";
+            $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
+            $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
+            $keywords_markup .= "</li>";
+          }
+
+          $keywords_markup .= "</ul>";
+
+          $keywords_array[] = $keywords_markup;
         }
-
-        $keywords_markup .= "</ul>";
-
-        $keywords_array[] = $keywords_markup;
       }
 
       return $keywords_array;
@@ -318,35 +319,36 @@ class Post extends Utility {
         Utility::displayError("failed to select post keywords");
       }
 
-      // Fetch result as an object.
-      $result = $query->fetch(PDO::FETCH_OBJ);
-
-      // Get post keywords.
-      $keywords = $result->keywords;
-
       $keywords_array = null;
 
-      $keywords_markup = null;
+      // Fetch result as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
 
-      if (!empty($keywords)) {
+        // Get post keywords.
+        $keywords = $result->keywords;
 
-        $keywords_markup .= "<ul>";
+        $keywords_markup = null;
 
-        foreach (explode(", ", $keywords) as $keyword) {
+        if (!empty($keywords)) {
 
-          // Encode spaces.
-          $keyword_url = str_replace(" ", "%20", $keyword);
+          $keywords_markup .= "<ul>";
 
-          // Create a list item for each keyword.
-          $keywords_markup .= "<li>";
-          $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
-          $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
-          $keywords_markup .= "</li>";
+          foreach (explode(", ", $keywords) as $keyword) {
+
+            // Encode spaces.
+            $keyword_url = str_replace(" ", "%20", $keyword);
+
+            // Create a list item for each keyword.
+            $keywords_markup .= "<li>";
+            $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
+            $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
+            $keywords_markup .= "</li>";
+          }
+
+          $keywords_markup .= "</ul>";
+
+          $keywords_array[] = $keywords_markup;
         }
-
-        $keywords_markup .= "</ul>";
-
-        $keywords_array[] = $keywords_markup;
       }
 
       return $keywords_array;
