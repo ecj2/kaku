@@ -420,7 +420,7 @@ switch (array_keys($_GET)[0]) {
 
       $Post,
 
-      "getAuthorsRange"
+      "getAuthor"
     );
 
     $count = 1;
@@ -651,7 +651,7 @@ switch (array_keys($_GET)[0]) {
 
       $Post,
 
-      "getAuthors"
+      "getAuthor"
     );
 
     $count = 1;

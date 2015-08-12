@@ -398,38 +398,220 @@ class Post extends Utility {
     }
   }
 
-  public function getAuthor($author_id = "") {
+  public function getAuthor() {
 
-    if ($author_id == "") {
+    if (isset($_GET["post_url"])) {
 
-      $author_id = $this->getData("author_id");
+      // Select post author ID.
+      $statement = "
+
+        SELECT author_id
+        FROM " . DB_PREF . "posts
+        WHERE url = ?
+      ";
+
+      $query = $this->DatabaseHandle->prepare($statement);
+
+      // Prevent SQL injections.
+      $query->bindParam(1, $_GET["post_url"]);
+
+      $query->execute();
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or author ID does not exist.
+        Utility::displayError("failed to select post author ID");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get post author ID.
+      $author_id = $result->author_id;
+
+      // Select user nickname.
+      $statement = "
+
+        SELECT nickname
+        FROM " . DB_PREF . "users
+        WHERE id = '{$author_id}'
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post title does not exist.
+        Utility::displayError("failed to select user nickname");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get user nickname.
+      return $result->nickname;
     }
+    else if (isset($_GET["page_number"])) {
 
-    $statement = "
+      // Select posts per page.
+      $statement = "
 
-      SELECT nickname
-      FROM " . DB_PREF . "users
-      WHERE id = '{$author_id}'
-    ";
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
 
-    $query = $this->DatabaseHandle->query($statement);
+      $query = $this->DatabaseHandle->query($statement);
 
-    if (!$query) {
+      if (!$query || $query->rowCount() == 0) {
 
-      // Query failed.
-      Utility::displayError("failed to get post author");
-    }
-    else if ($query->rowCount() == 0) {
+        // Query failed or posts per page does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
 
-      // The author doesn't exist.
-      return "Unknown";
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get posts per page.
+      $posts_per_page = $result->body;
+
+      // Get range offset.
+      $offset = $posts_per_page * ($_GET["page_number"] - 1);
+
+      // Select post author ID.
+      $statement = "
+
+        SELECT author_id
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+        OFFSET {$offset}
+      ";
+
+      $query = $this->DatabaseHandle->prepare($statement);
+
+      // Prevent SQL injections.
+      $query->bindParam(1, $_GET["post_url"]);
+
+      $query->execute();
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or author ID does not exist.
+        Utility::displayError("failed to select post author ID");
+      }
+
+      $authors = null;
+
+      // Fetch results as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
+
+        // Get post author ID.
+        $author_id = $result->author_id;
+
+        // Select user nickname.
+        $statement = "
+
+          SELECT nickname
+          FROM " . DB_PREF . "users
+          WHERE id = '{$author_id}'
+        ";
+
+        $query = $this->DatabaseHandle->query($statement);
+
+        if (!$query || $query->rowCount() == 0) {
+
+          // Query failed or post title does not exist.
+          Utility::displayError("failed to select user nickname");
+        }
+
+        // Fetch result as an object.
+        $result = $query->fetch(PDO::FETCH_OBJ);
+
+        // Get user nickname.
+        $authors[] = $result->nickname;
+      }
+
+      return $authors;
     }
     else {
 
-      // Fetch the result as an object.
+      // Select posts per page.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or posts per page does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
+
+      // Fetch result as an object.
       $result = $query->fetch(PDO::FETCH_OBJ);
 
-      return $result->nickname;
+      // Get posts per page.
+      $posts_per_page = $result->body;
+
+      // Select post author ID.
+      $statement = "
+
+        SELECT author_id
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+      ";
+
+      $query = $this->DatabaseHandle->prepare($statement);
+
+      // Prevent SQL injections.
+      $query->bindParam(1, $_GET["post_url"]);
+
+      $query->execute();
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or author ID does not exist.
+        Utility::displayError("failed to select post author ID");
+      }
+
+      $authors = null;
+
+      // Fetch results as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
+
+        // Get post author ID.
+        $author_id = $result->author_id;
+
+        // Select user nickname.
+        $statement = "
+
+          SELECT nickname
+          FROM " . DB_PREF . "users
+          WHERE id = '{$author_id}'
+        ";
+
+        $query = $this->DatabaseHandle->query($statement);
+
+        if (!$query || $query->rowCount() == 0) {
+
+          // Query failed or post title does not exist.
+          Utility::displayError("failed to select user nickname");
+        }
+
+        // Fetch result as an object.
+        $result = $query->fetch(PDO::FETCH_OBJ);
+
+        // Get user nickname.
+        $authors[] = $result->nickname;
+      }
+
+      return $authors;
     }
   }
 
@@ -918,109 +1100,6 @@ class Post extends Utility {
       }
 
       return $urls;
-    }
-  }
-
-  public function getAuthors() {
-
-    $statement = "
-
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'posts_per_page'
-      ORDER BY id DESC
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query || $query->rowCount() == 0) {
-
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get posts per page");
-    }
-
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
-
-    $statement = "
-
-      SELECT author_id
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
-      ORDER BY id DESC
-      LIMIT {$posts_per_page}
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get latest posts");
-    }
-
-    if ($query->rowCount() > 0) {
-
-      $authors = array();
-
-      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
-
-        $authors[] = $this->getAuthor($post->author_id);
-      }
-
-      return $authors;
-    }
-  }
-
-  public function getAuthorsRange() {
-
-    $statement = "
-
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'posts_per_page'
-      ORDER BY id DESC
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query || $query->rowCount() == 0) {
-
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get posts per page");
-    }
-
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
-
-    $offset = $posts_per_page * ($_GET["page_number"] - 1);
-
-    $statement = "
-
-      SELECT url, body, title, keywords, epoch, author_id
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
-      ORDER BY id DESC
-      LIMIT {$posts_per_page}
-      OFFSET {$offset}
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get latest posts");
-    }
-
-    if ($query->rowCount() > 0) {
-
-      $authors = array();
-
-      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
-
-        $authors[] = $this->getAuthor($post->author_id);
-      }
-
-      return $authors;
     }
   }
 
