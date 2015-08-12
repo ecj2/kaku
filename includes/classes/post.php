@@ -886,109 +886,6 @@ class Post extends Utility {
     }
   }
 
-  public function getRelativeEpochs() {
-
-    $statement = "
-
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'posts_per_page'
-      ORDER BY id DESC
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query || $query->rowCount() == 0) {
-
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get posts per page");
-    }
-
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
-
-    $statement = "
-
-      SELECT epoch
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
-      ORDER BY id DESC
-      LIMIT {$posts_per_page}
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get latest posts");
-    }
-
-    if ($query->rowCount() > 0) {
-
-      $epochs = array();
-
-      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
-
-        $epochs[] = $this->getRelativeEpoch($post->epoch);
-      }
-
-      return $epochs;
-    }
-  }
-
-  public function getRelativeEpochsRange() {
-
-    $statement = "
-
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'posts_per_page'
-      ORDER BY id DESC
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query || $query->rowCount() == 0) {
-
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get posts per page");
-    }
-
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
-
-    $offset = $posts_per_page * ($_GET["page_number"] - 1);
-
-    $statement = "
-
-      SELECT url, body, title, keywords, epoch, author_id
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
-      ORDER BY id DESC
-      LIMIT {$posts_per_page}
-      OFFSET {$offset}
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get latest posts");
-    }
-
-    if ($query->rowCount() > 0) {
-
-      $epochs = array();
-
-      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
-
-        $epochs[] = $this->getRelativeEpoch($post->epoch);
-      }
-
-      return $epochs;
-    }
-  }
-
   public function getUniformResourceLocator() {
 
     if (isset($_GET["post_url"])) {
@@ -1493,62 +1390,295 @@ class Post extends Utility {
     }
   }
 
-  public function getRelativeEpoch($epoch = 0) {
+  public function getRelativeEpoch() {
 
-    if ($epoch == 0) {
+    if (isset($_GET["post_url"])) {
 
-      $epoch = $this->getData("epoch");
+      // Select post epoch.
+      $statement = "
+
+        SELECT epoch
+        FROM " . DB_PREF . "posts
+        WHERE url = ?
+      ";
+
+      $query = $this->DatabaseHandle->prepare($statement);
+
+      // Prevent SQL injections.
+      $query->bindParam(1, $_GET["post_url"]);
+
+      $query->execute();
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post epoch does not exist.
+        Utility::displayError("failed to select post epoch");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get post epoch.
+      $epoch = $result->epoch;
+
+      $difference = time() - $epoch;
+
+      $relative_epoch = "";
+
+      if ($difference < 60) {
+
+        // Seconds.
+        $relative_epoch = $difference . " second";
+      }
+      else if ($difference < 3600) {
+
+        // Minutes.
+        $relative_epoch = $difference / 60 . " minute";
+      }
+      else if ($difference < 86400) {
+
+        // Hours.
+        $relative_epoch = $difference / 3600 . " hour";
+      }
+      else if ($difference < 604800) {
+
+        // Days.
+        $relative_epoch = $difference / 86400 . " day";
+      }
+      else if ($difference < 2419200) {
+
+        // Weeks.
+        $relative_epoch = $difference / 604800 . " week";
+      }
+      else if ($difference < 29030400) {
+
+        // Months.
+        $relative_epoch = $difference / 2419200 . " month";
+      }
+      else {
+
+        // Years.
+        $relative_epoch = $difference / 29030400 . " year";
+      }
+
+      $epoch_value = explode(" ", $relative_epoch);
+
+      if (floor($epoch_value[0]) == 0 || floor($epoch_value[0]) > 1) {
+
+        // Make time counter plural.
+        $epoch_value[1] .= "s";
+      }
+
+      return floor($epoch_value[0]) . " {$epoch_value[1]}";
     }
+    else if (isset($_GET["page_number"])) {
 
-    $difference = time() - $epoch;
+      // Select posts per page.
+      $statement = "
 
-    $relative_epoch = "";
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
 
-    if ($difference < 60) {
+      $query = $this->DatabaseHandle->query($statement);
 
-      // Seconds.
-      $relative_epoch = $difference . " second";
-    }
-    else if ($difference < 3600) {
+      if (!$query || $query->rowCount() == 0) {
 
-      // Minutes.
-      $relative_epoch = $difference / 60 . " minute";
-    }
-    else if ($difference < 86400) {
+        // Query failed or posts per page does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
 
-      // Hours.
-      $relative_epoch = $difference / 3600 . " hour";
-    }
-    else if ($difference < 604800) {
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
 
-      // Days.
-      $relative_epoch = $difference / 86400 . " day";
-    }
-    else if ($difference < 2419200) {
+      // Get posts per page.
+      $posts_per_page = $result->body;
 
-      // Weeks.
-      $relative_epoch = $difference / 604800 . " week";
-    }
-    else if ($difference < 29030400) {
+      // Get range offset.
+      $offset = $posts_per_page * ($_GET["page_number"] - 1);
 
-      // Months.
-      $relative_epoch = $difference / 2419200 . " month";
+      // Select post epoch.
+      $statement = "
+
+        SELECT epoch
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+        OFFSET {$offset}
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post epoch does not exist.
+        Utility::displayError("failed to select post epoch");
+      }
+
+      $epochs = null;
+
+      // Fetch result as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
+
+        // Get post epoch.
+        $epoch = $result->epoch;
+
+        $difference = time() - $epoch;
+
+        $relative_epoch = "";
+
+        if ($difference < 60) {
+
+          // Seconds.
+          $relative_epoch = $difference . " second";
+        }
+        else if ($difference < 3600) {
+
+          // Minutes.
+          $relative_epoch = $difference / 60 . " minute";
+        }
+        else if ($difference < 86400) {
+
+          // Hours.
+          $relative_epoch = $difference / 3600 . " hour";
+        }
+        else if ($difference < 604800) {
+
+          // Days.
+          $relative_epoch = $difference / 86400 . " day";
+        }
+        else if ($difference < 2419200) {
+
+          // Weeks.
+          $relative_epoch = $difference / 604800 . " week";
+        }
+        else if ($difference < 29030400) {
+
+          // Months.
+          $relative_epoch = $difference / 2419200 . " month";
+        }
+        else {
+
+          // Years.
+          $relative_epoch = $difference / 29030400 . " year";
+        }
+
+        $epoch_value = explode(" ", $relative_epoch);
+
+        if (floor($epoch_value[0]) == 0 || floor($epoch_value[0]) > 1) {
+
+          // Make time counter plural.
+          $epoch_value[1] .= "s";
+        }
+
+        $epochs[] = floor($epoch_value[0]) . " {$epoch_value[1]}";
+      }
+
+      return $epochs;
     }
     else {
 
-      // Years.
-      $relative_epoch = $difference / 29030400 . " year";
+      // Select posts per page.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or posts per page does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get posts per page.
+      $posts_per_page = $result->body;
+
+      // Select post epoch.
+      $statement = "
+
+        SELECT epoch
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post epoch does not exist.
+        Utility::displayError("failed to select post epoch");
+      }
+
+      $epochs = null;
+
+      // Fetch result as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
+
+        // Get post epoch.
+        $epoch = $result->epoch;
+
+        $difference = time() - $epoch;
+
+        $relative_epoch = "";
+
+        if ($difference < 60) {
+
+          // Seconds.
+          $relative_epoch = $difference . " second";
+        }
+        else if ($difference < 3600) {
+
+          // Minutes.
+          $relative_epoch = $difference / 60 . " minute";
+        }
+        else if ($difference < 86400) {
+
+          // Hours.
+          $relative_epoch = $difference / 3600 . " hour";
+        }
+        else if ($difference < 604800) {
+
+          // Days.
+          $relative_epoch = $difference / 86400 . " day";
+        }
+        else if ($difference < 2419200) {
+
+          // Weeks.
+          $relative_epoch = $difference / 604800 . " week";
+        }
+        else if ($difference < 29030400) {
+
+          // Months.
+          $relative_epoch = $difference / 2419200 . " month";
+        }
+        else {
+
+          // Years.
+          $relative_epoch = $difference / 29030400 . " year";
+        }
+
+        $epoch_value = explode(" ", $relative_epoch);
+
+        if (floor($epoch_value[0]) == 0 || floor($epoch_value[0]) > 1) {
+
+          // Make time counter plural.
+          $epoch_value[1] .= "s";
+        }
+
+        $epochs[] = floor($epoch_value[0]) . " {$epoch_value[1]}";
+      }
+
+      return $epochs;
     }
-
-    $epoch_value = explode(" ", $relative_epoch);
-
-    if (floor($epoch_value[0]) == 0 || floor($epoch_value[0]) > 1) {
-
-      // Make time counter plural.
-      $epoch_value[1] .= "s";
-    }
-
-    return floor($epoch_value[0]) . " {$epoch_value[1]}";
   }
 
   public function setDatabaseHandle($handle) {

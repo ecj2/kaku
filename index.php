@@ -367,7 +367,7 @@ switch (array_keys($_GET)[0]) {
 
       $Post,
 
-      "getRelativeEpochsRange"
+      "getRelativeEpoch"
     );
 
     $count = 1;
@@ -598,7 +598,7 @@ switch (array_keys($_GET)[0]) {
 
       $Post,
 
-      "getRelativeEpochs"
+      "getRelativeEpoch"
     );
 
     $count = 1;
