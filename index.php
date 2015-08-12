@@ -686,11 +686,20 @@ switch (array_keys($_GET)[0]) {
   break;
 }
 
+$Hook->addAction(
+
+  "navigation_items",
+
+  $Theme,
+
+  "getNavigationItems"
+);
+
 $Output->addTagReplacement(
 
   "navigation_items",
 
-  $Theme->getNavigationItems()
+  $Hook->doAction("navigation_items")
 );
 
 $Output->loadExtensions();
