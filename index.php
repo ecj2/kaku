@@ -259,7 +259,7 @@ switch (array_keys($_GET)[0]) {
 
       $Post,
 
-      "getTitlesRange"
+      "getTitle"
     );
 
     $count = 1;
@@ -490,7 +490,7 @@ switch (array_keys($_GET)[0]) {
 
       $Post,
 
-      "getTitles"
+      "getTitle"
     );
 
     $count = 1;

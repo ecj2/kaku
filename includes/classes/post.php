@@ -160,7 +160,143 @@ class Post extends Utility {
 
   public function getTitle() {
 
-    return $this->getData("title");
+    if (isset($_GET["post_url"])) {
+
+      // Select post title.
+      $statement = "
+
+        SELECT title
+        FROM " . DB_PREF . "posts
+        WHERE url = ?
+      ";
+
+      $query = $this->DatabaseHandle->prepare($statement);
+
+      // Prevent SQL injections.
+      $query->bindParam(1, $_GET["post_url"]);
+
+      $query->execute();
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post title does not exist.
+        Utility::displayError("failed to select post title");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get post title.
+      return $result->title;
+    }
+    else if (isset($_GET["page_number"])) {
+
+      // Select posts per page.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post title does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get posts per page.
+      $posts_per_page = $result->body;
+
+      // Get range offset.
+      $offset = $posts_per_page * ($_GET["page_number"] - 1);
+
+      // Select post title.
+      $statement = "
+
+        SELECT title
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+        OFFSET {$offset}
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post title does not exist.
+        Utility::displayError("failed to select post title");
+      }
+
+      $titles = null;
+
+      // Fetch results as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
+
+        // Get titles;
+        $titles[] = $result->title;
+      }
+
+      return $titles;
+    }
+    else {
+
+      // Select posts per page.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post title does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
+
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get posts per page.
+      $posts_per_page = $result->body;
+
+      // Select post title.
+      $statement = "
+
+        SELECT title
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+      ";
+
+      $query = $this->DatabaseHandle->query($statement);
+
+      if (!$query || $query->rowCount() == 0) {
+
+        // Query failed or post title does not exist.
+        Utility::displayError("failed to select post title");
+      }
+
+      $titles = null;
+
+      // Fetch results as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
+
+        // Get titles;
+        $titles[] = $result->title;
+      }
+
+      return $titles;
+    }
   }
 
   public function getRange($post_block_markup) {
@@ -988,109 +1124,6 @@ class Post extends Utility {
       }
 
       return $bodies;
-    }
-  }
-
-  public function getTitlesRange() {
-
-    $statement = "
-
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'posts_per_page'
-      ORDER BY id DESC
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query || $query->rowCount() == 0) {
-
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get posts per page");
-    }
-
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
-
-    $offset = $posts_per_page * ($_GET["page_number"] - 1);
-
-    $statement = "
-
-      SELECT url, body, title, keywords, epoch, author_id
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
-      ORDER BY id DESC
-      LIMIT {$posts_per_page}
-      OFFSET {$offset}
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get latest posts");
-    }
-
-    if ($query->rowCount() > 0) {
-
-      $titles = array();
-
-      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
-
-        $titles[] = $post->title;
-      }
-
-      return $titles;
-    }
-  }
-
-  public function getTitles() {
-
-    $statement = "
-
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'posts_per_page'
-      ORDER BY id DESC
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query || $query->rowCount() == 0) {
-
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get posts per page");
-    }
-
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
-
-    $statement = "
-
-      SELECT title
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
-      ORDER BY id DESC
-      LIMIT {$posts_per_page}
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get latest posts");
-    }
-
-    if ($query->rowCount() > 0) {
-
-      $titles = array();
-
-      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
-
-        $titles[] = $post->title;
-      }
-
-      return $titles;
     }
   }
 
