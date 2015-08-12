@@ -704,10 +704,24 @@ $Output->addTagReplacement(
 
 $Output->loadExtensions();
 
+$Hook->addAction(
+
+  "head_content",
+
+  ""
+);
+
 // Remove head_content tag if no extension uses it.
 $Output->addTagReplacement(
 
   "head_content",
+
+  $Hook->doAction("head_content")
+);
+
+$Hook->addAction(
+
+  "body_content",
 
   ""
 );
@@ -717,7 +731,7 @@ $Output->addTagReplacement(
 
   "body_content",
 
-  ""
+  $Hook->doAction("body_content")
 );
 
 $Output->replaceTags();
