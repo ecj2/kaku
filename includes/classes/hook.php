@@ -2,7 +2,6 @@
 
 class Hook {
 
-  private $types;
   private $actions;
   private $methods;
   private $objects;
@@ -11,7 +10,6 @@ class Hook {
 
   public function __construct() {
 
-    $this->types = array();
     $this->actions = array();
     $this->methods = array();
     $this->objects = array();
@@ -37,13 +35,9 @@ class Hook {
 
       if (is_string($object)) {
 
-        $this->types[] = "string";
-
         $this->callback_contents[] = $object;
       }
       else if (is_object($object)) {
-
-        $this->types[] = "object";
 
         $callback_content = call_user_func(array($object, $method), $argument);
 
