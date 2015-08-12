@@ -1114,108 +1114,117 @@ class Post extends Utility {
     }
   }
 
-  public function getUrls() {
+  public function getUniformResourceLocator() {
 
-    $statement = "
+   if (isset($_GET["page_number"])) {
 
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'posts_per_page'
-      ORDER BY id DESC
-    ";
+     // Select posts per page.
+     $statement = "
 
-    $query = $this->DatabaseHandle->query($statement);
+       SELECT body
+       FROM " . DB_PREF . "tags
+       WHERE title = 'posts_per_page'
+     ";
 
-    if (!$query || $query->rowCount() == 0) {
+     $query = $this->DatabaseHandle->query($statement);
 
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get posts per page");
-    }
+     if (!$query || $query->rowCount() == 0) {
 
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
+       // Query failed or posts per page does not exist.
+       Utility::displayError("failed to select posts per page");
+     }
 
-    $statement = "
+     // Fetch result as an object.
+     $result = $query->fetch(PDO::FETCH_OBJ);
 
-      SELECT url
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
-      ORDER BY id DESC
-      LIMIT {$posts_per_page}
-    ";
+     // Get posts per page.
+     $posts_per_page = $result->body;
 
-    $query = $this->DatabaseHandle->query($statement);
+     // Get range offset.
+     $offset = $posts_per_page * ($_GET["page_number"] - 1);
 
-    if (!$query) {
+     // Select post URL.
+     $statement = "
 
-      // Query failed.
-      Utility::displayError("failed to get latest posts");
-    }
+       SELECT url
+       FROM " . DB_PREF . "posts
+       ORDER BY id DESC
+       LIMIT {$posts_per_page}
+       OFFSET {$offset}
+     ";
 
-    if ($query->rowCount() > 0) {
+     $query = $this->DatabaseHandle->query($statement);
 
-      $urls = array();
+     if (!$query || $query->rowCount() == 0) {
 
-      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+       // Query failed or post URL does not exist.
+       Utility::displayError("failed to select post URL");
+     }
 
-        $urls[] = $post->url;
-      }
+     $uniform_resource_locators = null;
 
-      return $urls;
-    }
-  }
+     // Fetch results as an object.
+     while ($result = $query->fetch(PDO::FETCH_OBJ)) {
 
-  public function getUrlsRange() {
+       // Get post URL;
+       $uniform_resource_locators[] = $result->url;
+     }
 
-    $statement = "
+     return $uniform_resource_locators;
+   }
+   else {
 
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'posts_per_page'
-      ORDER BY id DESC
-    ";
+     // Select posts per page.
+     $statement = "
 
-    $query = $this->DatabaseHandle->query($statement);
+       SELECT body
+       FROM " . DB_PREF . "tags
+       WHERE title = 'posts_per_page'
+     ";
 
-    if (!$query || $query->rowCount() == 0) {
+     $query = $this->DatabaseHandle->query($statement);
 
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get posts per page");
-    }
+     if (!$query || $query->rowCount() == 0) {
 
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
+       // Query failed or posts per page does not exist.
+       Utility::displayError("failed to select posts per page");
+     }
 
-    $offset = $posts_per_page * ($_GET["page_number"] - 1);
+     // Fetch result as an object.
+     $result = $query->fetch(PDO::FETCH_OBJ);
 
-    $statement = "
+     // Get posts per page.
+     $posts_per_page = $result->body;
 
-      SELECT url, body, title, keywords, epoch, author_id
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
-      ORDER BY id DESC
-      LIMIT {$posts_per_page}
-      OFFSET {$offset}
-    ";
+     // Select post URL.
+     $statement = "
 
-    $query = $this->DatabaseHandle->query($statement);
+       SELECT url
+       FROM " . DB_PREF . "posts
+       ORDER BY id DESC
+       LIMIT {$posts_per_page}
+     ";
 
-    if (!$query) {
+     $query = $this->DatabaseHandle->query($statement);
 
-      // Query failed.
-      Utility::displayError("failed to get latest posts");
-    }
+     if (!$query || $query->rowCount() == 0) {
 
-    if ($query->rowCount() > 0) {
+       // Query failed or post URL does not exist.
+       Utility::displayError("failed to select post URL");
+     }
 
-      $urls = array();
+     $uniform_resource_locators = null;
 
-      while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+     // Fetch results as an object.
+     while ($result = $query->fetch(PDO::FETCH_OBJ)) {
 
-        $urls[] = $post->url;
-      }
+       // Get post URL;
+       $uniform_resource_locators[] = $result->url;
+     }
 
-      return $urls;
-    }
-  }
+     return $uniform_resource_locators;
+   }
+ }
 
   public function getDescription() {
 

@@ -282,7 +282,7 @@ switch (array_keys($_GET)[0]) {
 
       $Post,
 
-      "getUrlsRange"
+      "getUniformResourceLocator"
     );
 
     $count = 1;
@@ -513,7 +513,7 @@ switch (array_keys($_GET)[0]) {
 
       $Post,
 
-      "getUrls"
+      "getUniformResourceLocator"
     );
 
     $count = 1;
