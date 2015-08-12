@@ -147,211 +147,211 @@ class Post extends Utility {
 
   public function getKeywords() {
 
-   if (isset($_GET["post_url"])) {
+    if (isset($_GET["post_url"])) {
 
-     // Select post keywords.
-     $statement = "
+      // Select post keywords.
+      $statement = "
 
-       SELECT keywords
-       FROM " . DB_PREF . "posts
-       WHERE url = ?
-     ";
+        SELECT keywords
+        FROM " . DB_PREF . "posts
+        WHERE url = ?
+      ";
 
-     $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->DatabaseHandle->prepare($statement);
 
-     // Prevent SQL injections.
-     $query->bindParam(1, $_GET["post_url"]);
+      // Prevent SQL injections.
+      $query->bindParam(1, $_GET["post_url"]);
 
-     $query->execute();
+      $query->execute();
 
-     if (!$query || $query->rowCount() == 0) {
+      if (!$query || $query->rowCount() == 0) {
 
-       // Query failed or post keywords does not exist.
-       Utility::displayError("failed to select post keywords");
-     }
+        // Query failed or post keywords does not exist.
+        Utility::displayError("failed to select post keywords");
+      }
 
-     // Fetch result as an object.
-     $result = $query->fetch(PDO::FETCH_OBJ);
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
 
-     // Get post keywords.
-     $keywords = $result->keywords;
+      // Get post keywords.
+      $keywords = $result->keywords;
 
-     $keywords_markup = null;
+      $keywords_markup = null;
 
-     if (!empty($keywords)) {
+      if (!empty($keywords)) {
 
-       $keywords_markup .= "<ul>";
+        $keywords_markup .= "<ul>";
 
-       foreach (explode(", ", $keywords) as $keyword) {
+        foreach (explode(", ", $keywords) as $keyword) {
 
-         // Encode spaces.
-         $keyword_url = str_replace(" ", "%20", $keyword);
+          // Encode spaces.
+          $keyword_url = str_replace(" ", "%20", $keyword);
 
-         // Create a list item for each keyword.
-         $keywords_markup .= "<li>";
-         $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
-         $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
-         $keywords_markup .= "</li>";
-       }
+          // Create a list item for each keyword.
+          $keywords_markup .= "<li>";
+          $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
+          $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
+          $keywords_markup .= "</li>";
+        }
 
-       $keywords_markup .= "</ul>";
-     }
+        $keywords_markup .= "</ul>";
+      }
 
-     return $keywords_markup;
-   }
-   else if (isset($_GET["page_number"])) {
+      return $keywords_markup;
+    }
+    else if (isset($_GET["page_number"])) {
 
-     // Select posts per page.
-     $statement = "
+      // Select posts per page.
+      $statement = "
 
-       SELECT body
-       FROM " . DB_PREF . "tags
-       WHERE title = 'posts_per_page'
-     ";
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
 
-     $query = $this->DatabaseHandle->query($statement);
+      $query = $this->DatabaseHandle->query($statement);
 
-     if (!$query || $query->rowCount() == 0) {
+      if (!$query || $query->rowCount() == 0) {
 
-       // Query failed or posts per page does not exist.
-       Utility::displayError("failed to select posts per page");
-     }
+        // Query failed or posts per page does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
 
-     // Fetch result as an object.
-     $result = $query->fetch(PDO::FETCH_OBJ);
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
 
-     // Get posts per page.
-     $posts_per_page = $result->body;
+      // Get posts per page.
+      $posts_per_page = $result->body;
 
-     // Get range offset.
-     $offset = $posts_per_page * ($_GET["page_number"] - 1);
+      // Get range offset.
+      $offset = $posts_per_page * ($_GET["page_number"] - 1);
 
-     // Select post keywords.
-     $statement = "
+      // Select post keywords.
+      $statement = "
 
-       SELECT keywords
-       FROM " . DB_PREF . "posts
-       ORDER BY id DESC
-       LIMIT {$posts_per_page}
-       OFFSET {$offset}
-     ";
+        SELECT keywords
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+        OFFSET {$offset}
+      ";
 
-     $query = $this->DatabaseHandle->query($statement);
+      $query = $this->DatabaseHandle->query($statement);
 
-     if (!$query || $query->rowCount() == 0) {
+      if (!$query || $query->rowCount() == 0) {
 
-       // Query failed or post keywords does not exist.
-       Utility::displayError("failed to select post keywords");
-     }
+        // Query failed or post keywords does not exist.
+        Utility::displayError("failed to select post keywords");
+      }
 
-     // Fetch result as an object.
-     $result = $query->fetch(PDO::FETCH_OBJ);
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
 
-     // Get post keywords.
-     $keywords = $result->keywords;
+      // Get post keywords.
+      $keywords = $result->keywords;
 
-     $keywords_array = null;
+      $keywords_array = null;
 
-     $keywords_markup = null;
+      $keywords_markup = null;
 
-     if (!empty($keywords)) {
+      if (!empty($keywords)) {
 
-       $keywords_markup .= "<ul>";
+        $keywords_markup .= "<ul>";
 
-       foreach (explode(", ", $keywords) as $keyword) {
+        foreach (explode(", ", $keywords) as $keyword) {
 
-         // Encode spaces.
-         $keyword_url = str_replace(" ", "%20", $keyword);
+          // Encode spaces.
+          $keyword_url = str_replace(" ", "%20", $keyword);
 
-         // Create a list item for each keyword.
-         $keywords_markup .= "<li>";
-         $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
-         $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
-         $keywords_markup .= "</li>";
-       }
+          // Create a list item for each keyword.
+          $keywords_markup .= "<li>";
+          $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
+          $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
+          $keywords_markup .= "</li>";
+        }
 
-       $keywords_markup .= "</ul>";
+        $keywords_markup .= "</ul>";
 
-       $keywords_array[] = $keywords_markup;
-     }
+        $keywords_array[] = $keywords_markup;
+      }
 
-     return $keywords_array;
-   }
-   else {
+      return $keywords_array;
+    }
+    else {
 
-     // Select posts per page.
-     $statement = "
+      // Select posts per page.
+      $statement = "
 
-       SELECT body
-       FROM " . DB_PREF . "tags
-       WHERE title = 'posts_per_page'
-     ";
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
 
-     $query = $this->DatabaseHandle->query($statement);
+      $query = $this->DatabaseHandle->query($statement);
 
-     if (!$query || $query->rowCount() == 0) {
+      if (!$query || $query->rowCount() == 0) {
 
-       // Query failed or posts per page does not exist.
-       Utility::displayError("failed to select posts per page");
-     }
+        // Query failed or posts per page does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
 
-     // Fetch result as an object.
-     $result = $query->fetch(PDO::FETCH_OBJ);
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
 
-     // Get posts per page.
-     $posts_per_page = $result->body;
+      // Get posts per page.
+      $posts_per_page = $result->body;
 
-     // Select post keywords.
-     $statement = "
+      // Select post keywords.
+      $statement = "
 
-       SELECT keywords
-       FROM " . DB_PREF . "posts
-       ORDER BY id DESC
-       LIMIT {$posts_per_page}
-     ";
+        SELECT keywords
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+      ";
 
-     $query = $this->DatabaseHandle->query($statement);
+      $query = $this->DatabaseHandle->query($statement);
 
-     if (!$query || $query->rowCount() == 0) {
+      if (!$query || $query->rowCount() == 0) {
 
-       // Query failed or post keywords does not exist.
-       Utility::displayError("failed to select post keywords");
-     }
+        // Query failed or post keywords does not exist.
+        Utility::displayError("failed to select post keywords");
+      }
 
-     // Fetch result as an object.
-     $result = $query->fetch(PDO::FETCH_OBJ);
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
 
-     // Get post keywords.
-     $keywords = $result->keywords;
+      // Get post keywords.
+      $keywords = $result->keywords;
 
-     $keywords_array = null;
+      $keywords_array = null;
 
-     $keywords_markup = null;
+      $keywords_markup = null;
 
-     if (!empty($keywords)) {
+      if (!empty($keywords)) {
 
-       $keywords_markup .= "<ul>";
+        $keywords_markup .= "<ul>";
 
-       foreach (explode(", ", $keywords) as $keyword) {
+        foreach (explode(", ", $keywords) as $keyword) {
 
-         // Encode spaces.
-         $keyword_url = str_replace(" ", "%20", $keyword);
+          // Encode spaces.
+          $keyword_url = str_replace(" ", "%20", $keyword);
 
-         // Create a list item for each keyword.
-         $keywords_markup .= "<li>";
-         $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
-         $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
-         $keywords_markup .= "</li>";
-       }
+          // Create a list item for each keyword.
+          $keywords_markup .= "<li>";
+          $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
+          $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
+          $keywords_markup .= "</li>";
+        }
 
-       $keywords_markup .= "</ul>";
+        $keywords_markup .= "</ul>";
 
-       $keywords_array[] = $keywords_markup;
-     }
+        $keywords_array[] = $keywords_markup;
+      }
 
-     return $keywords_array;
-   }
- }
+      return $keywords_array;
+    }
+  }
 
   public function getTitle() {
 
@@ -1197,115 +1197,115 @@ class Post extends Utility {
 
   public function getUniformResourceLocator() {
 
-   if (isset($_GET["page_number"])) {
+    if (isset($_GET["page_number"])) {
 
-     // Select posts per page.
-     $statement = "
+      // Select posts per page.
+      $statement = "
 
-       SELECT body
-       FROM " . DB_PREF . "tags
-       WHERE title = 'posts_per_page'
-     ";
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
 
-     $query = $this->DatabaseHandle->query($statement);
+      $query = $this->DatabaseHandle->query($statement);
 
-     if (!$query || $query->rowCount() == 0) {
+      if (!$query || $query->rowCount() == 0) {
 
-       // Query failed or posts per page does not exist.
-       Utility::displayError("failed to select posts per page");
-     }
+        // Query failed or posts per page does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
 
-     // Fetch result as an object.
-     $result = $query->fetch(PDO::FETCH_OBJ);
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
 
-     // Get posts per page.
-     $posts_per_page = $result->body;
+      // Get posts per page.
+      $posts_per_page = $result->body;
 
-     // Get range offset.
-     $offset = $posts_per_page * ($_GET["page_number"] - 1);
+      // Get range offset.
+      $offset = $posts_per_page * ($_GET["page_number"] - 1);
 
-     // Select post URL.
-     $statement = "
+      // Select post URL.
+      $statement = "
 
-       SELECT url
-       FROM " . DB_PREF . "posts
-       ORDER BY id DESC
-       LIMIT {$posts_per_page}
-       OFFSET {$offset}
-     ";
+        SELECT url
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+        OFFSET {$offset}
+      ";
 
-     $query = $this->DatabaseHandle->query($statement);
+      $query = $this->DatabaseHandle->query($statement);
 
-     if (!$query || $query->rowCount() == 0) {
+      if (!$query || $query->rowCount() == 0) {
 
-       // Query failed or post URL does not exist.
-       Utility::displayError("failed to select post URL");
-     }
+        // Query failed or post URL does not exist.
+        Utility::displayError("failed to select post URL");
+      }
 
-     $uniform_resource_locators = null;
+      $uniform_resource_locators = null;
 
-     // Fetch results as an object.
-     while ($result = $query->fetch(PDO::FETCH_OBJ)) {
+      // Fetch results as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
 
-       // Get post URL;
-       $uniform_resource_locators[] = $result->url;
-     }
+        // Get post URL;
+        $uniform_resource_locators[] = $result->url;
+      }
 
-     return $uniform_resource_locators;
-   }
-   else {
+      return $uniform_resource_locators;
+    }
+    else {
 
-     // Select posts per page.
-     $statement = "
+      // Select posts per page.
+      $statement = "
 
-       SELECT body
-       FROM " . DB_PREF . "tags
-       WHERE title = 'posts_per_page'
-     ";
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'posts_per_page'
+      ";
 
-     $query = $this->DatabaseHandle->query($statement);
+      $query = $this->DatabaseHandle->query($statement);
 
-     if (!$query || $query->rowCount() == 0) {
+      if (!$query || $query->rowCount() == 0) {
 
-       // Query failed or posts per page does not exist.
-       Utility::displayError("failed to select posts per page");
-     }
+        // Query failed or posts per page does not exist.
+        Utility::displayError("failed to select posts per page");
+      }
 
-     // Fetch result as an object.
-     $result = $query->fetch(PDO::FETCH_OBJ);
+      // Fetch result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
 
-     // Get posts per page.
-     $posts_per_page = $result->body;
+      // Get posts per page.
+      $posts_per_page = $result->body;
 
-     // Select post URL.
-     $statement = "
+      // Select post URL.
+      $statement = "
 
-       SELECT url
-       FROM " . DB_PREF . "posts
-       ORDER BY id DESC
-       LIMIT {$posts_per_page}
-     ";
+        SELECT url
+        FROM " . DB_PREF . "posts
+        ORDER BY id DESC
+        LIMIT {$posts_per_page}
+      ";
 
-     $query = $this->DatabaseHandle->query($statement);
+      $query = $this->DatabaseHandle->query($statement);
 
-     if (!$query || $query->rowCount() == 0) {
+      if (!$query || $query->rowCount() == 0) {
 
-       // Query failed or post URL does not exist.
-       Utility::displayError("failed to select post URL");
-     }
+        // Query failed or post URL does not exist.
+        Utility::displayError("failed to select post URL");
+      }
 
-     $uniform_resource_locators = null;
+      $uniform_resource_locators = null;
 
-     // Fetch results as an object.
-     while ($result = $query->fetch(PDO::FETCH_OBJ)) {
+      // Fetch results as an object.
+      while ($result = $query->fetch(PDO::FETCH_OBJ)) {
 
-       // Get post URL;
-       $uniform_resource_locators[] = $result->url;
-     }
+        // Get post URL;
+        $uniform_resource_locators[] = $result->url;
+      }
 
-     return $uniform_resource_locators;
-   }
- }
+      return $uniform_resource_locators;
+    }
+  }
 
   public function getDescription() {
 
