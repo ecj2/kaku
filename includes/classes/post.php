@@ -1031,7 +1031,34 @@ class Post extends Utility {
 
   public function getDescription() {
 
-    return $this->getData("description");
+    // Select post description.
+    $statement = "
+
+      SELECT description
+      FROM " . DB_PREF . "posts
+      WHERE url = ?
+    ";
+
+    $query = $this->DatabaseHandle->prepare($statement);
+
+    // Prevent SQL injections.
+    $query->bindParam(1, $_GET["post_url"]);
+
+    $query->execute();
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or post description does not exist.
+      Utility::displayError("failed to select post description");
+    }
+
+    // Fetch result as an object.
+    $result = $query->fetch(PDO::FETCH_OBJ);
+
+    // Get post description.
+    $description = $result->description;
+
+    return $description;
   }
 
   public function getAbsoluteEpoch() {
@@ -1686,44 +1713,6 @@ class Post extends Utility {
   public function setDatabaseHandle($handle) {
 
     $this->DatabaseHandle = $handle;
-  }
-
-  private function getData($column) {
-
-    if (!isset($_GET["post_url"])) {
-
-      return;
-    }
-
-    $statement = "
-
-      SELECT {$column}
-      FROM " . DB_PREF . "posts
-      WHERE url = ?
-    ";
-
-    $query = $this->DatabaseHandle->prepare($statement);
-
-    // Prevent SQL injections.
-    $query->bindParam(1, $_GET["post_url"]);
-
-    $query->execute();
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get post");
-    }
-
-    if ($query->rowCount() == 0) {
-
-      $address = Utility::getRootAddress();
-
-      // Query returned zero rows.
-      header("Location: {$address}/error.php?code=404");
-    }
-
-    return $query->fetch(PDO::FETCH_OBJ)->$column;
   }
 }
 
