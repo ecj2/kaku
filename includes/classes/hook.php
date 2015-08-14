@@ -111,6 +111,14 @@ class Hook {
       unset($this->actions[$action]);
     }
   }
+
+  public function removeFilter($filter) {
+
+    if (in_array($filter, $this->filters)) {
+
+      unset($this->filters[$filter]);
+    }
+  }
 }
 
 ?>
