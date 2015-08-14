@@ -845,6 +845,78 @@ if (!$Database->checkTableExistence("extensions")) {
       "failed to create " . DB_PREF . "extensions table"
     );
   }
+
+  if (!$Database->performQuery(
+
+    "INSERT INTO " . DB_PREF . "extensions (
+
+      title,
+
+      activate
+    )
+    VALUES (
+
+      'Search',
+
+      '1'
+    )"
+  )) {
+
+    array_push(
+
+      $errors,
+
+      "failed to insert Search into " . DB_PREF . "extensions"
+    );
+  }
+
+  if (!$Database->performQuery(
+
+    "INSERT INTO " . DB_PREF . "extensions (
+
+      title,
+
+      activate
+    )
+    VALUES (
+
+      'DisqusForum',
+
+      '1'
+    )"
+  )) {
+
+    array_push(
+
+      $errors,
+
+      "failed to insert DisqusForum into " . DB_PREF . "extensions"
+    );
+  }
+
+  if (!$Database->performQuery(
+
+    "INSERT INTO " . DB_PREF . "extensions (
+
+      title,
+
+      activate
+    )
+    VALUES (
+
+      'Pagination',
+
+      '1'
+    )"
+  )) {
+
+    array_push(
+
+      $errors,
+
+      "failed to insert Pagination into " . DB_PREF . "extensions"
+    );
+  }
 }
 
 if (!empty($errors)) {
