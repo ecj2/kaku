@@ -16,10 +16,15 @@ class Hook {
   public function __construct() {
 
     $this->action_types = array();
+    $this->filter_types = array();
     $this->actions = array();
+    $this->filters = array();
     $this->action_objects = array();
+    $this->filter_objects = array();
     $this->action_methods = array();
+    $this->filter_methods = array();
     $this->action_arguments = array();
+    $this->filter_arguments = array();
   }
 
   public function doAction($action) {
