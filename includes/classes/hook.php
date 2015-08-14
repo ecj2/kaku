@@ -7,7 +7,6 @@ class Hook {
   private $objects;
   private $methods;
   private $arguments;
-  private $callback_contents;
 
   public function __construct() {
 
