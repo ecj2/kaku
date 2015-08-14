@@ -53,14 +53,6 @@ class Hook {
     return false;
   }
 
-  public function getCallback($action) {
-
-    if (in_array($action, $this->actions)) {
-
-      return $this->callback_contents[$action];
-    }
-  }
-
   public function removeAction($action) {
 
     if (in_array($action, $this->actions)) {
