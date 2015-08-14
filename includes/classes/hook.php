@@ -50,17 +50,22 @@ class Hook {
           );
         }
 
-        return call_user_func(
+        for ($i = 0; $i < count($this->filters[$action]); ++$i) {
 
-          array(
+          $callback = call_user_func(
 
-            $this->filter_objects[$action],
+            array(
 
-            $this->filter_methods[$action]
-          ),
+              $this->filter_objects[$action][$i],
 
-          $callback
-        );
+              $this->filter_methods[$action][$i]
+            ),
+
+            $callback
+          );
+        }
+
+        return $callback;
       }
       else {
 
@@ -110,9 +115,24 @@ class Hook {
 
     if (!in_array($action, $this->actions)) {
 
-      $this->filters[$action] = $action;
-      $this->filter_objects[$action] = $object;
-      $this->filter_methods[$action] = $method;
+      if (!isset($this->filters[$action])) {
+
+        $this->filters[$action] = array();
+      }
+
+      if (!isset($this->filter_objects[$action])) {
+
+        $this->filter_objects[$action] = array();
+      }
+
+      if (!isset($this->filter_methods[$action])) {
+
+        $this->filter_methods[$action] = array();
+      }
+
+      array_push($this->filters[$action], $action);
+      array_push($this->filter_objects[$action], $object);
+      array_push($this->filter_methods[$action], $method);
     }
   }
 
