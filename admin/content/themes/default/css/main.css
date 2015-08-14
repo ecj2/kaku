@@ -215,6 +215,11 @@ th {
   text-align: left;
 }
 
+table.extensions th:nth-of-type(2), table.extensions td:nth-of-type(2) {
+
+  text-align: right;
+}
+
 th:nth-of-type(2) {
 
   text-align: center;
