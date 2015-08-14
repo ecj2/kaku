@@ -51,7 +51,7 @@ class Hook {
 
         $this->types[$action] = "string";
       }
-      else if (is_object($object)) {
+      else {
 
         $this->types[$action] = "object";
       }
