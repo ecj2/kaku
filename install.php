@@ -976,6 +976,17 @@ if (!empty($errors)) {
     }
   }
 
+  if ($Database->checkTableExistence("extensions")) {
+
+    if (!$Database->performQuery(
+
+      "DROP TABLE " . DB_PREF . "extensions"
+    )) {
+
+      array_push($errors, "failed to drop " . DB_PREF . "extensions table");
+    }
+  }
+
   echo "The following errors occurred during installation:<br><br>";
 
   foreach ($errors as $error) {
