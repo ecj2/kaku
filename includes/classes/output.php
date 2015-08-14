@@ -158,6 +158,31 @@ class Output extends Utility {
 
           $class_name = $this->class_name[$position];
 
+          $statement = "
+
+            SELECT activate
+            FROM " . DB_PREF . "extensions
+            WHERE title = '{$class_name}'
+          ";
+
+          $query = $this->DatabaseHandle->query($statement);
+
+          if (!$query || $query->rowCount() == 0) {
+
+            continue;
+          }
+
+          // Fetch result as an object.
+          $result = $query->fetch(PDO::FETCH_OBJ);
+
+          // Get activation status.
+          $activation_status = $result->activate;
+
+          if (!$activation_status) {
+
+            continue;
+          }
+
           // Instantiate the extension.
           $Extension = new $class_name;
 
