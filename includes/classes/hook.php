@@ -17,11 +17,9 @@ class Hook {
 
     if (in_array($action, $this->actions)) {
 
-      $array_position = array_search($action, $this->actions);
+      $callback_content = $this->callback_contents[$action];
 
-      $callback_content = $this->callback_contents[$array_position];
-
-      return $this->callback_contents[$array_position];
+      return $this->callback_contents[$action];
     }
   }
 
@@ -31,17 +29,17 @@ class Hook {
 
       if (is_string($object)) {
 
-        $this->callback_contents[] = $object;
+        $this->callback_contents[$action] = $object;
       }
       else if (is_object($object)) {
 
         $callback_content = call_user_func(array($object, $method), $argument);
 
-        $this->callback_contents[] = $callback_content;
+        $this->callback_contents[$action] = $callback_content;
       }
 
-      $this->actions[] = $action;
-      $this->objects[] = $object;
+      $this->actions[$action] = $action;
+      $this->objects[$action] = $object;
     }
   }
 
@@ -59,9 +57,7 @@ class Hook {
 
     if (in_array($action, $this->actions)) {
 
-      $array_position = array_search($action, $this->actions);
-
-      return $this->callback_contents[$array_position];
+      return $this->callback_contents[$action];
     }
   }
 
@@ -69,9 +65,7 @@ class Hook {
 
     if (in_array($action, $this->actions)) {
 
-      $array_position = array_search($action, $this->actions);
-
-      unset($this->actions[$array_position]);
+      unset($this->actions[$action]);
     }
   }
 }
