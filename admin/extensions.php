@@ -120,7 +120,17 @@ if (count($directories > 0)) {
       }
 
       $page_body .= "<tr>";
-      $page_body .= "<td>{$class_name}</td>";
+
+      if (isset($name)) {
+
+        $page_body .= "<td>{$name}</td>";
+
+        unset($name);
+      }
+      else {
+
+        $page_body .= "<td>{$class_name}</td>";
+      }
 
       if ($activation_status) {
 
