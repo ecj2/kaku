@@ -47,6 +47,11 @@ class Hook {
 
     if (!in_array($action, $this->actions)) {
 
+      $this->actions[$action] = $action;
+      $this->objects[$action] = $object;
+      $this->methods[$action] = $method;
+      $this->arguments[$action] = $argument;
+
       if (is_string($object)) {
 
         $this->types[$action] = "string";
@@ -55,11 +60,6 @@ class Hook {
 
         $this->types[$action] = "object";
       }
-
-      $this->actions[$action] = $action;
-      $this->objects[$action] = $object;
-      $this->methods[$action] = $method;
-      $this->arguments[$action] = $argument;
     }
   }
 
@@ -69,8 +69,10 @@ class Hook {
 
       return true;
     }
+    else {
 
-    return false;
+      return false;
+    }
   }
 
   public function removeAction($action) {
