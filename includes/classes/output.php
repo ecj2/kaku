@@ -106,112 +106,91 @@ class Output extends Utility {
 
   public function loadExtensions() {
 
-    $statement = "
+    // Get extension directories.
+    $directories = glob("content/extensions/*", GLOB_ONLYDIR);
 
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'recursion_depth'
-      ORDER BY id DESC
-    ";
+    foreach ($directories as $directory) {
 
-    $query = $this->DatabaseHandle->query($statement);
+      // Get directory name without path.
+      $directory_name = str_replace("content/extensions/", "", $directory);
 
-    if (!$query || $query->rowCount() == 0) {
+      $extension_full_path = "{$directory}/{$directory_name}.php";
 
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get recursion depth");
-    }
+      if (file_exists($extension_full_path)) {
 
-    $recursion_depth = $query->fetch(PDO::FETCH_OBJ)->body;
+        // Get the names of already declared classes.
+        $classes = get_declared_classes();
 
-    for ($i = 0; $i < $recursion_depth; ++$i) {
+        // Require extension source file.
+        require_once $extension_full_path;
 
-      // Get extension directories.
-      $directories = glob("content/extensions/*", GLOB_ONLYDIR);
+        // Get name of newly required class.
+        $class_name = reset(array_diff(get_declared_classes(), $classes));
 
-      foreach ($directories as $directory) {
+        if (!in_array($class_name, $this->class_name)) {
 
-        // Get directory name without path.
-        $directory_name = str_replace("content/extensions/", "", $directory);
+          // Save class name and file path.
+          array_push($this->class_name, $class_name);
+          array_push($this->class_file, $extension_full_path);
+        }
 
-        $extension_full_path = "{$directory}/{$directory_name}.php";
+        $position = array_search($extension_full_path, $this->class_file);
 
-        if (file_exists($extension_full_path)) {
+        $class_name = $this->class_name[$position];
 
-          // Get the names of already declared classes.
-          $classes = get_declared_classes();
+        $statement = "
 
-          // Require extension source file.
-          require_once $extension_full_path;
+          SELECT activate
+          FROM " . DB_PREF . "extensions
+          WHERE title = '{$class_name}'
+        ";
 
-          // Get name of newly required class.
-          $class_name = reset(array_diff(get_declared_classes(), $classes));
+        $query = $this->DatabaseHandle->query($statement);
 
-          if (!in_array($class_name, $this->class_name)) {
+        if (!$query || $query->rowCount() == 0) {
 
-            // Save class name and file path.
-            array_push($this->class_name, $class_name);
-            array_push($this->class_file, $extension_full_path);
-          }
+          continue;
+        }
 
-          $position = array_search($extension_full_path, $this->class_file);
+        // Fetch result as an object.
+        $result = $query->fetch(PDO::FETCH_OBJ);
 
-          $class_name = $this->class_name[$position];
+        // Get activation status.
+        $activation_status = $result->activate;
 
-          $statement = "
+        if (!$activation_status) {
 
-            SELECT activate
-            FROM " . DB_PREF . "extensions
-            WHERE title = '{$class_name}'
-          ";
+          continue;
+        }
 
-          $query = $this->DatabaseHandle->query($statement);
+        // Instantiate the extension.
+        $Extension = new $class_name;
 
-          if (!$query || $query->rowCount() == 0) {
+        if (method_exists($class_name, "setDatabaseHandle")) {
 
-            continue;
-          }
+          // Pass the database handle over to the extension.
+          $Extension->setDatabaseHandle($this->DatabaseHandle);
+        }
 
-          // Fetch result as an object.
-          $result = $query->fetch(PDO::FETCH_OBJ);
+        if (method_exists($class_name, "manageHooks")) {
 
-          // Get activation status.
-          $activation_status = $result->activate;
+          $Extension->manageHooks();
+        }
 
-          if (!$activation_status) {
+        if (method_exists($class_name, "getTags")) {
 
-            continue;
-          }
+          if (method_exists($class_name, "getReplacements")) {
 
-          // Instantiate the extension.
-          $Extension = new $class_name;
+            // Identify and replace the tags called by the extension.
 
-          if (method_exists($class_name, "setDatabaseHandle")) {
+            foreach ($Extension->getTags() as $key) {
 
-            // Pass the database handle over to the extension.
-            $Extension->setDatabaseHandle($this->DatabaseHandle);
-          }
+              array_push($this->search, "{%{$key}%}");
+            }
 
-          if (method_exists($class_name, "manageHooks")) {
+            foreach ($Extension->getReplacements() as $key) {
 
-            $Extension->manageHooks();
-          }
-
-          if (method_exists($class_name, "getTags")) {
-
-            if (method_exists($class_name, "getReplacements")) {
-
-              // Identify and replace the tags called by the extension.
-
-              foreach ($Extension->getTags() as $key) {
-
-                array_push($this->search, "{%{$key}%}");
-              }
-
-              foreach ($Extension->getReplacements() as $key) {
-
-                array_push($this->replace, $key);
-              }
+              array_push($this->replace, $key);
             }
           }
         }
