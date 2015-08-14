@@ -1,5 +1,7 @@
 <?php
 
+$name = "Disqus Forum";
+
 class DisqusForum {
 
   private $DatabaseHandle;

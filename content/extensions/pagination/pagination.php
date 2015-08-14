@@ -1,5 +1,7 @@
 <?php
 
+$name = "Post Pagination";
+
 class Pagination {
 
   private $DatabaseHandle;

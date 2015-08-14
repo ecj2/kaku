@@ -1,5 +1,7 @@
 <?php
 
+$name = "Simple Search";
+
 class Search {
 
   private $DatabaseHandle;
