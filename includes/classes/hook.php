@@ -5,6 +5,8 @@ class Hook {
   private $types;
   private $actions;
   private $objects;
+  private $methods;
+  private $arguments;
   private $callback_contents;
 
   public function __construct() {
@@ -12,6 +14,8 @@ class Hook {
     $this->types = array();
     $this->actions = array();
     $this->objects = array();
+    $this->methods = array();
+    $this->arguments = array();
     $this->callback_contents = array();
   }
 
@@ -46,6 +50,8 @@ class Hook {
 
       $this->actions[$action] = $action;
       $this->objects[$action] = $object;
+      $this->methods[$action] = $method;
+      $this->arguments[$action] = $argument;
     }
   }
 
