@@ -3,7 +3,6 @@
 class Hook {
 
   private $action_types;
-  private $filter_types;
   private $actions;
   private $filters;
   private $action_objects;
@@ -11,12 +10,10 @@ class Hook {
   private $action_methods;
   private $filter_methods;
   private $action_arguments;
-  private $filter_arguments;
 
   public function __construct() {
 
     $this->action_types = array();
-    $this->filter_types = array();
     $this->actions = array();
     $this->filters = array();
     $this->action_objects = array();
@@ -24,7 +21,6 @@ class Hook {
     $this->action_methods = array();
     $this->filter_methods = array();
     $this->action_arguments = array();
-    $this->filter_arguments = array();
   }
 
   public function doAction($action) {
@@ -110,23 +106,13 @@ class Hook {
     }
   }
 
-  public function addFilter($action, $object, $method = "", $argument = "") {
+  public function addFilter($action, $object, $method = "") {
 
     if (!in_array($action, $this->actions)) {
 
       $this->filters[$action] = $action;
       $this->filter_objects[$action] = $object;
       $this->filter_methods[$action] = $method;
-      $this->filter_arguments[$action] = $argument;
-
-      if (is_string($object)) {
-
-        $this->filter_types[$action] = "string";
-      }
-      else {
-
-        $this->filter_types[$action] = "object";
-      }
     }
   }
 
