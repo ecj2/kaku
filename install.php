@@ -824,6 +824,29 @@ if (!$Database->checkTableExistence("users")) {
   }
 }
 
+if (!$Database->checkTableExistence("extensions")) {
+
+  if (!$Database->performQuery(
+
+    "CREATE TABLE " . DB_PREF . "extensions (
+
+      id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+
+      title VARCHAR(99) NOT NULL,
+
+      activate BOOL NOT NULL
+    )"
+  )) {
+
+    array_push(
+
+      $errors,
+
+      "failed to create " . DB_PREF . "extensions table"
+    );
+  }
+}
+
 if (!empty($errors)) {
 
   if ($Database->checkTableExistence("tags")) {
