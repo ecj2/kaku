@@ -118,14 +118,7 @@ class Hook {
 
   public function hasAction($action) {
 
-    if (in_array($action, $this->actions)) {
-
-      return true;
-    }
-    else {
-
-      return false;
-    }
+    return array_key_exists($action, $this->actions);
   }
 
   public function hasFilter($filter) {
