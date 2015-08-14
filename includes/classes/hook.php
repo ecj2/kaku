@@ -16,16 +16,30 @@ class Hook {
     $this->objects = array();
     $this->methods = array();
     $this->arguments = array();
-    $this->callback_contents = array();
   }
 
   public function doAction($action) {
 
     if (in_array($action, $this->actions)) {
 
-      $callback_content = $this->callback_contents[$action];
+      if ($this->types[$action] == "string") {
 
-      return $this->callback_contents[$action];
+        return $this->objects[$action];
+      }
+      else {
+
+        return call_user_func(
+
+          array(
+
+            $this->objects[$action],
+
+            $this->methods[$action]
+          ),
+
+          $this->arguments[$action]
+        );
+      }
     }
   }
 
@@ -36,16 +50,10 @@ class Hook {
       if (is_string($object)) {
 
         $this->types[$action] = "string";
-
-        $this->callback_contents[$action] = $object;
       }
       else if (is_object($object)) {
 
         $this->types[$action] = "object";
-
-        $callback_content = call_user_func(array($object, $method), $argument);
-
-        $this->callback_contents[$action] = $callback_content;
       }
 
       $this->actions[$action] = $action;
