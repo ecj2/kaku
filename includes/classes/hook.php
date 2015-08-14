@@ -4,6 +4,7 @@ class Hook {
 
   private $types;
   private $actions;
+  private $filters;
   private $objects;
   private $methods;
   private $arguments;
@@ -72,6 +73,11 @@ class Hook {
 
       return false;
     }
+  }
+
+  public function hasFilter($filter) {
+
+    return array_key_exists($filter, $this->filters);
   }
 
   public function removeAction($action) {
