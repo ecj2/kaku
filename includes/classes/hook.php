@@ -31,23 +31,61 @@ class Hook {
 
     if (in_array($action, $this->actions)) {
 
-      if ($this->action_types[$action] == "string") {
+      if ($this->hasFilter($action)) {
 
-        return $this->action_objects[$action];
-      }
-      else {
+        $callback = null;
+
+        if ($this->action_types[$action] == "string") {
+
+          $callback = $this->action_objects[$action];
+        }
+        else {
+
+          $callback = call_user_func(
+
+            array(
+
+              $this->action_objects[$action],
+
+              $this->action_methods[$action]
+            ),
+
+            $this->action_arguments[$action]
+          );
+        }
 
         return call_user_func(
 
           array(
 
-            $this->action_objects[$action],
+            $this->filter_objects[$action],
 
-            $this->action_methods[$action]
+            $this->filter_methods[$action]
           ),
 
-          $this->action_arguments[$action]
+          $callback
         );
+      }
+      else {
+
+        if ($this->action_types[$action] == "string") {
+
+          return $this->action_objects[$action];
+        }
+        else {
+
+          return call_user_func(
+
+            array(
+
+              $this->action_objects[$action],
+
+              $this->action_methods[$action]
+            ),
+
+            $this->action_arguments[$action]
+          );
+        }
       }
     }
   }
