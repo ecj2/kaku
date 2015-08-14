@@ -2,29 +2,29 @@
 
 class Hook {
 
-  private $types;
+  private $action_types;
   private $actions;
   private $filters;
-  private $objects;
-  private $methods;
-  private $arguments;
+  private $action_objects;
+  private $action_methods;
+  private $action_arguments;
 
   public function __construct() {
 
-    $this->types = array();
+    $this->action_types = array();
     $this->actions = array();
-    $this->objects = array();
-    $this->methods = array();
-    $this->arguments = array();
+    $this->action_objects = array();
+    $this->action_methods = array();
+    $this->action_arguments = array();
   }
 
   public function doAction($action) {
 
     if (in_array($action, $this->actions)) {
 
-      if ($this->types[$action] == "string") {
+      if ($this->action_types[$action] == "string") {
 
-        return $this->objects[$action];
+        return $this->action_objects[$action];
       }
       else {
 
@@ -32,12 +32,12 @@ class Hook {
 
           array(
 
-            $this->objects[$action],
+            $this->action_objects[$action],
 
-            $this->methods[$action]
+            $this->action_methods[$action]
           ),
 
-          $this->arguments[$action]
+          $this->action_arguments[$action]
         );
       }
     }
@@ -48,17 +48,17 @@ class Hook {
     if (!in_array($action, $this->actions)) {
 
       $this->actions[$action] = $action;
-      $this->objects[$action] = $object;
-      $this->methods[$action] = $method;
-      $this->arguments[$action] = $argument;
+      $this->action_objects[$action] = $object;
+      $this->action_methods[$action] = $method;
+      $this->action_arguments[$action] = $argument;
 
       if (is_string($object)) {
 
-        $this->types[$action] = "string";
+        $this->action_types[$action] = "string";
       }
       else {
 
-        $this->types[$action] = "object";
+        $this->action_types[$action] = "object";
       }
     }
   }
