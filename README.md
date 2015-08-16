@@ -24,17 +24,17 @@ rewrite ^(.*)/page/([0-9]+)$ $1/?page_number=$2;
 rewrite ^(.*)/page/(.*)$ $1/?page_url=$2;
 ```
 
-On Apache, use the following in your root .htaccess file:
+On Apache, use the following in your .htaccess file wherever you installed Kaku:
 
 ```
 RewriteEngine On
-RewriteRule ^(.*)/feed$ $1/feed.php
-RewriteRule ^(.*)/post/(.*)$ $1/?post_url=$2
-RewriteRule ^(.*)/page/([0-9]+)$ $1/?page_number=$2
-RewriteRule ^(.*)/page/(.*)$ $1/?page_url=$2 [QSA]
+RewriteRule ^feed$ feed.php
+RewriteRule ^post/(.*)$ ?post_url=$1
+RewriteRule ^page/([0-9]+)$ ?page_number=$1
+RewriteRule ^page/(.*)$ ?page_url=$1 [QSA]
 ```
 
-You should also redirect 404 errors to `error.php?code=404`.
+You should also redirect 404 errors to `error.php?code=404` on both Nginx and Apache.
 
 ## Requirements
 PHP >= 5.5
