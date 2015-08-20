@@ -39,651 +39,643 @@ if (file_exists("install.php")) {
 
 $Output->loadExtensions();
 
-$_GET[""] = "";
+if (isset($_GET["post_url"])) {
 
-switch (array_keys($_GET)[0]) {
+  // Viewing a post.
 
-  case "post_url":
+  $Hook->addAction(
 
-    // Viewing a post.
+    "post_file_contents",
 
-    $Hook->addAction(
+    $Theme,
 
-      "post_file_contents",
+    "getFileContents",
 
-      $Theme,
+    "post.html"
+  );
 
-      "getFileContents",
+  echo $Hook->doAction("post_file_contents");
 
-      "post.html"
-    );
+  $Hook->addAction("post_body", $Post, "getBody");
 
-    echo $Hook->doAction("post_file_contents");
+  $Hook->addAction(
 
-    $Hook->addAction("post_body", $Post, "getBody");
+    "post_url",
 
-    $Hook->addAction(
+    $Post,
 
-      "post_url",
+    "getUniformResourceLocator"
+  );
 
-      $Post,
+  $Output->addTagReplacement(
 
-      "getUniformResourceLocator"
-    );
+    "post_url",
+
+    $Hook->doAction("post_url")
+  );
+
+  $Output->addTagReplacement(
+
+    "post_body",
+
+    $Hook->doAction("post_body")
+  );
+
+  $Hook->addAction("post_keywords", $Post, "getKeywords");
+
+  $Output->addTagReplacement(
+
+    "post_keywords",
+
+    $Hook->doAction("post_keywords")
+  );
+
+  $Hook->addAction("post_title", $Post, "getTitle");
+
+  $Output->addTagReplacement(
+
+    "post_title",
+
+    $Hook->doAction("post_title")
+  );
+
+  $Hook->addAction("post_author", $Post, "getAuthor");
+
+  $Output->addTagReplacement(
+
+    "post_author",
+
+    $Hook->doAction("post_author")
+  );
+
+  $Hook->addAction("post_description", $Post, "getDescription");
+
+  $Output->addTagReplacement(
+
+    "post_description",
+
+    $Hook->doAction("post_description")
+  );
+
+  $Hook->addAction("post_absolute_epoch", $Post, "getAbsoluteEpoch");
+
+  $Output->addTagReplacement(
+
+    "post_absolute_epoch",
+
+    $Hook->doAction("post_absolute_epoch")
+  );
+
+  $Hook->addAction("post_relative_epoch", $Post, "getRelativeEpoch");
+
+  $Output->addTagReplacement(
+
+    "post_relative_epoch",
+
+    $Hook->doAction("post_relative_epoch")
+  );
+
+  $Hook->addAction("post_date_time_epoch", $Post, "getDateTimeEpoch");
+
+  $Output->addTagReplacement(
+
+    "post_date_time_epoch",
+
+    $Hook->doAction("post_date_time_epoch")
+  );
+
+  $Hook->addAction(
+
+    "comment_block_file_contents",
+
+    $Theme,
+
+    "getFileContents",
+
+    "comment_block.html"
+  );
+
+  $Hook->addAction(
+
+    "comments",
+
+    $Comment,
+
+    "getSource",
+
+    $Hook->doAction("comment_block_file_contents")
+  );
+
+  $Output->addTagReplacement(
+
+    "comments",
+
+    $Hook->doAction("comments")
+  );
+}
+else if (isset($_GET["page_url"])) {
+
+  // Viewing a page.
+
+  $Hook->addAction(
+
+    "page_file_contents",
+
+    $Theme,
+
+    "getFileContents",
+
+    "page.html"
+  );
+
+  echo $Hook->doAction("page_file_contents");
+
+  $Hook->addAction("page_body", $Page, "getBody");
+
+  $Output->addTagReplacement(
+
+    "page_body",
+
+    $Hook->doAction("page_body")
+  );
+
+  $Hook->addAction("page_title", $Page, "getTitle");
+
+  $Output->addTagReplacement(
+
+    "page_title",
+
+    $Hook->doAction("page_title")
+  );
+
+  $Hook->addAction("page_description", $Page, "getDescription");
+
+  $Output->addTagReplacement(
+
+    "page_description",
+
+    $Hook->doAction("page_description")
+  );
+}
+else if (isset($_GET["page_number"])) {
+
+  // Viewing posts by range.
+
+  $Hook->addAction(
+
+    "range_file_contents",
+
+    $Theme,
+
+    "getFileContents",
+
+    "range.html"
+  );
+
+  echo $Hook->doAction("range_file_contents");
+
+  $Hook->addAction(
+
+    "post_block_file_contents",
+
+    $Theme,
+
+    "getFileContents",
+
+    "post_block.html"
+  );
+
+  $Hook->addAction(
+
+    "posts_range",
+
+    $Post,
+
+    "getRange",
+
+    $Hook->doAction("post_block_file_contents")
+  );
+
+  $Output->addTagReplacement(
+
+    "posts_range",
+
+    $Hook->doAction("posts_range")
+  );
+
+  $Hook->addAction(
+
+    "post_title",
+
+    $Post,
+
+    "getTitle"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_title") as $title) {
 
     $Output->addTagReplacement(
 
-      "post_url",
+      "post_title_{$count}",
 
-      $Hook->doAction("post_url")
+      $title
     );
+
+    ++$count;
+  }
+
+  $Hook->addAction(
+
+    "post_url",
+
+    $Post,
+
+    "getUniformResourceLocator"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_url") as $url) {
 
     $Output->addTagReplacement(
 
-      "post_body",
+      "post_url_{$count}",
 
-      $Hook->doAction("post_body")
+      $url
     );
 
-    $Hook->addAction("post_keywords", $Post, "getKeywords");
+    ++$count;
+  }
+
+  $Hook->addAction(
+
+    "post_body",
+
+    $Post,
+
+    "getBody"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_body") as $body) {
 
     $Output->addTagReplacement(
 
-      "post_keywords",
+      "post_body_{$count}",
 
-      $Hook->doAction("post_keywords")
+      $body
     );
 
-    $Hook->addAction("post_title", $Post, "getTitle");
+    ++$count;
+  }
+
+  $Hook->addAction(
+
+    "post_keywords",
+
+    $Post,
+
+    "getKeywords"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_keywords") as $keywords) {
 
     $Output->addTagReplacement(
 
-      "post_title",
+      "post_keywords_{$count}",
 
-      $Hook->doAction("post_title")
+      $keywords
     );
 
-    $Hook->addAction("post_author", $Post, "getAuthor");
+    ++$count;
+  }
+
+  $Hook->addAction(
+
+    "post_relative_epoch",
+
+    $Post,
+
+    "getRelativeEpoch"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_relative_epoch") as $relative_epoch) {
 
     $Output->addTagReplacement(
 
-      "post_author",
+      "post_relative_epoch_{$count}",
 
-      $Hook->doAction("post_author")
+      $relative_epoch
     );
 
-    $Hook->addAction("post_description", $Post, "getDescription");
+    ++$count;
+  }
+
+  $Hook->addAction(
+
+    "post_absolute_epoch",
+
+    $Post,
+
+    "getAbsoluteEpoch"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_absolute_epoch") as $absolute_epoch) {
 
     $Output->addTagReplacement(
 
-      "post_description",
+      "post_absolute_epoch_{$count}",
 
-      $Hook->doAction("post_description")
+      $absolute_epoch
     );
 
-    $Hook->addAction("post_absolute_epoch", $Post, "getAbsoluteEpoch");
+    ++$count;
+  }
+
+  $Hook->addAction(
+
+    "post_date_time_epoch",
+
+    $Post,
+
+    "getDateTimeEpoch"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_date_time_epoch") as $date_time_epoch) {
 
     $Output->addTagReplacement(
 
-      "post_absolute_epoch",
+      "post_date_time_epoch_{$count}",
 
-      $Hook->doAction("post_absolute_epoch")
+      $date_time_epoch
     );
 
-    $Hook->addAction("post_relative_epoch", $Post, "getRelativeEpoch");
+    ++$count;
+  }
+
+  $Hook->addAction(
+
+    "post_author",
+
+    $Post,
+
+    "getAuthor"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_author") as $author) {
 
     $Output->addTagReplacement(
 
-      "post_relative_epoch",
+      "post_author_{$count}",
 
-      $Hook->doAction("post_relative_epoch")
+      $author
     );
 
-    $Hook->addAction("post_date_time_epoch", $Post, "getDateTimeEpoch");
+    ++$count;
+  }
+}
+else {
+
+  // Viewing latest posts.
+
+  $Hook->addAction(
+
+    "latest_file_contents",
+
+    $Theme,
+
+    "getFileContents",
+
+    "latest.html"
+  );
+
+  echo $Hook->doAction("latest_file_contents");
+
+  $Hook->addAction(
+
+    "post_block_file_contents",
+
+    $Theme,
+
+    "getFileContents",
+
+    "post_block.html"
+  );
+
+  $Hook->addAction(
+
+    "latest_posts",
+
+    $Post,
+
+    "getLatest",
+
+    $Hook->doAction("post_block_file_contents")
+  );
+
+  $Output->addTagReplacement(
+
+    "latest_posts",
+
+    $Hook->doAction("latest_posts")
+  );
+
+  $Hook->addAction(
+
+    "post_title",
+
+    $Post,
+
+    "getTitle"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_title") as $title) {
 
     $Output->addTagReplacement(
 
-      "post_date_time_epoch",
+      "post_title_{$count}",
 
-      $Hook->doAction("post_date_time_epoch")
+      $title
     );
 
-    $Hook->addAction(
+    ++$count;
+  }
 
-      "comment_block_file_contents",
+  $Hook->addAction(
 
-      $Theme,
+    "post_url",
 
-      "getFileContents",
+    $Post,
 
-      "comment_block.html"
-    );
+    "getUniformResourceLocator"
+  );
 
-    $Hook->addAction(
+  $count = 1;
 
-      "comments",
-
-      $Comment,
-
-      "getSource",
-
-      $Hook->doAction("comment_block_file_contents")
-    );
+  foreach ($Hook->doAction("post_url") as $url) {
 
     $Output->addTagReplacement(
 
-      "comments",
+      "post_url_{$count}",
 
-      $Hook->doAction("comments")
-    );
-  break;
-
-  case "page_url":
-
-    // Viewing a page.
-
-    $Hook->addAction(
-
-      "page_file_contents",
-
-      $Theme,
-
-      "getFileContents",
-
-      "page.html"
+      $url
     );
 
-    echo $Hook->doAction("page_file_contents");
+    ++$count;
+  }
 
-    $Hook->addAction("page_body", $Page, "getBody");
+  $Hook->addAction(
+
+    "post_body",
+
+    $Post,
+
+    "getBody"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_body") as $body) {
 
     $Output->addTagReplacement(
 
-      "page_body",
+      "post_body_{$count}",
 
-      $Hook->doAction("page_body")
+      $body
     );
 
-    $Hook->addAction("page_title", $Page, "getTitle");
+    ++$count;
+  }
+
+  $Hook->addAction(
+
+    "post_keywords",
+
+    $Post,
+
+    "getKeywords"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_keywords") as $keywords) {
 
     $Output->addTagReplacement(
 
-      "page_title",
+      "post_keywords_{$count}",
 
-      $Hook->doAction("page_title")
+      $keywords
     );
 
-    $Hook->addAction("page_description", $Page, "getDescription");
+    ++$count;
+  }
+
+  $Hook->addAction(
+
+    "post_relative_epoch",
+
+    $Post,
+
+    "getRelativeEpoch"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_relative_epoch") as $relative_epoch) {
 
     $Output->addTagReplacement(
 
-      "page_description",
+      "post_relative_epoch_{$count}",
 
-      $Hook->doAction("page_description")
-    );
-  break;
-
-  case "page_number":
-
-    // Viewing posts by range.
-
-    $Hook->addAction(
-
-      "range_file_contents",
-
-      $Theme,
-
-      "getFileContents",
-
-      "range.html"
+      $relative_epoch
     );
 
-    echo $Hook->doAction("range_file_contents");
+    ++$count;
+  }
 
-    $Hook->addAction(
+  $Hook->addAction(
 
-      "post_block_file_contents",
+    "post_absolute_epoch",
 
-      $Theme,
+    $Post,
 
-      "getFileContents",
+    "getAbsoluteEpoch"
+  );
 
-      "post_block.html"
-    );
+  $count = 1;
 
-    $Hook->addAction(
-
-      "posts_range",
-
-      $Post,
-
-      "getRange",
-
-      $Hook->doAction("post_block_file_contents")
-    );
+  foreach ($Hook->doAction("post_absolute_epoch") as $absolute_epoch) {
 
     $Output->addTagReplacement(
 
-      "posts_range",
+      "post_absolute_epoch_{$count}",
 
-      $Hook->doAction("posts_range")
+      $absolute_epoch
     );
 
-    $Hook->addAction(
+    ++$count;
+  }
 
-      "post_title",
+  $Hook->addAction(
 
-      $Post,
+    "post_date_time_epoch",
 
-      "getTitle"
-    );
+    $Post,
 
-    $count = 1;
+    "getDateTimeEpoch"
+  );
 
-    foreach ($Hook->doAction("post_title") as $title) {
+  $count = 1;
 
-      $Output->addTagReplacement(
-
-        "post_title_{$count}",
-
-        $title
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_url",
-
-      $Post,
-
-      "getUniformResourceLocator"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_url") as $url) {
-
-      $Output->addTagReplacement(
-
-        "post_url_{$count}",
-
-        $url
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_body",
-
-      $Post,
-
-      "getBody"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_body") as $body) {
-
-      $Output->addTagReplacement(
-
-        "post_body_{$count}",
-
-        $body
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_keywords",
-
-      $Post,
-
-      "getKeywords"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_keywords") as $keywords) {
-
-      $Output->addTagReplacement(
-
-        "post_keywords_{$count}",
-
-        $keywords
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_relative_epoch",
-
-      $Post,
-
-      "getRelativeEpoch"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_relative_epoch") as $relative_epoch) {
-
-      $Output->addTagReplacement(
-
-        "post_relative_epoch_{$count}",
-
-        $relative_epoch
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_absolute_epoch",
-
-      $Post,
-
-      "getAbsoluteEpoch"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_absolute_epoch") as $absolute_epoch) {
-
-      $Output->addTagReplacement(
-
-        "post_absolute_epoch_{$count}",
-
-        $absolute_epoch
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_date_time_epoch",
-
-      $Post,
-
-      "getDateTimeEpoch"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_date_time_epoch") as $date_time_epoch) {
-
-      $Output->addTagReplacement(
-
-        "post_date_time_epoch_{$count}",
-
-        $date_time_epoch
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_author",
-
-      $Post,
-
-      "getAuthor"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_author") as $author) {
-
-      $Output->addTagReplacement(
-
-        "post_author_{$count}",
-
-        $author
-      );
-
-      ++$count;
-    }
-  break;
-
-  default:
-
-    // Viewing latest posts.
-
-    $Hook->addAction(
-
-      "latest_file_contents",
-
-      $Theme,
-
-      "getFileContents",
-
-      "latest.html"
-    );
-
-    echo $Hook->doAction("latest_file_contents");
-
-    $Hook->addAction(
-
-      "post_block_file_contents",
-
-      $Theme,
-
-      "getFileContents",
-
-      "post_block.html"
-    );
-
-    $Hook->addAction(
-
-      "latest_posts",
-
-      $Post,
-
-      "getLatest",
-
-      $Hook->doAction("post_block_file_contents")
-    );
+  foreach ($Hook->doAction("post_date_time_epoch") as $date_time_epoch) {
 
     $Output->addTagReplacement(
 
-      "latest_posts",
+      "post_date_time_epoch_{$count}",
 
-      $Hook->doAction("latest_posts")
+      $date_time_epoch
     );
 
-    $Hook->addAction(
+    ++$count;
+  }
 
-      "post_title",
+  $Hook->addAction(
 
-      $Post,
+    "post_author",
 
-      "getTitle"
+    $Post,
+
+    "getAuthor"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_author") as $author) {
+
+    $Output->addTagReplacement(
+
+      "post_author_{$count}",
+
+      $author
     );
 
-    $count = 1;
-
-    foreach ($Hook->doAction("post_title") as $title) {
-
-      $Output->addTagReplacement(
-
-        "post_title_{$count}",
-
-        $title
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_url",
-
-      $Post,
-
-      "getUniformResourceLocator"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_url") as $url) {
-
-      $Output->addTagReplacement(
-
-        "post_url_{$count}",
-
-        $url
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_body",
-
-      $Post,
-
-      "getBody"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_body") as $body) {
-
-      $Output->addTagReplacement(
-
-        "post_body_{$count}",
-
-        $body
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_keywords",
-
-      $Post,
-
-      "getKeywords"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_keywords") as $keywords) {
-
-      $Output->addTagReplacement(
-
-        "post_keywords_{$count}",
-
-        $keywords
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_relative_epoch",
-
-      $Post,
-
-      "getRelativeEpoch"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_relative_epoch") as $relative_epoch) {
-
-      $Output->addTagReplacement(
-
-        "post_relative_epoch_{$count}",
-
-        $relative_epoch
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_absolute_epoch",
-
-      $Post,
-
-      "getAbsoluteEpoch"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_absolute_epoch") as $absolute_epoch) {
-
-      $Output->addTagReplacement(
-
-        "post_absolute_epoch_{$count}",
-
-        $absolute_epoch
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_date_time_epoch",
-
-      $Post,
-
-      "getDateTimeEpoch"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_date_time_epoch") as $date_time_epoch) {
-
-      $Output->addTagReplacement(
-
-        "post_date_time_epoch_{$count}",
-
-        $date_time_epoch
-      );
-
-      ++$count;
-    }
-
-    $Hook->addAction(
-
-      "post_author",
-
-      $Post,
-
-      "getAuthor"
-    );
-
-    $count = 1;
-
-    foreach ($Hook->doAction("post_author") as $author) {
-
-      $Output->addTagReplacement(
-
-        "post_author_{$count}",
-
-        $author
-      );
-
-      ++$count;
-    }
-  break;
+    ++$count;
+  }
 }
 
 $Hook->addAction(
