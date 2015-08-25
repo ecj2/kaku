@@ -76,6 +76,7 @@ class Post extends Utility {
 
         SELECT body
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
         OFFSET {$offset}
@@ -129,6 +130,7 @@ class Post extends Utility {
 
         SELECT body
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
       ";
@@ -240,6 +242,7 @@ class Post extends Utility {
 
         SELECT keywords
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
         OFFSET {$offset}
@@ -316,6 +319,7 @@ class Post extends Utility {
 
         SELECT keywords
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
       ";
@@ -427,6 +431,7 @@ class Post extends Utility {
 
         SELECT title
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
         OFFSET {$offset}
@@ -480,6 +485,7 @@ class Post extends Utility {
 
         SELECT title
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
       ";
@@ -689,6 +695,7 @@ class Post extends Utility {
 
         SELECT author_id
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
         OFFSET {$offset}
@@ -769,6 +776,7 @@ class Post extends Utility {
 
         SELECT author_id
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
       ";
@@ -960,6 +968,7 @@ class Post extends Utility {
 
         SELECT url
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
         OFFSET {$offset}
@@ -1013,6 +1022,7 @@ class Post extends Utility {
 
         SELECT url
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
       ";
@@ -1177,6 +1187,7 @@ class Post extends Utility {
 
         SELECT epoch
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
         OFFSET {$offset}
@@ -1257,6 +1268,7 @@ class Post extends Utility {
 
         SELECT epoch
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
       ";
@@ -1350,6 +1362,7 @@ class Post extends Utility {
 
         SELECT epoch
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
         OFFSET {$offset}
@@ -1403,6 +1416,7 @@ class Post extends Utility {
 
         SELECT epoch
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
       ";
@@ -1541,6 +1555,7 @@ class Post extends Utility {
 
         SELECT epoch
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
         OFFSET {$offset}
@@ -1644,6 +1659,7 @@ class Post extends Utility {
 
         SELECT epoch
         FROM " . DB_PREF . "posts
+        WHERE draft = '0'
         ORDER BY id DESC
         LIMIT {$posts_per_page}
       ";
