@@ -100,11 +100,11 @@ else if (isset($_POST["url"]) && isset($_POST["body"]) && isset($_POST["title"])
     $description = $_POST["description"];
   }
 
-  $draft = "0";
+  $draft = "1";
 
   if (isset($_POST["draft"])) {
 
-    $draft = "1";
+    $draft = "0";
   }
 
   $allow_comments = "0";
@@ -200,14 +200,14 @@ else {
         name=\"draft\"
     ";
 
-    if ($draft) {
+    if (!$draft) {
 
       $page_body .= "checked";
     }
 
     $page_body .= "
 
-      > Save as Draft<br>
+      > Published<br>
       <input type=\"checkbox\" id=\"allow_comments\" name=\"allow_comments\"
     ";
 
