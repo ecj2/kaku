@@ -11,7 +11,7 @@ class Post extends Utility {
       // Select post body.
       $statement = "
 
-        SELECT body
+        SELECT body, draft
         FROM " . DB_PREF . "posts
         WHERE url = ?
       ";
@@ -31,6 +31,15 @@ class Post extends Utility {
 
       // Fetch result as an object.
       $result = $query->fetch(PDO::FETCH_OBJ);
+
+      if ($result->draft) {
+
+        // Do not allow drafts to be viewed publicly.
+
+        $address = Utility::getRootAddress();
+
+        header("Location: {$address}/error.php?code=404");
+      }
 
       // Get post body.
       return $result->body;
