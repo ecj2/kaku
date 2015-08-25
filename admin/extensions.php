@@ -91,6 +91,11 @@ if (count($directories > 0)) {
       // Get name of newly required class.
       $class_name = reset(array_diff(get_declared_classes(), $classes));
 
+      if (strlen($class_name) == 0) {
+
+        continue;
+      }
+
       $statement = "
 
         SELECT activate
