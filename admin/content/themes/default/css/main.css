@@ -204,6 +204,11 @@ form textarea {
   margin-bottom: 35px;
 }
 
+form #body {
+
+  height: 300px;
+}
+
 .success {
 
   color: green;
