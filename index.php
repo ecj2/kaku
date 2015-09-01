@@ -288,29 +288,6 @@ else if (isset($_GET["page_number"])) {
 
   $Hook->addAction(
 
-    "post_url",
-
-    $Post,
-
-    "getUniformResourceLocator"
-  );
-
-  $count = 1;
-
-  foreach ($Hook->doAction("post_url") as $url) {
-
-    $Output->addTagReplacement(
-
-      "post_url_{$count}",
-
-      $url
-    );
-
-    ++$count;
-  }
-
-  $Hook->addAction(
-
     "post_body",
 
     $Post,
@@ -327,6 +304,29 @@ else if (isset($_GET["page_number"])) {
       "post_body_{$count}",
 
       $body
+    );
+
+    ++$count;
+  }
+
+  $Hook->addAction(
+
+    "post_url",
+
+    $Post,
+
+    "getUniformResourceLocator"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_url") as $url) {
+
+    $Output->addTagReplacement(
+
+      "post_url_{$count}",
+
+      $url
     );
 
     ++$count;
@@ -518,29 +518,6 @@ else {
 
   $Hook->addAction(
 
-    "post_url",
-
-    $Post,
-
-    "getUniformResourceLocator"
-  );
-
-  $count = 1;
-
-  foreach ($Hook->doAction("post_url") as $url) {
-
-    $Output->addTagReplacement(
-
-      "post_url_{$count}",
-
-      $url
-    );
-
-    ++$count;
-  }
-
-  $Hook->addAction(
-
     "post_body",
 
     $Post,
@@ -557,6 +534,29 @@ else {
       "post_body_{$count}",
 
       $body
+    );
+
+    ++$count;
+  }
+
+  $Hook->addAction(
+
+    "post_url",
+
+    $Post,
+
+    "getUniformResourceLocator"
+  );
+
+  $count = 1;
+
+  foreach ($Hook->doAction("post_url") as $url) {
+
+    $Output->addTagReplacement(
+
+      "post_url_{$count}",
+
+      $url
     );
 
     ++$count;
