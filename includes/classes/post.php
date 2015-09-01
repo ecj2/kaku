@@ -977,7 +977,10 @@ class Post extends Utility {
       if (!$query || $query->rowCount() == 0) {
 
         // Query failed or post URL does not exist.
-        Utility::displayError("failed to select post URL");
+
+        $address = Utility::getRootAddress();
+
+        header("Location: {$address}/error.php?code=404");
       }
 
       // Fetch result as an object.
