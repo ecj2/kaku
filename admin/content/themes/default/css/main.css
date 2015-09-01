@@ -1,133 +1,142 @@
 html, body {
 
-  position: relative;
-  top: 18px;
+  margin: 0;
+  padding: 0;
 }
 
 body {
 
   background: #fff;
+  font-family: "PT Serif", serif;
+  font-size: 18px;
+  color: #555;
+  line-height: 35px;
+  text-align: left;
 }
 
 #wrap {
 
-  width: 45%;
+  width: 650px;
   margin: auto;
 }
 
 header.top {
 
+  margin: 30px 0 29px 0;
   border-bottom: 1px solid #ddd;
-  padding-bottom: 34px;
-  margin-bottom: 53px;
+  padding-bottom: 35px;
+  text-align: center;
 }
 
-header nav {
-
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  line-height: 16px;
-  color: #929292;
-  text-align: right;
-  position: relative;
-  top: -52px;
-  width: 80%;
-  float: right;
-}
-
-header nav ul {
-
-  list-style-type: none;
-}
-
-header nav ul li {
-
-  display: inline;
-  padding: 0 0 0 20px;
-}
-
-header nav ul li a {
-
-  color: #929292;
-  text-decoration: none;
-}
-
-header nav ul li a:hover {
-
-  color: #505050;
-}
-
-header h1 {
-
-  font-family: "PT Sans", sans-serif;
-  text-transform: uppercase;
-  font-size: 24px;
-  line-height: 24px;
-  color: #2b2b2b;
-  font-weight: bold;
-  width: 30%;
-}
-
-header h1 a {
-
-  color: #2b2b2b;
-  text-decoration: none;
-}
-
-header h1 a:hover {
-
-  color: #505050;
-}
-
-main article {
-
-  font-family: "PT Serif", serif;
-  font-size: 18px;
-  color: #505050;
-  line-height: 35px;
-  padding-bottom: 41px;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 48px;
-}
-
-main article header h2 {
+header.top h1 {
 
   font-family: "PT Sans", sans-serif;
   font-size: 38px;
-  color: #2b2b2b;
-  font-weight: bold;
-  line-height: 51px;
-  margin: -6px 0 25px 0;
+  margin: 0;
+  font-weight: normal;
+}
+
+header.top h1 a {
+
+  color: #555;
+  text-decoration: none;
+}
+
+header.top h1 a:hover {
+
+  color: #999;
+  text-decoration: none;
+}
+
+header.top nav ul {
+
+  list-style-type: none;
+  margin: 0;
+  display: inline;
+  padding: 0;
+}
+
+header.top nav {
+
+  border-top: 1px solid #ddd;
+  margin: 32px 0 -11px 0;
+  padding-top: 24px;
+}
+
+header.top nav ul li {
+
+  display: inline;
+  padding: 0 10px 0 10px;
+  font-size: 22px;
+}
+
+header.top nav ul li a {
+
+  color: #888;
+  text-decoration: none;
+}
+
+header.top nav ul li a:hover {
+
+  color: #555;
+}
+
+article {
+
+  margin-bottom: 29px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 24px;
+}
+
+article header h2 {
+
+  font-family: "PT Sans", sans-serif;
+  font-size: 32px;
+  margin: 0 0 17px 0;
+  font-weight: normal;
 }
 
 footer {
 
-  color: #929292;
   text-align: center;
-  font-family: Arial, sans-serif;
-  margin-bottom: 34px;
+  color: #888;
+  margin-top: -6px;
+  margin-bottom: 24px;
 }
 
 footer a {
 
-  color: #929292;
+  color: #888;
   text-decoration: none;
 }
 
 footer a:hover {
 
-  text-decoration: underline;
+  color: #555;
 }
 
 a {
 
-  color: #929292;
+  color: #888;
   text-decoration: underline;
 }
 
 a:hover {
 
-  color: #505050;
+  color: #555;
+  text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5, h6 {
+
+  font-family: "PT Sans", sans-serif;
+  font-weight: normal;
+  margin: 0;
+}
+
+h3 {
+
+  font-size: 26px;
 }
 
 table.tags, table.links, table.pages, table.users, table.posts {
@@ -157,24 +166,25 @@ form input[type="text"], form input[type="password"], form input[type="email"] {
   margin-bottom: 35px;
 }
 
-form input[type="submit"] {
+input[type="submit"] {
 
   background: #fff;
+  outline: 0;
+  border: 1px solid #ddd;
+  padding: 5px;
   font-family: "PT Serif", serif;
   font-size: 18px;
-  color: #505050;
+  color: #555;
   line-height: 35px;
-  border: 1px solid #ddd;
-  outline: 0;
-  padding: 5px;
+  text-align: center;
   box-sizing: border-box;
   width: 100%;
-  text-align: center;
+  margin-bottom: 35px;
 }
 
-form input[type="submit"]:hover {
+input[type="submit"]:hover {
 
-  background: #fafafa;
+  background: #f9f9f9;
   cursor: pointer;
 }
 
@@ -183,7 +193,7 @@ form textarea {
   background: #fff;
   font-family: "PT Serif", serif;
   font-size: 18px;
-  color: #505050;
+  color: #555;
   line-height: 35px;
   border: 1px solid #ddd;
   outline: 0;
@@ -292,13 +302,13 @@ a.button_return {
 
 a.button:hover {
 
-  background: #fafafa;
+  background: #f9f9f9;
   cursor: pointer;
 }
 
 a.button_return:hover {
 
-  background: #fafafa;
+  background: #f9f9f9;
   cursor: pointer;
 }
 
