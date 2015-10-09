@@ -1,5 +1,8 @@
 <?php
 
+// Prevent direct access to this file.
+if (!defined("KAKU_EXTENSION")) exit();
+
 $name = "Post Pagination";
 
 class Pagination {
