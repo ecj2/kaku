@@ -1,5 +1,8 @@
 <?php
 
+// Allow access to include files.
+define("KAKU_INCLUDE", true);
+
 require "includes/configuration.php";
 
 require "includes/classes/utility.php";

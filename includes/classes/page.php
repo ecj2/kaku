@@ -1,5 +1,8 @@
 <?php
 
+// Prevent direct access to this file.
+if (!defined("KAKU_INCLUDE")) exit();
+
 class Page extends Utility {
 
   private $DatabaseHandle;
