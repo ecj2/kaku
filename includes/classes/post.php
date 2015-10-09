@@ -707,7 +707,7 @@ class Post extends Utility {
       if (!$query || $query->rowCount() == 0) {
 
         // Query failed or post title does not exist.
-        Utility::displayError("failed to select user nickname");
+        return "Unknown";
       }
 
       // Fetch result as an object.
@@ -788,14 +788,16 @@ class Post extends Utility {
         if (!$query || $query->rowCount() == 0) {
 
           // Query failed or post title does not exist.
-          Utility::displayError("failed to select user nickname");
+          $authors[] = "Unknown";
         }
+        else {
 
-        // Fetch result as an object.
-        $result = $query->fetch(PDO::FETCH_OBJ);
+          // Fetch result as an object.
+          $result = $query->fetch(PDO::FETCH_OBJ);
 
-        // Get user nickname.
-        $authors[] = $result->nickname;
+          // Get user nickname.
+          $authors[] = $result->nickname;
+        }
       }
 
       return $authors;
@@ -868,14 +870,16 @@ class Post extends Utility {
         if (!$query || $query->rowCount() == 0) {
 
           // Query failed or post title does not exist.
-          Utility::displayError("failed to select user nickname");
+          $authors[] = "Unknown";
         }
+        else {
 
-        // Fetch result as an object.
-        $result = $query->fetch(PDO::FETCH_OBJ);
+          // Fetch result as an object.
+          $result = $query->fetch(PDO::FETCH_OBJ);
 
-        // Get user nickname.
-        $authors[] = $result->nickname;
+          // Get user nickname.
+          $authors[] = $result->nickname;
+        }
       }
 
       return $authors;
