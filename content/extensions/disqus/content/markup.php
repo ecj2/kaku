@@ -1,29 +1,39 @@
-<div id="disqus_thread"></div>
-<script>
-var disqus_shortname = "{%disqus_forum_name%}";
+<?php
 
-(
+// Prevent direct access to this file.
+if (!defined("KAKU_EXTENSION")) exit();
 
-  function() {
+$markup = '
 
-    var dsq = document.createElement("script");
+  <div id="disqus_thread"></div>
+  <script>
+  var disqus_shortname = "{%disqus_forum_name%}";
 
-    dsq.type = "text/javascript";
+  (
 
-    dsq.async = true;
+    function() {
 
-    dsq.src= "//" + disqus_shortname + ".disqus.com/embed.js";
+      var dsq = document.createElement("script");
 
-    (
+      dsq.type = "text/javascript";
 
-      document.getElementsByTagName("head")[0]
-      ||
-      document.getElementsByTagName("body")[0]
-    ).appendChild(dsq);
-  }
-)();
-</script>
-<noscript>
-  Please enable JavaScript to view the
-  <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
-</noscript>
+      dsq.async = true;
+
+      dsq.src= "//" + disqus_shortname + ".disqus.com/embed.js";
+
+      (
+
+        document.getElementsByTagName("head")[0]
+        ||
+        document.getElementsByTagName("body")[0]
+      ).appendChild(dsq);
+    }
+  )();
+  </script>
+  <noscript>
+    Please enable JavaScript to view the
+    <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+  </noscript>
+';
+
+?>
