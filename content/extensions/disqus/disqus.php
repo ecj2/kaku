@@ -37,7 +37,7 @@ class DisqusForum {
 
   private function getDisqusForum() {
 
-    $disqus_markup_file = dirname(__FILE__) . "/content/markup.html";
+    $disqus_markup_file = dirname(__FILE__) . "/content/markup.php";
 
     if (file_exists($disqus_markup_file)) {
 
@@ -64,8 +64,10 @@ class DisqusForum {
         }
         else {
 
+          require $disqus_markup_file;
+
           // Display the Disqus forum.
-          return file_get_contents($disqus_markup_file);
+          return $markup;
         }
       }
     }
