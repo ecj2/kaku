@@ -5,7 +5,7 @@ if (!defined("KAKU_EXTENSION")) exit();
 
 $name = "Post Pagination";
 
-class Pagination {
+class Pagination extends Utility {
 
   private $DatabaseHandle;
 
@@ -63,6 +63,14 @@ class Pagination {
     $row_count = $posts_per_page + 1;
 
     if (isset($_GET["page_number"])) {
+
+      if ($_GET["page_number"] == 0) {
+
+        $root_address = Utility::getRootAddress();
+
+        // Redirect to index.
+        header("Location: {$root_address}");
+      }
 
       $offset = ($_GET["page_number"] - 1) * $posts_per_page;
       $row_count = $posts_per_page + 1;
