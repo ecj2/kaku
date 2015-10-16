@@ -242,3 +242,14 @@ h3 {
 
   font-size: 26px;
 }
+
+figure {
+
+  margin: 0;
+}
+
+figcaption {
+
+  color: #666;
+  text-align: center;
+}
