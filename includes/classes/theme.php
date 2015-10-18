@@ -31,18 +31,52 @@ class Theme extends Utility {
     // Get the theme name.
     $theme_name = $row->body;
 
-    $file_path = "content/themes/{$theme_name}/{$file_name}";
+    $theme_directory = "content/themes/{$theme_name}";
 
-    if (file_exists($file_path)) {
+    // Get files from theme directory.
+    $theme_files = scandir($theme_directory);
 
-      // Return contents of theme file.
-      return file_get_contents($file_path);
+    // Remove . and .. from array.
+    unset($theme_files[0]);
+    unset($theme_files[1]);
+
+    // Reset the array key count.
+    $theme_files = array_values($theme_files);
+
+    $theme_files_without_extension = [];
+
+    for ($i = 0; $i < count($theme_files); ++$i) {
+
+      // Get file names without extensions.
+      $theme_files_without_extension[] = substr(
+
+        $theme_files[$i],
+
+        0,
+
+        strrpos(
+
+          $theme_files[$i],
+
+          "."
+        )
+      );
     }
-    else {
+
+    if (!in_array($file_name, $theme_files_without_extension)) {
 
       // Theme file doesn't exist.
       Utility::displayError("{$file_path} does not exist");
     }
+
+    // Get key of file to match with $theme_files array.
+    $key = array_search($file_name, $theme_files_without_extension);
+
+    // Get the file name with the extension.
+    $file_name = $theme_files[$key];
+
+    // Return contents of theme file.
+    return file_get_contents("{$theme_directory}/{$file_name}");
   }
 
   public function setDatabaseHandle($Handle) {

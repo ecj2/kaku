@@ -54,7 +54,7 @@ if (isset($_GET["post_url"])) {
 
     "getFileContents",
 
-    "post.html"
+    "post"
   );
 
   echo $Hook->doAction("post_file_contents");
@@ -155,7 +155,7 @@ if (isset($_GET["post_url"])) {
 
     "getFileContents",
 
-    "comment_block.html"
+    "comment_block"
   );
 
   $Hook->addAction(
@@ -188,7 +188,7 @@ else if (isset($_GET["page_url"])) {
 
     "getFileContents",
 
-    "page.html"
+    "page"
   );
 
   echo $Hook->doAction("page_file_contents");
@@ -232,7 +232,7 @@ else if (isset($_GET["page_number"])) {
 
     "getFileContents",
 
-    "range.html"
+    "range"
   );
 
   echo $Hook->doAction("range_file_contents");
@@ -245,7 +245,7 @@ else if (isset($_GET["page_number"])) {
 
     "getFileContents",
 
-    "post_block.html"
+    "post_block"
   );
 
   $Hook->addAction(
@@ -462,7 +462,7 @@ else {
 
     "getFileContents",
 
-    "latest.html"
+    "latest"
   );
 
   echo $Hook->doAction("latest_file_contents");
@@ -475,7 +475,7 @@ else {
 
     "getFileContents",
 
-    "post_block.html"
+    "post_block"
   );
 
   $Hook->addAction(
