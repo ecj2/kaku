@@ -477,6 +477,34 @@ if (!$Database->checkTableExistence("tags")) {
       "failed to insert 404_url into " . DB_PREF . "tags"
     );
   }
+
+  if (!$Database->performQuery(
+
+    "INSERT INTO " . DB_PREF . "tags (
+
+      title,
+
+      body,
+
+      evaluate
+    )
+    VALUES (
+
+      'keyword_prefix',
+
+      '#',
+
+      '0'
+    )"
+  )) {
+
+    array_push(
+
+      $errors,
+
+      "failed to insert keyword_prefix into " . DB_PREF . "tags"
+    );
+  }
 }
 
 if (!$Database->checkTableExistence("links")) {

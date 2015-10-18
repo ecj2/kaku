@@ -211,6 +211,27 @@ class Post extends Utility {
 
   public function getKeywords() {
 
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = 'keyword_prefix'
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or keyword prefix does not exist.
+      Utility::displayError("failed to select keyword prefix");
+    }
+
+    // Fetch result as an object.
+    $result = $query->fetch(PDO::FETCH_OBJ);
+
+    // Get keyword prefix.
+    $prefix = $result->body;
+
     if (isset($_GET["post_url"])) {
 
       // Select post keywords.
@@ -254,7 +275,7 @@ class Post extends Utility {
           // Create a list item for each keyword.
           $keywords_markup .= "<li>";
           $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
-          $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
+          $keywords_markup .= "{$keyword_url}\">{$prefix}{$keyword}</a>";
           $keywords_markup .= "</li>";
         }
 
@@ -331,7 +352,7 @@ class Post extends Utility {
             // Create a list item for each keyword.
             $keywords_markup .= "<li>";
             $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
-            $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
+            $keywords_markup .= "{$keyword_url}\">{$prefix}{$keyword}</a>";
             $keywords_markup .= "</li>";
           }
         }
@@ -407,7 +428,7 @@ class Post extends Utility {
             // Create a list item for each keyword.
             $keywords_markup .= "<li>";
             $keywords_markup .= "<a href=\"{%blog_url%}/page/search?term=";
-            $keywords_markup .= "{$keyword_url}\">#{$keyword}</a>";
+            $keywords_markup .= "{$keyword_url}\">{$prefix}{$keyword}</a>";
             $keywords_markup .= "</li>";
           }
         }
