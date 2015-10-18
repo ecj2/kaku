@@ -1795,9 +1795,9 @@ class Post extends Utility {
     }
   }
 
-  public function setDatabaseHandle($handle) {
+  public function setDatabaseHandle($Handle) {
 
-    $this->DatabaseHandle = $handle;
+    $this->DatabaseHandle = $Handle;
   }
 }
 

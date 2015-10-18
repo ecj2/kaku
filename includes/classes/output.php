@@ -213,9 +213,9 @@ class Output extends Utility {
     array_push($this->replace, $replacement);
   }
 
-  public function setDatabaseHandle($handle) {
+  public function setDatabaseHandle($Handle) {
 
-    $this->DatabaseHandle = $handle;
+    $this->DatabaseHandle = $Handle;
   }
 
   public function replaceBufferContents($contents) {

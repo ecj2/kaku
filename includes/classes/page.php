@@ -22,9 +22,9 @@ class Page extends Utility {
     return $this->getData("description");
   }
 
-  public function setDatabaseHandle($handle) {
+  public function setDatabaseHandle($Handle) {
 
-    $this->DatabaseHandle = $handle;
+    $this->DatabaseHandle = $Handle;
   }
 
   private function getData($column) {
