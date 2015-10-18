@@ -171,7 +171,7 @@ else {
       <input type=\"text\" id=\"url\" name=\"url\" required>
       <label for=\"title\">Title</label>
       <input type=\"text\" id=\"title\" name=\"title\" required>
-      <label for=\"keywords\">Keywords (Optional)</label>
+      <label for=\"keywords\">Keywords (Optional; comma separated)</label>
       <input type=\"text\" id=\"keywords\" name=\"keywords\">
       <label for=\"body\">Body</label>
       <textarea id=\"body\" name=\"body\" required></textarea>
