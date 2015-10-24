@@ -267,7 +267,10 @@ class Post extends Utility {
 
         $keywords_markup .= "<ul>";
 
-        foreach (explode(", ", $keywords) as $keyword) {
+        foreach (explode(",", $keywords) as $keyword) {
+
+          // Remove whitespace from beginning and end of keyword.
+          $keyword = trim($keyword);
 
           // Encode spaces.
           $keyword_url = str_replace(" ", "%20", $keyword);
@@ -344,7 +347,10 @@ class Post extends Utility {
 
         if (!empty($keywords)) {
 
-          foreach (explode(", ", $keywords) as $keyword) {
+          foreach (explode(",", $keywords) as $keyword) {
+
+            // Remove whitespace from beginning and end of keyword.
+            $keyword = trim($keyword);
 
             // Encode spaces.
             $keyword_url = str_replace(" ", "%20", $keyword);
@@ -420,7 +426,10 @@ class Post extends Utility {
 
         if (!empty($keywords)) {
 
-          foreach (explode(", ", $keywords) as $keyword) {
+          foreach (explode(",", $keywords) as $keyword) {
+
+            // Remove whitespace from beginning and end of keyword.
+            $keyword = trim($keyword);
 
             // Encode spaces.
             $keyword_url = str_replace(" ", "%20", $keyword);
