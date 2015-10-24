@@ -39,6 +39,9 @@ class Search {
 
     if (isset($_GET["term"])) {
 
+      // Remove whitespace from beginning and end of search term.
+      $_GET["term"] = trim($_GET["term"]);
+
       // Select from posts and pages where something is like the search term.
       $statement = "
 
