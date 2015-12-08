@@ -137,7 +137,14 @@ if (count($directories > 0)) {
 
       if (isset($name)) {
 
-        $page_body .= "<td>{$name}</td>";
+        if (file_exists("{$directory}/edit.php")) {
+
+          $page_body .= "<td><a href=\"edit_extension.php?title=" . str_replace("../content/extensions/", "", $directory) . "\">{$name}</a></td>";
+        }
+        else {
+
+          $page_body .= "<td>{$name}</td>";
+        }
 
         unset($name);
       }
