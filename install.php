@@ -901,6 +901,25 @@ if (!$Database->checkTableExistence("extensions")) {
   }
 }
 
+$directories = glob("./content/extensions/*", GLOB_ONLYDIR);
+
+if (count($directories) > 0) {
+
+  foreach ($directories as $directory) {
+
+    // Get directory name without path.
+    $directory_name = str_replace("./content/extensions/", "", $directory);
+
+    $extension_full_path = "{$directory}/install.php";
+
+    if (file_exists($extension_full_path)) {
+
+      // Include the extension's install script.
+      require $extension_full_path;
+    }
+  }
+}
+
 if (!empty($errors)) {
 
   if ($Database->checkTableExistence("tags")) {
