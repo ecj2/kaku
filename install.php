@@ -326,30 +326,6 @@ if (!$Database->checkTableExistence("tags")) {
     )
     VALUES (
 
-      'disqus_forum_name',
-
-      ''
-    )"
-  )) {
-
-    array_push(
-
-      $errors,
-
-      "failed to insert disqus_forum_name into " . DB_PREF . "tags"
-    );
-  }
-
-  if (!$Database->performQuery(
-
-    "INSERT INTO " . DB_PREF . "tags (
-
-      title,
-
-      body
-    )
-    VALUES (
-
       'blog_url',
 
       '{$this_url}'
