@@ -16,9 +16,7 @@ if (!$Database->checkTableExistence("tags")) {
 
       title VARCHAR(99) NOT NULL,
 
-      body TEXT NOT NULL,
-
-      evaluate BOOL NOT NULL
+      body TEXT NOT NULL
     )"
   )) {
 
@@ -36,17 +34,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'blog_title',
 
-      'Kaku',
-
-      '0'
+      'Kaku'
     )"
   )) {
 
@@ -64,17 +58,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'blog_language',
 
-      'en',
-
-      '0'
+      'en'
     )"
   )) {
 
@@ -92,17 +82,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'blog_description',
 
-      'Just your average blog.',
-
-      '0'
+      'Just your average blog.'
     )"
   )) {
 
@@ -120,17 +106,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'theme_name',
 
-      'default',
-
-      '0'
+      'default'
     )"
   )) {
 
@@ -148,17 +130,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'admin_theme_name',
 
-      'default',
-
-      '0'
+      'default'
     )"
   )) {
 
@@ -176,17 +154,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'posts_per_page',
 
-      '3',
-
-      '0'
+      '3'
     )"
   )) {
 
@@ -204,17 +178,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'footer',
 
-      'Powered by <a href=\"https://github.com/ecj2/kaku\">Kaku</a>',
-
-      '0'
+      'Powered by <a href=\"https://github.com/ecj2/kaku\">Kaku</a>'
     )"
   )) {
 
@@ -232,17 +202,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'date_format',
 
-      'F jS, Y',
-
-      '0'
+      'F jS, Y'
     )"
   )) {
 
@@ -260,17 +226,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'recursion_depth',
 
-      '2',
-
-      '0'
+      '2'
     )"
   )) {
 
@@ -288,17 +250,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'lure_text',
 
-      'Read more...',
-
-      '0'
+      'Read more...'
     )"
   )) {
 
@@ -316,17 +274,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'comment_disabled_text',
 
-      'Comments have been disabled on this post.',
-
-      '0'
+      'Comments have been disabled on this post.'
     )"
   )) {
 
@@ -344,17 +298,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'next_page_text',
 
-      'Older posts',
-
-      '0'
+      'Older posts'
     )"
   )) {
 
@@ -372,17 +322,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'previous_page_text',
 
-      'Newer posts',
-
-      '0'
+      'Newer posts'
     )"
   )) {
 
@@ -400,17 +346,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'disqus_forum_name',
 
-      '',
-
-      '0'
+      ''
     )"
   )) {
 
@@ -428,17 +370,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'blog_url',
 
-      '{$this_url}',
-
-      '0'
+      '{$this_url}'
     )"
   )) {
 
@@ -456,17 +394,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       '404_url',
 
-      '{$this_url}/page/page-not-found',
-
-      '0'
+      '{$this_url}/page/page-not-found'
     )"
   )) {
 
@@ -484,17 +418,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'keyword_prefix',
 
-      '#',
-
-      '0'
+      '#'
     )"
   )) {
 

@@ -32,7 +32,7 @@ class Output extends Utility {
 
     $statement = "
 
-      SELECT body, evaluate
+      SELECT body
       FROM " . DB_PREF . "tags
       WHERE title = 'recursion_depth'
       ORDER BY id DESC
@@ -71,32 +71,14 @@ class Output extends Utility {
 
           global $Hook;
 
-          if ($tag->evaluate) {
+          $Hook->addAction("{$tag->title}_tag", $tag->body);
 
-            // Evaluate the tag contents as if it were PHP code.
+          $this->addTagReplacement(
 
-            $Hook->addAction("{$tag->title}_tag", eval($tag->body));
+            $tag->title,
 
-            $this->addTagReplacement(
-
-              $tag->title,
-
-              $Hook->doAction("{$tag->title}_tag")
-            );
-          }
-          else {
-
-            // Do not evaluate tag contents as if PHP code.
-
-            $Hook->addAction("{$tag->title}_tag", $tag->body);
-
-            $this->addTagReplacement(
-
-              $tag->title,
-
-              $Hook->doAction("{$tag->title}_tag")
-            );
-          }
+            $Hook->doAction("{$tag->title}_tag")
+          );
         }
       }
     }
