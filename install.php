@@ -875,6 +875,30 @@ if (!$Database->checkTableExistence("extensions")) {
       "failed to insert Pagination into " . DB_PREF . "extensions"
     );
   }
+
+  if (!$Database->performQuery(
+
+    "INSERT INTO " . DB_PREF . "extensions (
+
+      title,
+
+      activate
+    )
+    VALUES (
+
+      'Truncate',
+
+      '1'
+    )"
+  )) {
+
+    array_push(
+
+      $errors,
+
+      "failed to insert Truncate into " . DB_PREF . "extensions"
+    );
+  }
 }
 
 if (!empty($errors)) {

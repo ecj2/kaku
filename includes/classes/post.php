@@ -47,9 +47,6 @@ class Post extends Utility {
       // Get post body.
       $body = $result->body;
 
-      // Remove truncate tag.
-      $body = str_replace("{%truncate%}", "", $body);
-
       // Display post body.
       return $body;
     }
@@ -109,22 +106,6 @@ class Post extends Utility {
         // Get post body.
         $body = $result->body;
 
-        if (strpos($body, "{%truncate%}") !== false) {
-
-          $truncate_position = strpos($body, "{%truncate%}");
-
-          // Cut the body at the truncate position.
-          $body = substr($body, 0, $truncate_position);
-
-          // Include a "read more" link to the full post.
-          $body .= "
-
-            <a href=\"{%blog_url%}/post/{%post_url_{$count}%}\">
-              {%lure_text%}
-            </a>
-          ";
-        }
-
         $bodies[] = $body;
 
         ++$count;
@@ -183,22 +164,6 @@ class Post extends Utility {
 
         // Get post body.
         $body = $result->body;
-
-        if (strpos($body, "{%truncate%}") !== false) {
-
-          $truncate_position = strpos($body, "{%truncate%}");
-
-          // Cut the body at the truncate position.
-          $body = substr($body, 0, $truncate_position);
-
-          // Include a "read more" link to the full post.
-          $body .= "
-
-            <a href=\"{%blog_url%}/post/{%post_url_{$count}%}\">
-              {%lure_text%}
-            </a>
-          ";
-        }
 
         $bodies[] = $body;
 
