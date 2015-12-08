@@ -81,7 +81,18 @@ else {
   // Start a new buffer for the extension's edit.php file.
   ob_start();
 
-  require "../content/extensions/" . $_GET["title"] . "/edit.php";
+  $extension_directory = "../content/extensions/" . $_GET["title"];
+
+  if (file_exists("{$extension_directory}/install.php")) {
+
+    // Run the extension's install script.
+
+    require "../install.php";
+
+    require "{$extension_directory}/install.php";
+  }
+
+  require "{$extension_directory}/edit.php";
 
   // The extensions file's contents will be thrown to the buffer.
   $page_body .= ob_get_contents();
