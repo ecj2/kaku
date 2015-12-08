@@ -63,6 +63,11 @@ class DisqusForum {
         // Get the forum name.
         $forum_name = $result->forum_name;
 
+        if ($forum_name == "") {
+
+          return "Comments have not been configured.";
+        }
+
         require $disqus_markup_file;
 
         // Display the Disqus forum.
