@@ -254,30 +254,6 @@ if (!$Database->checkTableExistence("tags")) {
     )
     VALUES (
 
-      'lure_text',
-
-      'Read more...'
-    )"
-  )) {
-
-    array_push(
-
-      $errors,
-
-      "failed to insert lure_text into " . DB_PREF . "tags"
-    );
-  }
-
-  if (!$Database->performQuery(
-
-    "INSERT INTO " . DB_PREF . "tags (
-
-      title,
-
-      body
-    )
-    VALUES (
-
       'comment_disabled_text',
 
       'Comments have been disabled on this post.'

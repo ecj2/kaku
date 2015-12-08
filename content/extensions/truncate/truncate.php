@@ -7,6 +7,8 @@ $name = "Truncate Posts";
 
 class Truncate {
 
+  private $DatabaseHandle;
+
   public function __construct() {
 
     //
@@ -39,6 +41,8 @@ class Truncate {
 
       $count = 1;
 
+      $lure_text = $this->getLureText();
+
       foreach ($callback as $body) {
 
         if (strpos($body, "{%truncate%}") !== false) {
@@ -52,7 +56,7 @@ class Truncate {
           $body .= "
 
             <a href=\"{%blog_url%}/post/{%post_url_{$count}%}\">
-              {%lure_text%}
+              {$lure_text}
             </a>
           ";
         }
@@ -63,6 +67,37 @@ class Truncate {
       }
 
       return $bodies;
+    }
+  }
+
+  public function setDatabaseHandle($handle) {
+
+    $this->DatabaseHandle = $handle;
+  }
+
+  private function getLureText() {
+
+    $statement = "
+
+      SELECT lure
+      FROM " . DB_PREF . "extension_truncate
+      WHERE 1 = 1
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or is empty.
+      return "Read more...";
+    }
+    else {
+
+      // Fetch the result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get lure text.
+      return $result->lure;
     }
   }
 }
