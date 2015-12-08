@@ -267,55 +267,7 @@ if (!$Database->checkTableExistence("tags")) {
       "failed to insert comment_disabled_text into " . DB_PREF . "tags"
     );
   }
-
-  if (!$Database->performQuery(
-
-    "INSERT INTO " . DB_PREF . "tags (
-
-      title,
-
-      body
-    )
-    VALUES (
-
-      'next_page_text',
-
-      'Older posts'
-    )"
-  )) {
-
-    array_push(
-
-      $errors,
-
-      "failed to insert next_page_text into " . DB_PREF . "tags"
-    );
-  }
-
-  if (!$Database->performQuery(
-
-    "INSERT INTO " . DB_PREF . "tags (
-
-      title,
-
-      body
-    )
-    VALUES (
-
-      'previous_page_text',
-
-      'Newer posts'
-    )"
-  )) {
-
-    array_push(
-
-      $errors,
-
-      "failed to insert previous_page_text into " . DB_PREF . "tags"
-    );
-  }
-
+  
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
