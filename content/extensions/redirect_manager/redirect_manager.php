@@ -78,9 +78,7 @@ class RedirectManager extends Utility {
             $new_url = Utility::getRootAddress() . "/post/";
             $new_url .= $redirect[2][$i];
 
-            header("HTTP/1.1 301 Moved Permanently");
-
-            header("Location: {$new_url}");
+            header("Location: {$new_url}", true, 302);
 
             exit();
           }
