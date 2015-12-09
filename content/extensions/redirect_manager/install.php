@@ -28,7 +28,7 @@ if (!$Database->checkTableExistence("extension_redirect_manager")) {
     )
     VALUES (
 
-      'old-post-url = new-post-url;'
+      '{%blog_url%}/post/old-post-url = {%blog_url%}/post/new-post-url;'
     )"
   )) {
 

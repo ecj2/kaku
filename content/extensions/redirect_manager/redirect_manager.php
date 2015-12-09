@@ -14,74 +14,62 @@ class RedirectManager extends Utility {
     //
   }
 
-  public function getTags() {
-
-    return [
-
-      "body_content"
-    ];
-  }
-
-  public function getReplacements() {
-
-    return [
-
-      $this->manageRedirects()
-    ];
-  }
-
   public function setDatabaseHandle($Handle) {
 
     $this->DatabaseHandle = $Handle;
+
+    $this->manageRedirects();
   }
 
   private function manageRedirects() {
 
-    if (isset($_GET["post_url"])) {
+    // Select the redirect rules from the database.
+    $statement = "
 
-      // Select the redirect rules from the database.
-      $statement = "
+      SELECT redirect_rules
+      FROM " . DB_PREF . "extension_redirect_manager
+      WHERE 1 = 1
+      LIMIT 1
+    ";
 
-        SELECT redirect_rules
-        FROM " . DB_PREF . "extension_redirect_manager
-        WHERE 1 = 1
-        LIMIT 1
-      ";
+    @$query = $this->DatabaseHandle->query($statement);
 
-      $query = $this->DatabaseHandle->query($statement);
+    if ($query && $query->rowCount() > 0) {
 
-      if (!$query || $query->rowCount() == 0) {
+      // Fetch the result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
 
-        // Query failed or returned an empty set.
-      }
-      else {
+      preg_match_all(
 
-        // Fetch the result as an object.
-        $result = $query->fetch(PDO::FETCH_OBJ);
+        "/(.+?) = (.+?)\;/",
 
-        preg_match_all(
+        $result->redirect_rules,
 
-          "/(.+?) = (.+?)\;/",
+        $redirect
+      );
 
-          $result->redirect_rules,
+      for ($i = 0; $i < count($redirect[0]); ++$i) {
 
-          $redirect
-        );
+        $this_uri;
 
-        for ($i = 0; $i < count($redirect[0]); ++$i) {
+        if (isset($_SERVER["HTTPS"])) {
 
-          $this_url = Utility::getRootAddress() . "/post/";
-          $this_url .= $_GET["post_url"];
+          $this_uri = "https://";
+        }
+        else {
 
-          if (strstr($this_url, $redirect[1][$i])) {
+          $this_uri = "http://";
+        }
 
-            $new_url = Utility::getRootAddress() . "/post/";
-            $new_url .= $redirect[2][$i];
+        // Get the current URI.
+        $this_uri .= $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 
-            header("Location: {$new_url}", true, 302);
+        if ($this_uri == $redirect[1][$i]) {
 
-            exit();
-          }
+          // Redirect to specified URI.
+          header("Location: " . $redirect[2][$i], true, 302);
+
+          exit();
         }
       }
     }
