@@ -75,14 +75,8 @@ class RedirectManager extends Utility {
 
           if (strstr($this_url, $redirect[1][$i])) {
 
-            $new_url = str_replace(
-
-              $_GET["post_url"],
-
-              $redirect[2][$i],
-
-              $this_url
-            );
+            $new_url = Utility::getRootAddress() . "/post/";
+            $new_url .= $redirect[2][$i];
 
             header("HTTP/1.1 301 Moved Permanently");
 
