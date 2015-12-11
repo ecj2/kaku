@@ -7,7 +7,7 @@ html, body {
 body {
 
   background: #fff;
-  font-family: "PT Serif", serif;
+  font-family: "Lora", serif;
   font-size: 18px;
   color: #555;
   line-height: 35px;
@@ -30,7 +30,7 @@ header.top {
 
 header.top h1 {
 
-  font-family: "PT Sans", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 38px;
   margin: 0;
   font-weight: normal;
@@ -90,7 +90,7 @@ article {
 
 article header h2 {
 
-  font-family: "PT Sans", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 32px;
   margin: 0 0 17px 0;
   font-weight: normal;
@@ -203,7 +203,7 @@ input[type="search"] {
   outline: 0;
   border: 1px solid #ddd;
   padding: 5px;
-  font-family: "PT Serif", serif;
+  font-family: "Lora", serif;
   font-size: 18px;
   color: #555;
   line-height: 35px;
@@ -217,7 +217,7 @@ input[type="submit"] {
   outline: 0;
   border: 1px solid #ddd;
   padding: 5px;
-  font-family: "PT Serif", serif;
+  font-family: "Lora", serif;
   font-size: 18px;
   color: #555;
   line-height: 35px;
@@ -233,7 +233,7 @@ input[type="submit"]:hover {
 
 h1, h2, h3, h4, h5, h6 {
 
-  font-family: "PT Sans", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-weight: normal;
   margin: 0;
 }
