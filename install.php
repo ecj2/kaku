@@ -267,7 +267,7 @@ if (!$Database->checkTableExistence("tags")) {
       "failed to insert comment_disabled_text into " . DB_PREF . "tags"
     );
   }
-  
+
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -289,6 +289,30 @@ if (!$Database->checkTableExistence("tags")) {
       $errors,
 
       "failed to insert blog_url into " . DB_PREF . "tags"
+    );
+  }
+
+  if (!$Database->performQuery(
+
+    "INSERT INTO " . DB_PREF . "tags (
+
+      title,
+
+      body
+    )
+    VALUES (
+
+      'theme_directory',
+
+      '{%blog_url%}/content/themes'
+    )"
+  )) {
+
+    array_push(
+
+      $errors,
+
+      "failed to insert theme_directory into " . DB_PREF . "tags"
     );
   }
 
