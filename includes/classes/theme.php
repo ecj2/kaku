@@ -66,7 +66,7 @@ class Theme extends Utility {
     if (!in_array($file_name, $theme_files_without_extension)) {
 
       // Theme file doesn't exist.
-      Utility::displayError("{$file_path} does not exist");
+      Utility::displayError("{$theme_directory}/{$file_name} does not exist");
     }
 
     // Get key of file to match with $theme_files array.
