@@ -7,7 +7,7 @@ html, body {
 body {
 
   background: #fff;
-  font-family: "PT Serif", serif;
+  font-family: "Lora", serif;
   font-size: 18px;
   color: #555;
   line-height: 35px;
@@ -30,7 +30,7 @@ header.top {
 
 header.top h1 {
 
-  font-family: "PT Sans", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 38px;
   margin: 0;
   font-weight: normal;
@@ -90,7 +90,7 @@ article {
 
 article header h2 {
 
-  font-family: "PT Sans", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 32px;
   margin: 0 0 17px 0;
   font-weight: normal;
@@ -129,7 +129,7 @@ a:hover {
 
 h1, h2, h3, h4, h5, h6 {
 
-  font-family: "PT Sans", sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-weight: normal;
   margin: 0;
 }
@@ -154,7 +154,7 @@ form label {
 form input[type="text"], form input[type="password"], form input[type="email"] {
 
   background: #fff;
-  font-family: "PT Serif", serif;
+  font-family: "Lora", serif;
   font-size: 18px;
   color: #505050;
   line-height: 35px;
@@ -172,7 +172,7 @@ input[type="submit"] {
   outline: 0;
   border: 1px solid #ddd;
   padding: 5px;
-  font-family: "PT Serif", serif;
+  font-family: "Lora", serif;
   font-size: 18px;
   color: #555;
   line-height: 35px;
@@ -191,7 +191,7 @@ input[type="submit"]:hover {
 form textarea {
 
   background: #fff;
-  font-family: "PT Serif", serif;
+  font-family: "Lora", serif;
   font-size: 18px;
   color: #555;
   line-height: 35px;
@@ -237,7 +237,7 @@ td {
 
 th {
 
-  font-family: "PT Sans", sans-serif;
+  font-family: "Open Sans", sans-serif;
   text-align: left;
 }
 
@@ -269,7 +269,7 @@ td:nth-of-type(3) {
 a.button {
 
   background: #fff;
-  font-family: "PT Serif", serif;
+  font-family: "Lora", serif;
   font-size: 18px;
   color: #505050;
   line-height: 35px;
@@ -291,7 +291,7 @@ a.button:nth-of-type(2) {
 a.button_return {
 
   background: #fff;
-  font-family: "PT Serif", serif;
+  font-family: "Lora", serif;
   font-size: 18px;
   color: #505050;
   line-height: 35px;
