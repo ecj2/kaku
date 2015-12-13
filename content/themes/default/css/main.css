@@ -253,3 +253,14 @@ figcaption {
   color: #666;
   text-align: center;
 }
+
+figure video, figure iframe {
+
+  width: 100%;
+  text-align: center;
+}
+
+iframe {
+
+  border: 0;
+}
