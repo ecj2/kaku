@@ -14,19 +14,17 @@ class Search {
     //
   }
 
-  public function getTags() {
+  public function manageHooks() {
 
-    return array(
+    global $Hook;
 
-      "search"
-    );
-  }
+    $Hook->addFilter(
 
-  public function getReplacements() {
+      "search_tag",
 
-    return array(
+      $this,
 
-      $this->manageSearch()
+      "manageSearch"
     );
   }
 
@@ -35,7 +33,7 @@ class Search {
     $this->DatabaseHandle = $handle;
   }
 
-  private function manageSearch() {
+  public function manageSearch() {
 
     if (isset($_GET["term"])) {
 

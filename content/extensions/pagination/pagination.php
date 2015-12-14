@@ -14,23 +14,26 @@ class Pagination extends Utility {
     //
   }
 
-  public function getTags() {
+  public function manageHooks() {
 
-    return array(
+    global $Hook;
 
-      "next_page",
+    $Hook->addFilter(
 
-      "previous_page"
+      "next_page_tag",
+
+      $this,
+
+      "getNextPage"
     );
-  }
 
-  public function getReplacements() {
+    $Hook->addFilter(
 
-    return array(
+      "previous_page_tag",
 
-      $this->getNextPage(),
+      $this,
 
-      $this->getPreviousPage()
+      "getPreviousPage"
     );
   }
 
@@ -39,7 +42,7 @@ class Pagination extends Utility {
     $this->DatabaseHandle = $handle;
   }
 
-  private function getNextPage() {
+  public function getNextPage() {
 
     $next_page_text = "";
 
@@ -128,7 +131,7 @@ class Pagination extends Utility {
     }
   }
 
-  private function getPreviousPage() {
+  public function getPreviousPage() {
 
     $next_page_text = "";
 

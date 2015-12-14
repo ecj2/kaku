@@ -196,24 +196,6 @@ class Output extends Utility {
 
           $Extension->manageHooks();
         }
-
-        if (method_exists($class_name, "getTags")) {
-
-          if (method_exists($class_name, "getReplacements")) {
-
-            // Identify and replace the tags called by the extension.
-
-            foreach ($Extension->getTags() as $key) {
-
-              array_push($this->search, "{%{$key}%}");
-            }
-
-            foreach ($Extension->getReplacements() as $key) {
-
-              array_push($this->replace, $key);
-            }
-          }
-        }
       }
     }
   }
