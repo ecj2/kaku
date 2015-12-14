@@ -213,8 +213,10 @@ class Output extends Utility {
 
   public function replaceBufferContents($contents) {
 
+    static $first_pass = true;
+
     // Compress final output by removing new lines and double spaces.
-    return str_replace(
+    $contents = str_replace(
 
       array(
 
@@ -234,6 +236,15 @@ class Output extends Utility {
         $contents
       )
     );
+
+    if ($first_pass) {
+
+      $first_pass = false;
+
+      $this->replaceTags();
+    }
+
+    return $contents;
   }
 }
 
