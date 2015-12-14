@@ -14,19 +14,17 @@ class DisqusForum {
     //
   }
 
-  public function getTags() {
+  public function manageHooks() {
 
-    return array(
+    global $Hook;
 
-      "comment_source"
-    );
-  }
+    $Hook->addFilter(
 
-  public function getReplacements() {
+      "comment_source_tag",
 
-    return array(
+      $this,
 
-      $this->getDisqusForum()
+      "getDisqusForum"
     );
   }
 
@@ -35,7 +33,7 @@ class DisqusForum {
     $this->DatabaseHandle = $handle;
   }
 
-  private function getDisqusForum() {
+  public function getDisqusForum() {
 
     $disqus_markup_file = dirname(__FILE__) . "/content/markup.php";
 
