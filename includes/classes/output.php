@@ -30,6 +30,8 @@ class Output extends Utility {
 
   public function replaceTags() {
 
+    global $Hook;
+
     $statement = "
 
       SELECT body
@@ -69,8 +71,6 @@ class Output extends Utility {
 
           // Replace tag call with value from database.
 
-          global $Hook;
-
           $Hook->addAction("{$tag->title}_tag", $tag->body);
 
           $this->addTagReplacement(
@@ -81,6 +81,35 @@ class Output extends Utility {
           );
         }
       }
+    }
+
+    // Find all unfilled tags.
+    preg_match_all(
+
+      "/\{\%(.*?)\%\}/",
+
+      $this->replaceBufferContents(ob_get_contents()),
+
+      $matches
+    );
+
+    for ($i = 0; $i < count($matches[1]); ++$i) {
+
+      // Replace unfilled tags with hook actions (if applicable).
+
+      $Hook->addAction(
+
+        $matches[1][$i] . "_tag",
+
+        "{%" . $matches[1][$i] . "%}"
+      );
+
+      $this->addTagReplacement(
+
+        $matches[1][$i],
+
+        $Hook->doAction($matches[1][$i] . "_tag")
+      );
     }
   }
 
