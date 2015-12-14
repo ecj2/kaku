@@ -75,8 +75,19 @@ class Theme extends Utility {
     // Get the file name with the extension.
     $file_name = $theme_files[$key];
 
+    // Begin a temporary buffer for the theme file.
+    ob_start();
+
+    // Require the theme file to automatically parse any PHP code.
+    require "{$theme_directory}/{$file_name}";
+
+    $theme_file_contents = ob_get_contents();
+
+    // End and erase the temporary buffer.
+    ob_end_clean();
+
     // Return contents of theme file.
-    return file_get_contents("{$theme_directory}/{$file_name}");
+    return $theme_file_contents;
   }
 
   public function setDatabaseHandle($Handle) {
