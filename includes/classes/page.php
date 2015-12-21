@@ -5,7 +5,12 @@ if (!defined("KAKU_INCLUDE")) exit();
 
 class Page extends Utility {
 
-  private $DatabaseHandle;
+  private $Database;
+
+  public function __construct() {
+
+    //
+  }
 
   public function getBody() {
 
@@ -22,9 +27,9 @@ class Page extends Utility {
     return $this->getData("description");
   }
 
-  public function setDatabaseHandle($Handle) {
+  public function setDatabaseHandle($DatabaseHandle) {
 
-    $this->DatabaseHandle = $Handle;
+    $this->Database = $DatabaseHandle;
   }
 
   private function getData($column) {
@@ -42,7 +47,7 @@ class Page extends Utility {
       WHERE url = ?
     ";
 
-    $query = $this->DatabaseHandle->prepare($statement);
+    $query = $this->Database->prepare($statement);
 
     // Prevent SQL injections.
     $query->bindParam(1, $_GET["page_url"]);

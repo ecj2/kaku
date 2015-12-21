@@ -5,7 +5,12 @@ if (!defined("KAKU_INCLUDE")) exit();
 
 class Theme extends Utility {
 
-  private $DatabaseHandle;
+  private $Database;
+
+  public function __construct() {
+
+    //
+  }
 
   public function getFileContents($file_name) {
 
@@ -17,7 +22,7 @@ class Theme extends Utility {
       ORDER BY id DESC
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $query = $this->Database->query($statement);
 
     if (!$query || $query->rowCount() == 0) {
 
@@ -90,9 +95,9 @@ class Theme extends Utility {
     return $theme_file_contents;
   }
 
-  public function setDatabaseHandle($Handle) {
+  public function setDatabaseHandle($DatabaseHandle) {
 
-    $this->DatabaseHandle = $Handle;
+    $this->Database = $DatabaseHandle;
   }
 
   public function getNavigationItems() {
@@ -104,7 +109,7 @@ class Theme extends Utility {
       ORDER BY id ASC
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $query = $this->Database->query($statement);
 
     if (!$query) {
 

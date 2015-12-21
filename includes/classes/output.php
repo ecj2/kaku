@@ -11,7 +11,7 @@ class Output extends Utility {
   private $class_name;
   private $class_file;
 
-  private $DatabaseHandle;
+  private $Database;
 
   public function __construct() {
 
@@ -40,7 +40,7 @@ class Output extends Utility {
       ORDER BY id DESC
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $query = $this->Database->query($statement);
 
     if (!$query || $query->rowCount() == 0) {
 
@@ -55,7 +55,7 @@ class Output extends Utility {
       // Get tags from database.
       $statement = "SELECT * FROM " . DB_PREF . "tags ORDER BY id DESC";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -165,7 +165,7 @@ class Output extends Utility {
           WHERE title = '{$class_name}'
         ";
 
-        $query = $this->DatabaseHandle->query($statement);
+        $query = $this->Database->query($statement);
 
         if (!$query || $query->rowCount() == 0) {
 
@@ -189,7 +189,7 @@ class Output extends Utility {
         if (method_exists($class_name, "setDatabaseHandle")) {
 
           // Pass the database handle over to the extension.
-          $Extension->setDatabaseHandle($this->DatabaseHandle);
+          $Extension->setDatabaseHandle($this->Database);
         }
 
         if (method_exists($class_name, "manageHooks")) {
@@ -206,9 +206,9 @@ class Output extends Utility {
     array_push($this->replace, $replacement);
   }
 
-  public function setDatabaseHandle($Handle) {
+  public function setDatabaseHandle($DatabaseHandle) {
 
-    $this->DatabaseHandle = $Handle;
+    $this->Database = $DatabaseHandle;
   }
 
   public function replaceBufferContents($contents) {
