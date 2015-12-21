@@ -12,6 +12,28 @@ class Database extends Utility {
     //
   }
 
+  public function getTag($tag_title) {
+
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = '{$tag_title}'
+      ORDER BY id DESC
+      LIMIT 1
+    ";
+
+    $query = $this->Handle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or returned zero rows.
+      Utility::displayError("failed to get {$tag_title} tag");
+    }
+
+    return $query->fetch(PDO::FETCH_OBJ)->body;
+  }
+
   public function connect() {
 
     try {
