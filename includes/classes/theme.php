@@ -99,44 +99,6 @@ class Theme extends Utility {
 
     $this->Database = $DatabaseHandle;
   }
-
-  public function getNavigationItems() {
-
-    $statement = "
-
-      SELECT uri, title, target
-      FROM " . DB_PREF . "links
-      ORDER BY id ASC
-    ";
-
-    $query = $this->Database->query($statement);
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get navigation items");
-    }
-
-    if ($query->rowCount() > 0) {
-
-      $markup = "<ul>";
-
-      while ($link = $query->fetch(PDO::FETCH_OBJ)) {
-
-        // Create a list item for each link.
-        $markup .= "<li>";
-        $markup .= "<a href=\"{$link->uri}\" target=\"{$link->target}\">";
-        $markup .= "{$link->title}</a>";
-        $markup .= "</li>";
-      }
-
-      $markup .= "</ul>";
-
-      return $markup;
-    }
-
-    return;
-  }
 }
 
 ?>

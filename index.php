@@ -681,22 +681,6 @@ else {
   }
 }
 
-$Hook->addAction(
-
-  "navigation_items",
-
-  $Theme,
-
-  "getNavigationItems"
-);
-
-$Output->addTagReplacement(
-
-  "navigation_items",
-
-  $Hook->doAction("navigation_items")
-);
-
 $Output->loadExtensions();
 
 $Hook->addAction(

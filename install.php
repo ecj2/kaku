@@ -363,49 +363,25 @@ if (!$Database->checkTableExistence("tags")) {
       "failed to insert keyword_prefix into " . DB_PREF . "tags"
     );
   }
-}
-
-if (!$Database->checkTableExistence("links")) {
 
   if (!$Database->performQuery(
 
-    "CREATE TABLE " . DB_PREF . "links (
-
-      id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-
-      uri VARCHAR(256) NOT NULL,
-
-      title VARCHAR(99) NOT NULL,
-
-      target VARCHAR(6) NOT NULL
-    )"
-  )) {
-
-    array_push(
-
-      $errors,
-
-      "failed to create " . DB_PREF . "links table"
-    );
-  }
-
-  if (!$Database->performQuery(
-
-    "INSERT INTO " . DB_PREF . "links (
-
-      uri,
+    "INSERT INTO " . DB_PREF . "tags (
 
       title,
 
-      target
+      body
     )
     VALUES (
 
-      '{%blog_url%}',
+      'navigation_items',
 
-      'Home',
-
-      '_self'
+      '
+      <ul>
+        <li><a href=\"{%blog_url%}\">Home</a></li>
+        <li><a href=\"{%blog_url%}/page/search\">Search</a></li>
+      </ul>
+      '
     )"
   )) {
 
@@ -413,35 +389,7 @@ if (!$Database->checkTableExistence("links")) {
 
       $errors,
 
-      "failed to insert home into " . DB_PREF . "links"
-    );
-  }
-
-  if (!$Database->performQuery(
-
-    "INSERT INTO " . DB_PREF . "links (
-
-      uri,
-
-      title,
-
-      target
-    )
-    VALUES (
-
-      '{%blog_url%}/page/search',
-
-      'Search',
-
-      '_self'
-    )"
-  )) {
-
-    array_push(
-
-      $errors,
-
-      "failed to insert search into " . DB_PREF . "links"
+      "failed to insert navigation_items into " . DB_PREF . "tags"
     );
   }
 }
@@ -858,17 +806,6 @@ if (!empty($errors)) {
     )) {
 
       array_push($errors, "failed to drop " . DB_PREF . "tags table");
-    }
-  }
-
-  if ($Database->checkTableExistence("links")) {
-
-    if (!$Database->performQuery(
-
-      "DROP TABLE " . DB_PREF . "links"
-    )) {
-
-      array_push($errors, "failed to drop " . DB_PREF . "links table");
     }
   }
 
