@@ -1137,6 +1137,12 @@ class Post extends Utility {
     // Get post description.
     $description = $result->description;
 
+    if (strlen($description) == 0) {
+
+      // The post lacks a description.
+      $description = "No description.";
+    }
+
     return $description;
   }
 

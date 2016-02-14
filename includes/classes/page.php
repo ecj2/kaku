@@ -24,7 +24,15 @@ class Page extends Utility {
 
   public function getDescription() {
 
-    return $this->getData("description");
+    $description = $this->getData("description");
+
+    if (strlen($description) == 0) {
+
+      // The page lacks a description.
+      $description = "No description.";
+    }
+
+    return $description;
   }
 
   public function setDatabaseHandle($DatabaseHandle) {
