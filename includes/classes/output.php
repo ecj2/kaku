@@ -215,26 +215,14 @@ class Output extends Utility {
 
     static $first_pass = true;
 
-    // Compress final output by removing new lines and double spaces.
+    // Replace Kaku tags in buffer.
     $contents = str_replace(
 
-      array(
+      $this->search,
 
-        "\n",
+      $this->replace,
 
-        "  "
-      ),
-
-      "",
-
-      str_replace(
-
-        $this->search,
-
-        $this->replace,
-
-        $contents
-      )
+      $contents
     );
 
     if ($first_pass) {
