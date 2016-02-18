@@ -20,7 +20,7 @@ class Search {
 
     $Hook->addFilter(
 
-      "search_tag",
+      "search",
 
       $this,
 

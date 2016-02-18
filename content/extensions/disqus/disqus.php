@@ -20,7 +20,7 @@ class DisqusForum {
 
     $Hook->addFilter(
 
-      "comment_source_tag",
+      "comment_source",
 
       $this,
 

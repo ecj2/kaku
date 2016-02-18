@@ -20,7 +20,7 @@ class Pagination extends Utility {
 
     $Hook->addFilter(
 
-      "next_page_tag",
+      "next_page",
 
       $this,
 
@@ -29,7 +29,7 @@ class Pagination extends Utility {
 
     $Hook->addFilter(
 
-      "previous_page_tag",
+      "previous_page",
 
       $this,
 

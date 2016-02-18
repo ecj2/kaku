@@ -71,13 +71,13 @@ class Output extends Utility {
 
           // Replace tag call with value from database.
 
-          $Hook->addAction("{$tag->title}_tag", $tag->body);
+          $Hook->addAction("{$tag->title}", $tag->body);
 
           $this->addTagReplacement(
 
             $tag->title,
 
-            $Hook->doAction("{$tag->title}_tag")
+            $Hook->doAction("{$tag->title}")
           );
         }
       }
@@ -99,7 +99,7 @@ class Output extends Utility {
 
       $Hook->addAction(
 
-        $matches[1][$i] . "_tag",
+        $matches[1][$i] . "",
 
         "{%" . $matches[1][$i] . "%}"
       );
@@ -108,7 +108,7 @@ class Output extends Utility {
 
         $matches[1][$i],
 
-        $Hook->doAction($matches[1][$i] . "_tag")
+        $Hook->doAction($matches[1][$i] . "")
       );
     }
   }
