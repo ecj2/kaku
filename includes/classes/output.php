@@ -15,11 +15,11 @@ class Output extends Utility {
 
   public function __construct() {
 
-    $this->search = array();
-    $this->replace = array();
+    $this->search = [];
+    $this->replace = [];
 
-    $this->class_name = array();
-    $this->class_file = array();
+    $this->class_name = [];
+    $this->class_file = [];
   }
 
   public function flushBuffer() {
@@ -158,8 +158,8 @@ class Output extends Utility {
         if (!in_array($class_name, $this->class_name)) {
 
           // Save class name and file path.
-          array_push($this->class_name, $class_name);
-          array_push($this->class_file, $extension_full_path);
+          $this->class_name[] = $class_name;
+          $this->class_file[] = $extension_full_path;
         }
 
         $position = array_search($extension_full_path, $this->class_file);
@@ -213,8 +213,8 @@ class Output extends Utility {
 
   public function addTagReplacement($tag_title, $replacement) {
 
-    array_push($this->search, "{%{$tag_title}%}");
-    array_push($this->replace, $replacement);
+    $this->search[] = "{%{$tag_title}%}";
+    $this->replace[] = $replacement;
   }
 
   public function setDatabaseHandle($DatabaseHandle) {

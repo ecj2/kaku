@@ -626,9 +626,9 @@ class Post extends Utility {
 
       while ($post = $query->fetch(PDO::FETCH_OBJ)) {
 
-        $search = array();
+        $search = [];
 
-        $replace = array();
+        $replace = [];
 
         $search[] = "{%post_url%}";
         $search[] = "{%post_body%}";
@@ -931,9 +931,9 @@ class Post extends Utility {
 
       while ($post = $query->fetch(PDO::FETCH_OBJ)) {
 
-        $search = array();
+        $search = [];
 
-        $replace = array();
+        $replace = [];
 
         $search[] = "{%post_url%}";
         $search[] = "{%post_body%}";
