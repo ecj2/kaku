@@ -14,6 +14,7 @@ class Database extends Utility {
 
   public function getTag($tag_title) {
 
+    // Select the given tag.
     $statement = "
 
       SELECT body
@@ -31,6 +32,7 @@ class Database extends Utility {
       Utility::displayError("failed to get {$tag_title} tag");
     }
 
+    // Return the contents of the given tag.
     return $query->fetch(PDO::FETCH_OBJ)->body;
   }
 
@@ -62,6 +64,7 @@ class Database extends Utility {
 
   public function performQuery($statement) {
 
+    // Perform the given query statement.
     $query = $this->Handle->query($statement);
 
     if (!$query) {

@@ -14,6 +14,7 @@ class Theme extends Utility {
 
   public function getFileContents($file_name) {
 
+    // Select the theme name.
     $statement = "
 
       SELECT body

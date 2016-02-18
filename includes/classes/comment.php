@@ -20,6 +20,7 @@ class Comment extends Utility {
       return;
     }
 
+    // Determine if comments are allowed on this post.
     $statement = "
 
       SELECT allow_comments

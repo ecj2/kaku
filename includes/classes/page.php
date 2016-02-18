@@ -48,6 +48,7 @@ class Page extends Utility {
       return;
     }
 
+    // Select the given column.
     $statement = "
 
       SELECT {$column}
@@ -71,12 +72,12 @@ class Page extends Utility {
 
       $address = Utility::getRootAddress();
 
-      // Query returned zero rows.
+      // Query returned zero rows. Redirect to 404 page.
       header("Location: {$address}/error.php?code=404");
     }
     else {
 
-      // Get the desired data.
+      // Return the desired data.
       return $query->fetch(PDO::FETCH_OBJ)->$column;
     }
   }

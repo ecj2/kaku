@@ -17,7 +17,7 @@ $root_address = $Utility->getRootAddress();
 
 if (!isset($_GET["code"])) {
 
-  // Redirect to index.
+  // No error code was given. Redirect to index.
   header("Location: {$root_address}");
 }
 

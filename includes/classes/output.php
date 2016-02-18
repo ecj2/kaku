@@ -32,6 +32,7 @@ class Output extends Utility {
 
     global $Hook;
 
+    // Get the tag recursion depth.
     $statement = "
 
       SELECT body
@@ -99,7 +100,7 @@ class Output extends Utility {
 
       $Hook->addAction(
 
-        $matches[1][$i] . "",
+        $matches[1][$i],
 
         "{%" . $matches[1][$i] . "%}"
       );
@@ -108,21 +109,28 @@ class Output extends Utility {
 
         $matches[1][$i],
 
-        $Hook->doAction($matches[1][$i] . "")
+        $Hook->doAction($matches[1][$i])
       );
     }
   }
 
   public function startBuffer() {
 
-    ob_start(array($this, "replaceBufferContents"));
+    ob_start(
+
+      [
+        $this,
+
+        "replaceBufferContents"
+      ]
+    );
   }
 
   public function loadExtensions() {
 
     if (!defined("KAKU_EXTENSION")) {
 
-      // Allow access to extension files.
+      // Gain access to extension files.
       define("KAKU_EXTENSION", true);
     }
 
@@ -158,6 +166,7 @@ class Output extends Utility {
 
         $class_name = $this->class_name[$position];
 
+        // Determine if the given extension has been activated.
         $statement = "
 
           SELECT activate
@@ -169,6 +178,7 @@ class Output extends Utility {
 
         if (!$query || $query->rowCount() == 0) {
 
+          // Failed to determine activation status.
           continue;
         }
 
@@ -180,6 +190,7 @@ class Output extends Utility {
 
         if (!$activation_status) {
 
+          // Extension has not been activated; skip it.
           continue;
         }
 
@@ -215,7 +226,7 @@ class Output extends Utility {
 
     static $first_pass = true;
 
-    // Replace Kaku tags in buffer.
+    // Replace tags in buffer.
     $contents = str_replace(
 
       $this->search,
