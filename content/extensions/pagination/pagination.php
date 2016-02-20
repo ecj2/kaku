@@ -114,11 +114,11 @@ class Pagination extends Utility {
 
       if (isset($_GET["page_number"])) {
 
-        $url = "{%blog_url%}/page/" . ($_GET["page_number"] + 1);
+        $url = "{%blog_url%}/range/" . ($_GET["page_number"] + 1);
       }
       else {
 
-        $url = "{%blog_url%}/page/2";
+        $url = "{%blog_url%}/range/2";
       }
 
       $message = "<a href=\"{$url}\">{$next_page_text}</a>";
@@ -169,7 +169,7 @@ class Pagination extends Utility {
         return "<a href=\"{%blog_url%}\">{$link}</a>";
       }
 
-      return "<a href=\"{%blog_url%}/page/{$previous_page}\">{$link}</a>";
+      return "<a href=\"{%blog_url%}/range/{$previous_page}\">{$link}</a>";
     }
 
     return "";
