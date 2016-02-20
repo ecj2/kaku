@@ -15,13 +15,13 @@ Edit the database configurations in `includes/configuration.php`, then view `ind
 ## URL Rewrite
 In order to use Kaku with pretty URLs, you will need to configure your Web server accordingly.
 
-On Nginx, use the following:
+On Nginx, use the following for your Kaku directory:
 
 ```
-rewrite ^(.*)/feed$ $1/feed.php;
-rewrite ^(.*)/post/(.*)$ $1/?post_url=$2;
-rewrite ^(.*)/page/([0-9]+)$ $1/?page_number=$2;
-rewrite ^(.*)/page/(.*)$ $1/?page_url=$2;
+rewrite ^feed$ feed.php;
+rewrite ^post/(.*)$ ?post_url=$1;
+rewrite ^page/([0-9]+)$ ?page_number=$1;
+rewrite ^page/(.*)$ ?page_url=$1;
 ```
 
 On Apache, use the following in your .htaccess file wherever you installed Kaku:
