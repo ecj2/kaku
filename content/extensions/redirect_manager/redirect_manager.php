@@ -64,7 +64,7 @@ class RedirectManager extends Utility {
         // Get the current URI.
         $this_uri .= $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
 
-        if ($this_uri == $redirect[1][$i]) {
+        if (strtolower($this_uri) == strtolower($redirect[1][$i])) {
 
           // Redirect to specified URI.
           header("Location: " . $redirect[2][$i], true, 302);
