@@ -328,7 +328,7 @@ if (!$Database->checkTableExistence("tags")) {
 
       '404_url',
 
-      '{$this_url}/page/page-not-found'
+      '{$this_url}/page/page+not+found'
     )"
   )) {
 
@@ -482,7 +482,7 @@ if (!$Database->checkTableExistence("pages")) {
     )
     VALUES (
 
-      'page-not-found',
+      'page+not+found',
 
       'Page Not Found',
 
@@ -500,7 +500,7 @@ if (!$Database->checkTableExistence("pages")) {
 
       $errors,
 
-      "failed to insert page-not-found into " . DB_PREF . "pages"
+      "failed to insert page+not+found into " . DB_PREF . "pages"
     );
   }
 }
@@ -570,7 +570,7 @@ if (!$Database->checkTableExistence("posts")) {
     )
     VALUES (
 
-      'welcome-to-kaku',
+      'welcome+to+kaku',
 
       '{$body}',
 
@@ -594,7 +594,7 @@ if (!$Database->checkTableExistence("posts")) {
 
       $errors,
 
-      "failed to insert welcome-to-kaku into " . DB_PREF . "posts"
+      "failed to insert welcome+to+kaku into " . DB_PREF . "posts"
     );
   }
 }

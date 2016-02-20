@@ -243,7 +243,7 @@ class Post extends Utility {
           $keyword = trim($keyword);
 
           // Encode spaces.
-          $keyword_url = str_replace(" ", "%20", $keyword);
+          $keyword_url = str_replace(" ", "+", $keyword);
 
           // Create a list item for each keyword.
           $keywords_markup .= "<li>";
@@ -323,7 +323,7 @@ class Post extends Utility {
             $keyword = trim($keyword);
 
             // Encode spaces.
-            $keyword_url = str_replace(" ", "%20", $keyword);
+            $keyword_url = str_replace(" ", "+", $keyword);
 
             // Create a list item for each keyword.
             $keywords_markup .= "<li>";
@@ -402,7 +402,7 @@ class Post extends Utility {
             $keyword = trim($keyword);
 
             // Encode spaces.
-            $keyword_url = str_replace(" ", "%20", $keyword);
+            $keyword_url = str_replace(" ", "+", $keyword);
 
             // Create a list item for each keyword.
             $keywords_markup .= "<li>";
