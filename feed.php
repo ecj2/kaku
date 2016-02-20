@@ -27,15 +27,15 @@ $Output->setDatabaseHandle($Database->getHandle());
 $Output->startBuffer();
 
 // Start the XML document.
-echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
-echo "<rss version=\"2.0\">";
+echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+echo "<rss version=\"2.0\">\n";
 
 // Describe the channel.
-echo "<channel>";
-echo "<title>{%blog_title%}</title>";
-echo "<link>{%blog_url%}</link>";
-echo "<description>{%blog_description%}</description>";
-echo "<language>{%blog_language%}</language>";
+echo "<channel>\n";
+echo "<title>{%blog_title%}</title>\n";
+echo "<link>{%blog_url%}</link>\n";
+echo "<description>{%blog_description%}</description>\n";
+echo "<language>{%blog_language%}</language>\n";
 
 // Select published posts.
 $statement = "
@@ -54,11 +54,11 @@ if ($query && $query->rowCount() > 0) {
 
     // Generate an item for each post.
 
-    echo "<item>";
-    echo "<title>{$post->title}</title>";
-    echo "<link>{%blog_url%}/post/{$post->url}</link>";
+    echo "<item>\n";
+    echo "<title>{$post->title}</title>\n";
+    echo "<link>{%blog_url%}/post/{$post->url}</link>\n";
 
-    echo "<description>";
+    echo "<description>\n";
 
     if (strlen($post->description) == 0) {
 
@@ -70,14 +70,14 @@ if ($query && $query->rowCount() > 0) {
       echo $post->description;
     }
 
-    echo "</description>";
-    echo "<pubDate>" . date("D, d M Y H:i:s O", $post->epoch) ."</pubDate>";
-    echo "</item>";
+    echo "</description>\n";
+    echo "<pubDate>" . date("D, d M Y H:i:s O", $post->epoch) ."</pubDate>\n";
+    echo "</item>\n";
   }
 }
 
 // End the XML RSS document.
-echo "</channel>";
+echo "</channel>\n";
 echo "</rss>";
 
 $Output->replaceTags();
