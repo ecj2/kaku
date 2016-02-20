@@ -681,8 +681,6 @@ else {
   }
 }
 
-$Output->loadExtensions();
-
 $Hook->addAction(
 
   "head_content",
