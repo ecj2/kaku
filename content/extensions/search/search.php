@@ -130,7 +130,7 @@ class Search {
 
           $markup .= "{$result->title}</a><br>";
 
-          if (empty($result->description)) {
+          if (empty(trim($result->description))) {
 
             // The resource has no description.
             $markup .= "No description.";
