@@ -584,7 +584,7 @@ if (!$Database->checkTableExistence("posts")) {
 
       '1',
 
-      'The very first.',
+      'The very first post.',
 
       '0'
     )"
