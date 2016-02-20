@@ -57,7 +57,20 @@ if ($query && $query->rowCount() > 0) {
     echo "<item>";
     echo "<title>{$post->title}</title>";
     echo "<link>{%blog_url%}/post/{$post->url}</link>";
-    echo "<description>{$post->description}</description>";
+
+    echo "<description>";
+
+    if (strlen($post->description) == 0) {
+
+      // This post lacks a description.
+      echo "No description.";
+    }
+    else {
+
+      echo $post->description;
+    }
+
+    echo "</description>";
     echo "<pubDate>" . date("D, d M Y H:i:s O", $post->epoch) ."</pubDate>";
     echo "</item>";
   }
