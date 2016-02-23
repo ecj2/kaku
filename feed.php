@@ -60,14 +60,14 @@ if ($query && $query->rowCount() > 0) {
 
     echo "<description>\n";
 
-    if (strlen($post->description) == 0) {
+    if (strlen(trim($post->description)) == 0) {
 
       // This post lacks a description.
       echo "No description.";
     }
     else {
 
-      echo $post->description;
+      echo trim($post->description);
     }
 
     echo "</description>\n";
