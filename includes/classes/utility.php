@@ -1,8 +1,5 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_INCLUDE")) exit();
-
 class Utility {
 
   public function __construct() {

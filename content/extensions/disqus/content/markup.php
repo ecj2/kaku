@@ -1,8 +1,5 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_EXTENSION")) exit();
-
 $markup = '
 
   <div id="disqus_thread"></div>

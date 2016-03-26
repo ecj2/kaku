@@ -1,8 +1,5 @@
 <?php
 
-// Allow access to include files.
-define("KAKU_INCLUDE", true);
-
 session_start();
 
 if (!isset($_SESSION["username"])) {
@@ -68,12 +65,6 @@ $page_title = "Extensions";
 $directories = glob("../content/extensions/*", GLOB_ONLYDIR);
 
 if (count($directories > 0)) {
-
-  if (!defined("KAKU_EXTENSION")) {
-
-    // Allow access to extension files.
-    define("KAKU_EXTENSION", true);
-  }
 
   $page_body .= "<table class=\"extensions\">";
 

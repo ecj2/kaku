@@ -1,8 +1,5 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_INCLUDE")) exit();
-
 class Output extends Utility {
 
   private $search;
@@ -127,12 +124,6 @@ class Output extends Utility {
   }
 
   public function loadExtensions() {
-
-    if (!defined("KAKU_EXTENSION")) {
-
-      // Gain access to extension files.
-      define("KAKU_EXTENSION", true);
-    }
 
     // Get extension directories.
     $directories = glob("content/extensions/*", GLOB_ONLYDIR);

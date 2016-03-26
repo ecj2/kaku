@@ -1,8 +1,5 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_EXTENSION")) exit();
-
 $name = "Redirect Manager";
 
 class RedirectManager extends Utility {

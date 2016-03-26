@@ -1,8 +1,5 @@
 <?php
 
-// Allow access to include files.
-define("KAKU_INCLUDE", true);
-
 session_start();
 
 if (isset($_SESSION["username"])) {
