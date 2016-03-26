@@ -30,6 +30,27 @@ $Theme->setDatabaseHandle($Database->getHandle());
 $Output->setDatabaseHandle($Database->getHandle());
 $Comment->setDatabaseHandle($Database->getHandle());
 
+$path = [];
+
+if (isset($_GET["path"])) {
+
+  // Break the path components up into an array.
+  $path = explode("/", $_GET["path"]);
+
+  foreach ($path as $part) {
+
+    static $counter = 0;
+
+    if (empty($part)) {
+
+      // Remove empty array elements.
+      unset($path[$counter]);
+    }
+
+    ++$counter;
+  }
+}
+
 $Output->startBuffer();
 
 if (file_exists("install.php")) {
@@ -39,9 +60,12 @@ if (file_exists("install.php")) {
 
 $Output->loadExtensions();
 
-if (isset($_GET["post_url"])) {
+if (in_array("post", $path)) {
 
   // Viewing a post.
+
+  // Get the post URL from the path.
+  $_GET["post_url"] = $path[array_search("post", $path) + 1];
 
   $Hook->addAction(
 
@@ -173,9 +197,12 @@ if (isset($_GET["post_url"])) {
     $Hook->doAction("comments")
   );
 }
-else if (isset($_GET["page_url"])) {
+else if (in_array("page", $path)) {
 
   // Viewing a page.
+
+  // Get the page URL from the path.
+  $_GET["page_url"] = $path[array_search("page", $path) + 1];
 
   $Hook->addAction(
 
@@ -217,9 +244,12 @@ else if (isset($_GET["page_url"])) {
     $Hook->doAction("page_description")
   );
 }
-else if (isset($_GET["page_number"])) {
+else if (in_array("range", $path)) {
 
   // Viewing posts by range.
+
+  // Get the page_number from the path.
+  $_GET["page_number"] = $path[array_search("range", $path) + 1];
 
   $Hook->addAction(
 

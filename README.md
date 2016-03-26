@@ -19,9 +19,11 @@ On Nginx, use the following for your Kaku directory:
 
 ```
 rewrite ^feed$ feed.php;
-rewrite ^post/(.*)$ ?post_url=$1;
-rewrite ^page/(.*)$ ?page_url=$1;
-rewrite ^range/([0-9]+)$ ?page_number=$1;
+
+if (!-e $request_filename) {
+
+  rewrite ^(.+)$ index.php?path=$1;
+}
 ```
 
 On Apache, use the following in your .htaccess file wherever you installed Kaku:
@@ -29,9 +31,9 @@ On Apache, use the following in your .htaccess file wherever you installed Kaku:
 ```
 RewriteEngine On
 RewriteRule ^feed$ feed.php
-RewriteRule ^post/(.*)$ ?post_url=$1
-RewriteRule ^page/(.*)$ ?page_url=$1 [QSA]
-RewriteRule ^range/([0-9]+)$ ?page_number=$1
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)$ index.php?path=$1 [QSA,L]
 ```
 
 You should also redirect 404 errors to `error.php?code=404` on both Nginx and Apache.
