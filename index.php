@@ -60,7 +60,13 @@ if (file_exists("install.php")) {
 
 $Output->loadExtensions();
 
-if (in_array("post", $path)) {
+if (in_array("feed", $path)) {
+
+  // Viewing the feed.
+  
+  require "feed.php";
+}
+else if (in_array("post", $path)) {
 
   // Viewing a post.
 

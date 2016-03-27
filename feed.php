@@ -1,27 +1,7 @@
 <?php
 
-require "includes/configuration.php";
-
-require "includes/classes/utility.php";
-require "includes/classes/database.php";
-
-require "includes/classes/hook.php";
-require "includes/classes/output.php";
-
-global $Hook;
-
-$Hook = new Hook();
-$Output = new Output();
-$Database = new Database();
-
 // Pretend to be an XML document.
 header("Content-Type: application/xml; charset=utf-8");
-
-$Database->connect();
-
-$Output->setDatabaseHandle($Database->getHandle());
-
-$Output->startBuffer();
 
 // Start the XML document.
 echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
@@ -76,11 +56,5 @@ if ($query && $query->rowCount() > 0) {
 // End the XML RSS document.
 echo "</channel>\n";
 echo "</rss>";
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
-
-$Database->disconnect();
 
 ?>

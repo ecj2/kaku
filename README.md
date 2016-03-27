@@ -13,8 +13,6 @@ In order to use Kaku with pretty URLs, you will need to configure your Web serve
 On Nginx, use the following for your Kaku directory:
 
 ```
-rewrite ^feed$ feed.php;
-
 if (!-e $request_filename) {
 
   rewrite ^(.+)$ index.php?path=$1;
@@ -25,7 +23,6 @@ On Apache, use the following in your .htaccess file wherever you installed Kaku:
 
 ```
 RewriteEngine On
-RewriteRule ^feed$ feed.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.+)$ index.php?path=$1 [QSA,L]
