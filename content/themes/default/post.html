@@ -2,12 +2,10 @@
 <html lang="{%blog_language%}">
   <head>
     <meta charset="utf-8">
-    <title>{%post_title%} - {%blog_title%}</title>
-    <link rel="shortcut icon" href="{%theme_directory%}/default/img/bookmark.ico">
+    <title>{%post_title%} &raquo; {%blog_title%}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans%7CMerriweather:300">
     <link rel="stylesheet" href="{%theme_directory%}/default/css/main.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans%7CLora">
     <meta name="description" content="{%post_description%}">
-    <meta name="viewport" content="width=700">
     {%head_content%}
   </head>
   <body>
@@ -18,19 +16,14 @@
           {%navigation_items%}
         </nav>
       </header>
-      <main>
-        <article>
-          <header>
-            <h2>{%post_title%}</h2>
-          </header>
-          {%post_body%}
-          <div class="info">
-            Posted <time datetime="{%post_date_time_epoch%}">{%post_relative_epoch%} ago</time>
-            <div class="keywords">{%post_keywords%}</div>
-          </div>
-        </article>
-        {%comments%}
-      </main>
+      <article>
+        <header>
+          <h1>{%post_title%}</h1>
+          <time datetime="{%post_date_time_epoch%}">{%post_absolute_epoch%}</time>
+        </header>
+        {%post_body%}
+      </article>
+      {%comments%}
       <footer>
         {%footer%}
       </footer>

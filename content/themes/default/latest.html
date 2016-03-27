@@ -3,11 +3,9 @@
   <head>
     <meta charset="utf-8">
     <title>{%blog_title%}</title>
-    <link rel="shortcut icon" href="{%theme_directory%}/default/img/bookmark.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans%7CMerriweather:300">
     <link rel="stylesheet" href="{%theme_directory%}/default/css/main.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans%7CLora">
     <meta name="description" content="{%blog_description%}">
-    <meta name="viewport" content="width=700">
     {%head_content%}
   </head>
   <body>
@@ -18,9 +16,7 @@
           {%navigation_items%}
         </nav>
       </header>
-      <main>
-        {%latest_posts%}
-      </main>
+      {%latest_posts%}
       <footer>
         <span class="text">{%footer%}</span>
         <span class="previous_page">{%previous_page%}</span>

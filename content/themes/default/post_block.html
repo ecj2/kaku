@@ -1,10 +1,7 @@
 <article>
   <header>
-    <h2><a href="{%blog_url%}/post/{%post_url%}">{%post_title%}</a></h2>
+    <h1><a href="{%blog_url%}/post/{%post_url%}">{%post_title%}</a></h1>
+    <time datetime="{%post_date_time_epoch%}">{%post_absolute_epoch%}</time>
   </header>
   {%post_body%}
-  <div class="info">
-    Posted <time datetime="{%post_date_time_epoch%}">{%post_relative_epoch%} ago</time>
-    <div class="keywords">{%post_keywords%}</div>
-  </div>
 </article>
