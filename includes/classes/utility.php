@@ -20,11 +20,23 @@ class Utility {
 
     $host = $_SERVER["HTTP_HOST"];
 
-    $protocol = $_SERVER["SERVER_PROTOCOL"];
+    $protocol;
 
-    $protocol =  strtolower(substr($protocol, 0, strpos($protocol, "/")));
+    if (!empty($_SERVER["HTTP_X_FORWARDED_PROTO"])) {
 
-    $protocol .= "://";
+      $protocol = $_SERVER["HTTP_X_FORWARDED_PROTO"] . "://";
+    }
+    else {
+
+      if (!empty($_SERVER["HTTPS"])) {
+
+        $protocol = "https://";
+      }
+      else {
+
+        $protocol = "http://";
+      }
+    }
 
     $sub_directory = substr(
 
