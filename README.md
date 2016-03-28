@@ -2,7 +2,7 @@
 Kaku is a simple, lightweight Weblog content management system written in PHP. It was designed to run well on older hardware, such as the Raspberry Pi.
 
 ## License
-See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
+See the [LICENSE](LICENSE.md) file for license rights and limitations.
 
 ## Installation
 Edit the database configurations in `includes/configuration.php`, then view `index.php` in a Web browser. Tables will be created automatically. If errors appear, check your database configurations and run `index.php` again. If no errors appear, you have successfully installed Kaku, and are free to delete `install.php`.
