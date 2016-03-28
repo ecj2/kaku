@@ -25,7 +25,7 @@ On Apache, use the following in your .htaccess file wherever you installed Kaku:
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.+)$ index.php?path=$1 [QSA,L]
+RewriteRule ^(.+)$ index.php?path=$1 [QSA,B]
 ```
 
 You should also redirect 404 errors to `error.php?code=404` on both Nginx and Apache.
