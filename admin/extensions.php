@@ -88,8 +88,10 @@ if (count($directories > 0)) {
       // Require extension source file.
       require_once $extension_full_path;
 
+      $classes = array_diff(get_declared_classes(), $classes);
+
       // Get name of newly required class.
-      $class_name = reset(array_diff(get_declared_classes(), $classes));
+      $class_name = reset($classes);
 
       if (strlen($class_name) == 0) {
 
