@@ -20,6 +20,7 @@ $Post = new Post;
 $Theme = new Theme;
 $Output = new Output;
 $Comment = new Comment;
+$Utility = new Utility;
 $Database = new Database;
 
 $Database->connect();
@@ -490,6 +491,12 @@ else if (in_array("range", $path)) {
   }
 }
 else {
+
+  if (!empty($path)) {
+
+    // Redirect to 404.
+    header("Location: " . $Utility->getRootAddress() . "/error.php?code=404");
+  }
 
   // Viewing latest posts.
 
