@@ -1,14 +1,12 @@
 <?php
 
-$name = "Post Pagination";
-
-class Pagination extends Utility {
+class Pagination extends Extension {
 
   private $DatabaseHandle;
 
   public function __construct() {
 
-    //
+    Extension::setName("Post Pagination");
   }
 
   public function manageHooks() {
@@ -91,7 +89,9 @@ class Pagination extends Utility {
 
       if ($_GET["page_number"] == 0) {
 
-        $root_address = Utility::getRootAddress();
+        $Utility = new Utility;
+
+        $root_address = $Utility->getRootAddress();
 
         // Redirect to index.
         header("Location: {$root_address}");

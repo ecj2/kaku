@@ -14,6 +14,7 @@ require "../includes/classes/database.php";
 
 require "../includes/classes/hook.php";
 require "../includes/classes/output.php";
+require "../includes/classes/extension.php";
 
 global $Hook;
 
@@ -127,6 +128,10 @@ if (count($directories > 0)) {
       }
 
       $page_body .= "<tr>";
+
+      $Extension = new $class_name;
+
+      $name = $Extension->getName();
 
       if (isset($name)) {
 

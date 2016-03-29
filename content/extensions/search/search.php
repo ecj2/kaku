@@ -1,14 +1,12 @@
 <?php
 
-$name = "Simple Search";
-
-class Search {
+class Search extends Extension {
 
   private $DatabaseHandle;
 
   public function __construct() {
 
-    //
+    Extension::setName("Simple Search");
   }
 
   public function manageHooks() {

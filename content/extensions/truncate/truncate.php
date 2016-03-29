@@ -1,14 +1,12 @@
 <?php
 
-$name = "Truncate Posts";
-
-class Truncate {
+class Truncate extends Extension {
 
   private $DatabaseHandle;
 
   public function __construct() {
 
-    //
+    Extension::setName("Truncate Posts");
   }
 
   public function manageHooks() {

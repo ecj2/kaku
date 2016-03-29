@@ -1,14 +1,12 @@
 <?php
 
-$name = "Redirect Manager";
-
-class RedirectManager extends Utility {
+class RedirectManager extends Extension {
 
   private $DatabaseHandle;
 
   public function __construct() {
 
-    //
+    Extension::setName("Redirect Manager");
   }
 
   public function setDatabaseHandle($Handle) {

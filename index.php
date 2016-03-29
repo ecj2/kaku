@@ -11,6 +11,7 @@ require "includes/classes/post.php";
 require "includes/classes/theme.php";
 require "includes/classes/output.php";
 require "includes/classes/comment.php";
+require "includes/classes/extension.php";
 
 global $Hook;
 

@@ -1,14 +1,12 @@
 <?php
 
-$name = "Disqus Forum";
-
-class DisqusForum {
+class DisqusForum extends Extension {
 
   private $DatabaseHandle;
 
   public function __construct() {
 
-    //
+    Extension::setName("Disqus Forum");
   }
 
   public function manageHooks() {
