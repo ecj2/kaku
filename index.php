@@ -55,6 +55,9 @@ $Output->startBuffer();
 
 if (file_exists("install.php")) {
 
+  // Allow access to install file.
+  define("KAKU_INCLUDE", true);
+
   require "install.php";
 }
 
@@ -62,8 +65,11 @@ $Output->loadExtensions();
 
 if (in_array("feed", $path)) {
 
+  // Allow access to feed file.
+  define("KAKU_INCLUDE", true);
+
   // Viewing the feed.
-  
+
   require "feed.php";
 }
 else if (in_array("post", $path)) {

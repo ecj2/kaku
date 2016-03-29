@@ -1,5 +1,8 @@
 <?php
 
+// Prevent direct access to this file.
+if (!defined("KAKU_INCLUDE")) exit();
+
 // Pretend to be an XML document.
 header("Content-Type: application/xml; charset=utf-8");
 
