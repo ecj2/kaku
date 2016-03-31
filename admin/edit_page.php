@@ -166,6 +166,9 @@ else {
     $description = $page->description;
     $show_on_search = $page->show_on_search;
 
+    // Encode { and } to prevent it from being replaced by the output buffer.
+    $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
+
     $page_body .= "
 
       <form method=\"post\" class=\"edit_page\">

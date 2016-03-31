@@ -136,6 +136,9 @@ else {
     $body = $tag->body;
     $title = $tag->title;
 
+    // Encode { and } to prevent it from being replaced by the output buffer.
+    $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
+
     $page_body .= "
 
       <form method=\"post\" class=\"edit_tag\">

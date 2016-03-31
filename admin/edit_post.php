@@ -177,6 +177,9 @@ else {
     $description = $post->description;
     $allow_comments = $post->allow_comments;
 
+    // Encode { and } to prevent it from being replaced by the output buffer.
+    $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
+
     $page_body .= "
 
       <form method=\"post\" class=\"edit_post\">
