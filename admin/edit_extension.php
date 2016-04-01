@@ -84,6 +84,9 @@ else {
 
     // Run the extension's install script.
 
+    // Allow access to install file.
+    define("KAKU_INCLUDE", true);
+
     require "../install.php";
 
     require "{$extension_directory}/install.php";
