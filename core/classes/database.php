@@ -10,6 +10,12 @@ class Database {
 
   private $Handle;
 
+  public function __destruct() {
+
+    // Disconnect from the database.
+    $this->Handle = null;
+  }
+
   public function connect() {
 
     try {
@@ -25,12 +31,6 @@ class Database {
       // Connection attempt failed.
       $GLOBALS["Utility"]->displayError("failed to connect to the database");
     }
-  }
-
-  public function disconnect() {
-
-    // Disconnect from the database.
-    $this->Handle = null;
   }
 
   public function getHandle() {
