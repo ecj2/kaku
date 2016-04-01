@@ -331,7 +331,7 @@ if (!$Database->checkTableExistence("tags")) {
 
       '404_url',
 
-      '{$this_url}/page/page+not+found'
+      '{%blog_url%}/page/page+not+found'
     )"
   )) {
 
