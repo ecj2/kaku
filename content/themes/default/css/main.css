@@ -170,7 +170,7 @@ footer .previous_page {
   float: left;
   display: block;
   position: relative;
-  margin-top: -34px;
+  margin-top: -32px;
 }
 
 footer .next_page {
@@ -178,7 +178,7 @@ footer .next_page {
   float: right;
   display: block;
   position: relative;
-  margin-top: -34px;
+  margin-top: -32px;
 }
 
 footer .text {
