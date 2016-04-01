@@ -1,8 +1,5 @@
 <?php
 
-// Allow access to include files.
-define("KAKU_INCLUDE", true);
-
 session_start();
 
 if (!isset($_SESSION["username"])) {
@@ -180,6 +177,14 @@ else {
     $description = $post->description;
     $allow_comments = $post->allow_comments;
 
+    // Encode { and } to prevent it from being replaced by the output buffer.
+    $url = str_replace(["{", "}"], ["&#123;", "&#125;"], $url);
+    $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
+    $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $title);
+    $epoch = str_replace(["{", "}"], ["&#123;", "&#125;"], $epoch);
+    $keywords = str_replace(["{", "}"], ["&#123;", "&#125;"], $keywords);
+    $description = str_replace(["{", "}"], ["&#123;", "&#125;"], $description);
+
     $page_body .= "
 
       <form method=\"post\" class=\"edit_post\">
@@ -194,8 +199,7 @@ else {
         <label for=\"body\">Body</label>
         <textarea id=\"body\" name=\"body\" required>{$body}</textarea>
         <label for=\"description\">Description (Optional)</label>
-        <textarea id=\"description\" name=\"description\">
-        {$description}</textarea>
+        <textarea id=\"description\" name=\"description\">{$description}</textarea>
         <label for=\"epoch\">Epoch</label>
         <input type=\"text\" id=\"epoch\" name=\"epoch\"
          value=\"{$epoch}\" required>

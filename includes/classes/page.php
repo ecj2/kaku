@@ -1,11 +1,13 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_INCLUDE")) exit();
-
 class Page extends Utility {
 
-  private $DatabaseHandle;
+  private $Database;
+
+  public function __construct() {
+
+    //
+  }
 
   public function getBody() {
 
@@ -19,12 +21,20 @@ class Page extends Utility {
 
   public function getDescription() {
 
-    return $this->getData("description");
+    $description = $this->getData("description");
+
+    if (strlen($description) == 0) {
+
+      // The page lacks a description.
+      $description = "No description.";
+    }
+
+    return $description;
   }
 
-  public function setDatabaseHandle($Handle) {
+  public function setDatabaseHandle($DatabaseHandle) {
 
-    $this->DatabaseHandle = $Handle;
+    $this->Database = $DatabaseHandle;
   }
 
   private function getData($column) {
@@ -35,6 +45,7 @@ class Page extends Utility {
       return;
     }
 
+    // Select the given column.
     $statement = "
 
       SELECT {$column}
@@ -42,7 +53,7 @@ class Page extends Utility {
       WHERE url = ?
     ";
 
-    $query = $this->DatabaseHandle->prepare($statement);
+    $query = $this->Database->prepare($statement);
 
     // Prevent SQL injections.
     $query->bindParam(1, $_GET["page_url"]);
@@ -58,12 +69,12 @@ class Page extends Utility {
 
       $address = Utility::getRootAddress();
 
-      // Query returned zero rows.
+      // Query returned zero rows. Redirect to 404 page.
       header("Location: {$address}/error.php?code=404");
     }
     else {
 
-      // Get the desired data.
+      // Return the desired data.
       return $query->fetch(PDO::FETCH_OBJ)->$column;
     }
   }

@@ -1,23 +1,30 @@
 <?php
 
-// Allow access to include files.
-define("KAKU_INCLUDE", true);
-
 require "includes/configuration.php";
 
 require "includes/classes/utility.php";
 require "includes/classes/database.php";
 
+require "includes/classes/hook.php";
+require "includes/classes/output.php";
+
+global $Hook;
+
+$Hook = new Hook;
+
+$Output = new Output;
 $Utility = new Utility;
 $Database = new Database;
 
 $Database->connect();
 
+$Output->setDatabaseHandle($Database->getHandle());
+
 $root_address = $Utility->getRootAddress();
 
 if (!isset($_GET["code"])) {
 
-  // Redirect to index.
+  // No error code was given. Redirect to index.
   header("Location: {$root_address}");
 }
 
@@ -50,8 +57,22 @@ switch ($_GET["code"]) {
       // Fetch the result as an object.
       $result = $query->fetch(PDO::FETCH_OBJ);
 
+      ob_start();
+
+      $Output->startBuffer();
+
+      echo $result->body;
+
+      $Output->replaceTags();
+
+      $Output->flushBuffer();
+
+      $redirect = ob_get_contents();
+
+      ob_end_clean();
+
       // Redirect to 404 page.
-      header("Location: {$result->body}");
+      header("Location: {$redirect}");
     }
   break;
 

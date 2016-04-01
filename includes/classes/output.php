@@ -1,8 +1,5 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_INCLUDE")) exit();
-
 class Output extends Utility {
 
   private $search;
@@ -11,15 +8,15 @@ class Output extends Utility {
   private $class_name;
   private $class_file;
 
-  private $DatabaseHandle;
+  private $Database;
 
   public function __construct() {
 
-    $this->search = array();
-    $this->replace = array();
+    $this->search = [];
+    $this->replace = [];
 
-    $this->class_name = array();
-    $this->class_file = array();
+    $this->class_name = [];
+    $this->class_file = [];
   }
 
   public function flushBuffer() {
@@ -30,15 +27,18 @@ class Output extends Utility {
 
   public function replaceTags() {
 
+    global $Hook;
+
+    // Get the tag recursion depth.
     $statement = "
 
-      SELECT body, evaluate
+      SELECT body
       FROM " . DB_PREF . "tags
       WHERE title = 'recursion_depth'
       ORDER BY id DESC
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $query = $this->Database->query($statement);
 
     if (!$query || $query->rowCount() == 0) {
 
@@ -53,7 +53,7 @@ class Output extends Utility {
       // Get tags from database.
       $statement = "SELECT * FROM " . DB_PREF . "tags ORDER BY id DESC";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -69,51 +69,61 @@ class Output extends Utility {
 
           // Replace tag call with value from database.
 
-          global $Hook;
+          $Hook->addAction("{$tag->title}", $tag->body);
 
-          if ($tag->evaluate) {
+          $this->addTagReplacement(
 
-            // Evaluate the tag contents as if it were PHP code.
+            $tag->title,
 
-            $Hook->addAction("{$tag->title}_tag", eval($tag->body));
-
-            $this->addTagReplacement(
-
-              $tag->title,
-
-              $Hook->doAction("{$tag->title}_tag")
-            );
-          }
-          else {
-
-            // Do not evaluate tag contents as if PHP code.
-
-            $Hook->addAction("{$tag->title}_tag", $tag->body);
-
-            $this->addTagReplacement(
-
-              $tag->title,
-
-              $Hook->doAction("{$tag->title}_tag")
-            );
-          }
+            $Hook->doAction("{$tag->title}")
+          );
         }
       }
+    }
+
+    // Find all unfilled tags.
+    preg_match_all(
+
+      "/\{\%(.*?)\%\}/",
+
+      $this->replaceBufferContents(ob_get_contents()),
+
+      $matches
+    );
+
+    for ($i = 0; $i < count($matches[1]); ++$i) {
+
+      // Replace unfilled tags with hook actions (if applicable).
+
+      $Hook->addAction(
+
+        $matches[1][$i],
+
+        "{%" . $matches[1][$i] . "%}"
+      );
+
+      $this->addTagReplacement(
+
+        $matches[1][$i],
+
+        $Hook->doAction($matches[1][$i])
+      );
     }
   }
 
   public function startBuffer() {
 
-    ob_start(array($this, "replaceBufferContents"));
+    ob_start(
+
+      [
+        $this,
+
+        "replaceBufferContents"
+      ]
+    );
   }
 
   public function loadExtensions() {
-
-    if (!defined("KAKU_EXTENSION")) {
-
-      // Allow access to extension files.
-      define("KAKU_EXTENSION", true);
-    }
 
     // Get extension directories.
     $directories = glob("content/extensions/*", GLOB_ONLYDIR);
@@ -133,20 +143,23 @@ class Output extends Utility {
         // Require extension source file.
         require_once $extension_full_path;
 
+        $classes = array_diff(get_declared_classes(), $classes);
+
         // Get name of newly required class.
-        $class_name = reset(array_diff(get_declared_classes(), $classes));
+        $class_name = reset($classes);
 
         if (!in_array($class_name, $this->class_name)) {
 
           // Save class name and file path.
-          array_push($this->class_name, $class_name);
-          array_push($this->class_file, $extension_full_path);
+          $this->class_name[] = $class_name;
+          $this->class_file[] = $extension_full_path;
         }
 
         $position = array_search($extension_full_path, $this->class_file);
 
         $class_name = $this->class_name[$position];
 
+        // Determine if the given extension has been activated.
         $statement = "
 
           SELECT activate
@@ -154,10 +167,11 @@ class Output extends Utility {
           WHERE title = '{$class_name}'
         ";
 
-        $query = $this->DatabaseHandle->query($statement);
+        $query = $this->Database->query($statement);
 
         if (!$query || $query->rowCount() == 0) {
 
+          // Failed to determine activation status.
           continue;
         }
 
@@ -169,6 +183,7 @@ class Output extends Utility {
 
         if (!$activation_status) {
 
+          // Extension has not been activated; skip it.
           continue;
         }
 
@@ -178,30 +193,12 @@ class Output extends Utility {
         if (method_exists($class_name, "setDatabaseHandle")) {
 
           // Pass the database handle over to the extension.
-          $Extension->setDatabaseHandle($this->DatabaseHandle);
+          $Extension->setDatabaseHandle($this->Database);
         }
 
         if (method_exists($class_name, "manageHooks")) {
 
           $Extension->manageHooks();
-        }
-
-        if (method_exists($class_name, "getTags")) {
-
-          if (method_exists($class_name, "getReplacements")) {
-
-            // Identify and replace the tags called by the extension.
-
-            foreach ($Extension->getTags() as $key) {
-
-              array_push($this->search, "{%{$key}%}");
-            }
-
-            foreach ($Extension->getReplacements() as $key) {
-
-              array_push($this->replace, $key);
-            }
-          }
         }
       }
     }
@@ -209,38 +206,37 @@ class Output extends Utility {
 
   public function addTagReplacement($tag_title, $replacement) {
 
-    array_push($this->search, "{%{$tag_title}%}");
-    array_push($this->replace, $replacement);
+    $this->search[] = "{%{$tag_title}%}";
+    $this->replace[] = $replacement;
   }
 
-  public function setDatabaseHandle($Handle) {
+  public function setDatabaseHandle($DatabaseHandle) {
 
-    $this->DatabaseHandle = $Handle;
+    $this->Database = $DatabaseHandle;
   }
 
   public function replaceBufferContents($contents) {
 
-    // Compress final output by removing new lines and double spaces.
-    return str_replace(
+    static $first_pass = true;
 
-      array(
+    // Replace tags in buffer.
+    $contents = str_replace(
 
-        "\n",
+      $this->search,
 
-        "  "
-      ),
+      $this->replace,
 
-      "",
-
-      str_replace(
-
-        $this->search,
-
-        $this->replace,
-
-        $contents
-      )
+      $contents
     );
+
+    if ($first_pass) {
+
+      $first_pass = false;
+
+      $this->replaceTags();
+    }
+
+    return $contents;
   }
 }
 

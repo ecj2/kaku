@@ -2,12 +2,10 @@
 <html lang="{%blog_language%}">
   <head>
     <meta charset="utf-8">
-    <title>{%page_title%} - {%blog_title%}</title>
-    <link rel="shortcut icon" href="{%blog_url%}/content/themes/default/img/bookmark.ico">
-    <link rel="stylesheet" href="{%blog_url%}/content/themes/default/css/main.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans%7CPT+Serif">
+    <title>{%page_title%} &raquo; {%blog_title%}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans%7CMerriweather:300">
+    <link rel="stylesheet" href="{%theme_directory%}/default/css/main.css">
     <meta name="description" content="{%page_description%}">
-    <meta name="viewport" content="width=700">
     {%head_content%}
   </head>
   <body>
@@ -18,14 +16,12 @@
           {%navigation_items%}
         </nav>
       </header>
-      <main>
-        <article>
-          <header>
-            <h2>{%page_title%}</h2>
-          </header>
-          {%page_body%}
-        </article>
-      </main>
+      <article>
+        <header>
+          <h1>{%page_title%}</h1>
+        </header>
+        {%page_body%}
+      </article>
       <footer>
         {%footer%}
       </footer>

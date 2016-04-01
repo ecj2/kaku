@@ -1,8 +1,5 @@
 <?php
 
-// Allow access to include files.
-define("KAKU_INCLUDE", true);
-
 session_start();
 
 if (!isset($_SESSION["username"])) {
@@ -94,13 +91,9 @@ if (isset($_POST["body"]) && isset($_POST["title"])) {
 
       body,
 
-      title,
-
-      evaluate
+      title
     )
     VALUES (
-
-      ?,
 
       ?,
 
@@ -110,17 +103,9 @@ if (isset($_POST["body"]) && isset($_POST["title"])) {
 
   $query = $Database->getHandle()->prepare($statement);
 
-  $evaluate = false;
-
-  if (isset($_POST["evaluate"])) {
-
-    $evaluate = true;
-  }
-
   // Prevent SQL injections.
   $query->bindParam(1, $_POST["body"]);
   $query->bindParam(2, $_POST["title"]);
-  $query->bindParam(3, $evaluate);
 
   $query->execute();
 
@@ -142,8 +127,6 @@ else {
       <input type=\"text\" id=\"title\" name=\"title\" required>
       <label for=\"body\">Body</label>
       <textarea id=\"body\" name=\"body\" required></textarea>
-      <input type=\"checkbox\" id=\"evaluate\"
-       name=\"evaluate\"> Evaluate as PHP Code<br>
       <input type=\"submit\" value=\"Add Tag\">
     </form>
   ";
@@ -174,10 +157,13 @@ else {
 
     while ($tag = $query->fetch(PDO::FETCH_OBJ)) {
 
+      // Encode { and } to prevent it from being replaced by the output buffer.
+      $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $tag->title);
+
       $page_body .= "
 
         <tr>
-          <td>{$tag->title}</td>
+          <td>{$title}</td>
           <td><a href=\"edit_tag.php?id={$tag->id}\">Edit</a></td>
           <td><a href=\"delete_tag.php?id={$tag->id}\">Delete</a></td>
         </tr>

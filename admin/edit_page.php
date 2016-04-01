@@ -1,8 +1,5 @@
 <?php
 
-// Allow access to include files.
-define("KAKU_INCLUDE", true);
-
 session_start();
 
 if (!isset($_SESSION["username"])) {
@@ -169,6 +166,13 @@ else {
     $description = $page->description;
     $show_on_search = $page->show_on_search;
 
+    // Encode { and } to prevent it from being replaced by the output buffer.
+    $url = str_replace(["{", "}"], ["&#123;", "&#125;"], $url);
+    $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
+    $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $title);
+    $keywords = str_replace(["{", "}"], ["&#123;", "&#125;"], $keywords);
+    $description = str_replace(["{", "}"], ["&#123;", "&#125;"], $description);
+
     $page_body .= "
 
       <form method=\"post\" class=\"edit_page\">
@@ -183,8 +187,7 @@ else {
         <label for=\"body\">Body</label>
         <textarea id=\"body\" name=\"body\" required>{$body}</textarea>
         <label for=\"description\">Description (Optional)</label>
-        <textarea id=\"description\" name=\"description\">
-        {$description}</textarea>
+        <textarea id=\"description\" name=\"description\">{$description}</textarea>
         <input type=\"checkbox\" id=\"show_on_search\"
         name=\"show_on_search\"
     ";

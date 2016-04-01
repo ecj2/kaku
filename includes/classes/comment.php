@@ -1,11 +1,13 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_INCLUDE")) exit();
-
 class Comment extends Utility {
 
-  private $DatabaseHandle;
+  private $Database;
+
+  public function __construct() {
+
+    //
+  }
 
   public function getSource($comment_block_markup) {
 
@@ -15,6 +17,7 @@ class Comment extends Utility {
       return;
     }
 
+    // Determine if comments are allowed on this post.
     $statement = "
 
       SELECT allow_comments
@@ -22,7 +25,7 @@ class Comment extends Utility {
       WHERE url = ?
     ";
 
-    $query = $this->DatabaseHandle->prepare($statement);
+    $query = $this->Database->prepare($statement);
 
     // Prevent SQL injections.
     $query->bindParam(1, $_GET["post_url"]);
@@ -53,9 +56,9 @@ class Comment extends Utility {
     }
   }
 
-  public function setDatabaseHandle($Handle) {
+  public function setDatabaseHandle($DatabaseHandle) {
 
-    $this->DatabaseHandle = $Handle;
+    $this->Database = $DatabaseHandle;
   }
 }
 

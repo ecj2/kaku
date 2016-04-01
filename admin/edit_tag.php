@@ -1,8 +1,5 @@
 <?php
 
-// Allow access to include files.
-define("KAKU_INCLUDE", true);
-
 session_start();
 
 if (!isset($_SESSION["username"])) {
@@ -82,24 +79,16 @@ else if (isset($_POST["body"]) && isset($_POST["title"])) {
   $statement = "
 
     UPDATE " . DB_PREF . "tags
-    SET body = ?, title = ?, evaluate = ?
+    SET body = ?, title = ?
     WHERE id = ?
   ";
 
   $query = $Database->getHandle()->prepare($statement);
 
-  $evaluate = false;
-
-  if (isset($_POST["evaluate"])) {
-
-    $evaluate = true;
-  }
-
   // Prevent SQL injections.
   $query->bindParam(1, $_POST["body"]);
   $query->bindParam(2, $_POST["title"]);
-  $query->bindParam(3, $evaluate);
-  $query->bindParam(4, $_GET["id"]);
+  $query->bindParam(3, $_GET["id"]);
 
   $query->execute();
 
@@ -116,7 +105,7 @@ else {
 
   $statement = "
 
-    SELECT body, title, evaluate
+    SELECT body, title
     FROM " . DB_PREF . "tags
     WHERE id = ?
   ";
@@ -146,7 +135,10 @@ else {
 
     $body = $tag->body;
     $title = $tag->title;
-    $evaluate = $tag->evaluate;
+
+    // Encode { and } to prevent it from being replaced by the output buffer.
+    $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
+    $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $title);
 
     $page_body .= "
 
@@ -156,17 +148,6 @@ else {
         required>
         <label for=\"body\">Body</label>
         <textarea id=\"body\" name=\"body\" required>{$body}</textarea>
-        <input type=\"checkbox\" id=\"evaluate\" name=\"evaluate\"
-      ";
-
-      if ($evaluate) {
-
-        $page_body .= " checked";
-      }
-
-      $page_body .= "
-
-        > Evaluate as PHP Code<br>
         <input type=\"submit\" value=\"Save\">
       </form>
     ";

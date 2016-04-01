@@ -1,32 +1,25 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_EXTENSION")) exit();
-
-$name = "Simple Search";
-
-class Search {
+class Search extends Extension {
 
   private $DatabaseHandle;
 
   public function __construct() {
 
-    //
+    Extension::setName("Simple Search");
   }
 
-  public function getTags() {
+  public function manageHooks() {
 
-    return array(
+    global $Hook;
 
-      "search"
-    );
-  }
+    $Hook->addFilter(
 
-  public function getReplacements() {
+      "search",
 
-    return array(
+      $this,
 
-      $this->manageSearch()
+      "manageSearch"
     );
   }
 
@@ -35,7 +28,7 @@ class Search {
     $this->DatabaseHandle = $handle;
   }
 
-  private function manageSearch() {
+  public function manageSearch() {
 
     if (isset($_GET["term"])) {
 
@@ -132,7 +125,7 @@ class Search {
 
           $markup .= "{$result->title}</a><br>";
 
-          if (empty($result->description)) {
+          if (empty(trim($result->description))) {
 
             // The resource has no description.
             $markup .= "No description.";

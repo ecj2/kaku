@@ -1,8 +1,5 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_INCLUDE")) exit();
-
 class Hook {
 
   private $action_types;
@@ -16,14 +13,14 @@ class Hook {
 
   public function __construct() {
 
-    $this->action_types = array();
-    $this->actions = array();
-    $this->filters = array();
-    $this->action_objects = array();
-    $this->filter_objects = array();
-    $this->action_methods = array();
-    $this->filter_methods = array();
-    $this->action_arguments = array();
+    $this->action_types = [];
+    $this->actions = [];
+    $this->filters = [];
+    $this->action_objects = [];
+    $this->filter_objects = [];
+    $this->action_methods = [];
+    $this->filter_methods = [];
+    $this->action_arguments = [];
   }
 
   public function doAction($action) {
@@ -120,22 +117,22 @@ class Hook {
 
       if (!isset($this->filters[$action])) {
 
-        $this->filters[$action] = array();
+        $this->filters[$action] = [];
       }
 
       if (!isset($this->filter_objects[$action])) {
 
-        $this->filter_objects[$action] = array();
+        $this->filter_objects[$action] = [];
       }
 
       if (!isset($this->filter_methods[$action])) {
 
-        $this->filter_methods[$action] = array();
+        $this->filter_methods[$action] = [];
       }
 
-      array_push($this->filters[$action], $action);
-      array_push($this->filter_objects[$action], $object);
-      array_push($this->filter_methods[$action], $method);
+      $this->filters[$action][] = $action;
+      $this->filter_objects[$action][] = $object;
+      $this->filter_methods[$action][] = $method;
     }
   }
 

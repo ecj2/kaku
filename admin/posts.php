@@ -1,8 +1,5 @@
 <?php
 
-// Allow access to include files.
-define("KAKU_INCLUDE", true);
-
 session_start();
 
 if (!isset($_SESSION["username"])) {
@@ -232,10 +229,13 @@ else {
 
     while ($post = $query->fetch(PDO::FETCH_OBJ)) {
 
+      // Encode { and } to prevent it from being replaced by the output buffer.
+      $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $post->title);
+
       $page_body .= "
 
         <tr>
-          <td>{$post->title}</td>
+          <td>{$title}</td>
           <td><a href=\"edit_post.php?id={$post->id}\">Edit</a></td>
           <td><a href=\"delete_post.php?id={$post->id}\">Delete</a></td>
         </tr>

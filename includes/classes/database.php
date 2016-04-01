@@ -1,11 +1,37 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_INCLUDE")) exit();
-
 class Database extends Utility {
 
   private $Handle;
+
+  public function __construct() {
+
+    //
+  }
+
+  public function getTag($tag_title) {
+
+    // Select the given tag.
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = '{$tag_title}'
+      ORDER BY id DESC
+      LIMIT 1
+    ";
+
+    $query = $this->Handle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or returned zero rows.
+      Utility::displayError("failed to get {$tag_title} tag");
+    }
+
+    // Return the contents of the given tag.
+    return $query->fetch(PDO::FETCH_OBJ)->body;
+  }
 
   public function connect() {
 
@@ -35,6 +61,7 @@ class Database extends Utility {
 
   public function performQuery($statement) {
 
+    // Perform the given query statement.
     $query = $this->Handle->query($statement);
 
     if (!$query) {

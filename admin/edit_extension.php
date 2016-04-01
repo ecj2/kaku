@@ -59,10 +59,47 @@ echo file_get_contents("content/themes/{$theme_name}/template.html");
 
 $page_body = "";
 
-$page_title = "Dashboard";
+$page_title = "Edit Extension";
 
-$page_body = "Welcome to the dashboard. Use the navigation links to ";
-$page_body .= "manage your blog.";
+if (!isset($_GET["title"]) || empty($_GET["title"])) {
+
+  $page_body .= "No extension specified.";
+
+  $page_body .= "<a href=\"extensions.php\" class=\"button_return\">Return</a>";
+}
+else if (!file_exists("../content/extensions/" . $_GET["title"] . "/edit.php")) {
+
+  $page_body .= "This extension lacks an edit page.";
+
+  $page_body .= "<a href=\"extensions.php\" class=\"button_return\">Return</a>";
+}
+else {
+
+  // Start a new buffer for the extension's edit.php file.
+  ob_start();
+
+  $extension_directory = "../content/extensions/" . $_GET["title"];
+
+  if (file_exists("{$extension_directory}/install.php")) {
+
+    // Run the extension's install script.
+
+    // Allow access to install file.
+    define("KAKU_INCLUDE", true);
+
+    require "../install.php";
+
+    require "{$extension_directory}/install.php";
+  }
+
+  require "{$extension_directory}/edit.php";
+
+  // The extensions file's contents will be thrown to the buffer.
+  $page_body .= ob_get_contents();
+
+  // End the extension buffer.
+  ob_end_clean();
+}
 
 $Output->addTagReplacement(
 

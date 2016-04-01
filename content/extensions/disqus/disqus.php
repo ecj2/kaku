@@ -1,32 +1,25 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_EXTENSION")) exit();
-
-$name = "Disqus Forum";
-
-class DisqusForum {
+class DisqusForum extends Extension {
 
   private $DatabaseHandle;
 
   public function __construct() {
 
-    //
+    Extension::setName("Disqus Forum");
   }
 
-  public function getTags() {
+  public function manageHooks() {
 
-    return array(
+    global $Hook;
 
-      "comment_source"
-    );
-  }
+    $Hook->addFilter(
 
-  public function getReplacements() {
+      "comment_source",
 
-    return array(
+      $this,
 
-      $this->getDisqusForum()
+      "getDisqusForum"
     );
   }
 
@@ -35,7 +28,7 @@ class DisqusForum {
     $this->DatabaseHandle = $handle;
   }
 
-  private function getDisqusForum() {
+  public function getDisqusForum() {
 
     $disqus_markup_file = dirname(__FILE__) . "/content/markup.php";
 
@@ -43,32 +36,35 @@ class DisqusForum {
 
       $statement = "
 
-        SELECT body
-        FROM " . DB_PREF . "tags
-        WHERE title = 'disqus_forum_name'
+        SELECT forum_name
+        FROM " . DB_PREF . "extension_disqus
+        WHERE 1 = 1
       ";
 
       $query = $this->DatabaseHandle->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
-        // Query failed or returned zero rows.
+        // Query failed or is empty.
         return "Comments have not been configured.";
       }
       else {
 
-        if ($query->fetch(PDO::FETCH_OBJ)->body == "") {
+        // Fetch the result as an object.
+        $result = $query->fetch(PDO::FETCH_OBJ);
 
-          // Disqus forum name hasn't been configured.
+        // Get the forum name.
+        $forum_name = $result->forum_name;
+
+        if ($forum_name == "") {
+
           return "Comments have not been configured.";
         }
-        else {
 
-          require $disqus_markup_file;
+        require $disqus_markup_file;
 
-          // Display the Disqus forum.
-          return $markup;
-        }
+        // Display the Disqus forum.
+        return str_replace("{%disqus_forum_name%}", $forum_name, $markup);
       }
     }
     else {

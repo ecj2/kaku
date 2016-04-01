@@ -1,8 +1,5 @@
 <?php
 
-// Allow access to include files.
-define("KAKU_INCLUDE", true);
-
 session_start();
 
 if (!isset($_SESSION["username"])) {
@@ -17,6 +14,7 @@ require "../includes/classes/database.php";
 
 require "../includes/classes/hook.php";
 require "../includes/classes/output.php";
+require "../includes/classes/extension.php";
 
 global $Hook;
 
@@ -69,12 +67,6 @@ $directories = glob("../content/extensions/*", GLOB_ONLYDIR);
 
 if (count($directories > 0)) {
 
-  if (!defined("KAKU_EXTENSION")) {
-
-    // Allow access to extension files.
-    define("KAKU_EXTENSION", true);
-  }
-
   $page_body .= "<table class=\"extensions\">";
 
   $page_body .= "<tr>";
@@ -97,8 +89,10 @@ if (count($directories > 0)) {
       // Require extension source file.
       require_once $extension_full_path;
 
+      $classes = array_diff(get_declared_classes(), $classes);
+
       // Get name of newly required class.
-      $class_name = reset(array_diff(get_declared_classes(), $classes));
+      $class_name = reset($classes);
 
       if (strlen($class_name) == 0) {
 
@@ -135,9 +129,20 @@ if (count($directories > 0)) {
 
       $page_body .= "<tr>";
 
+      $Extension = new $class_name;
+
+      $name = $Extension->getName();
+
       if (isset($name)) {
 
-        $page_body .= "<td>{$name}</td>";
+        if (file_exists("{$directory}/edit.php")) {
+
+          $page_body .= "<td><a href=\"edit_extension.php?title=" . str_replace("../content/extensions/", "", $directory) . "\">{$name}</a></td>";
+        }
+        else {
+
+          $page_body .= "<td>{$name}</td>";
+        }
 
         unset($name);
       }

@@ -1,5 +1,8 @@
 <?php
 
+// Prevent direct access to this file.
+if (!defined("KAKU_INCLUDE")) exit();
+
 $errors = array();
 
 if (!$Database->checkTableExistence("tags")) {
@@ -16,9 +19,7 @@ if (!$Database->checkTableExistence("tags")) {
 
       title VARCHAR(99) NOT NULL,
 
-      body TEXT NOT NULL,
-
-      evaluate BOOL NOT NULL
+      body TEXT NOT NULL
     )"
   )) {
 
@@ -36,17 +37,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'blog_title',
 
-      'Kaku',
-
-      '0'
+      'Kaku'
     )"
   )) {
 
@@ -64,17 +61,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'blog_language',
 
-      'en',
-
-      '0'
+      'en'
     )"
   )) {
 
@@ -92,17 +85,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'blog_description',
 
-      'Just your average blog.',
-
-      '0'
+      'Just your average blog.'
     )"
   )) {
 
@@ -120,17 +109,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'theme_name',
 
-      'default',
-
-      '0'
+      'default'
     )"
   )) {
 
@@ -148,17 +133,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'admin_theme_name',
 
-      'default',
-
-      '0'
+      'default'
     )"
   )) {
 
@@ -176,17 +157,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'posts_per_page',
 
-      '3',
-
-      '0'
+      '3'
     )"
   )) {
 
@@ -204,17 +181,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'footer',
 
-      'Powered by <a href=\"https://github.com/ecj2/kaku\">Kaku</a>',
-
-      '0'
+      'Powered by <a href=\"https://github.com/ecj2/kaku\">Kaku</a>'
     )"
   )) {
 
@@ -232,17 +205,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'date_format',
 
-      'F jS, Y',
-
-      '0'
+      'F jS, Y'
     )"
   )) {
 
@@ -260,17 +229,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'recursion_depth',
 
-      '2',
-
-      '0'
+      '2'
     )"
   )) {
 
@@ -288,45 +253,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
-    )
-    VALUES (
-
-      'lure_text',
-
-      'Read more...',
-
-      '0'
-    )"
-  )) {
-
-    array_push(
-
-      $errors,
-
-      "failed to insert lure_text into " . DB_PREF . "tags"
-    );
-  }
-
-  if (!$Database->performQuery(
-
-    "INSERT INTO " . DB_PREF . "tags (
-
-      title,
-
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'comment_disabled_text',
 
-      'Comments have been disabled on this post.',
-
-      '0'
+      'Comments have been disabled on this post.'
     )"
   )) {
 
@@ -344,101 +277,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
-    )
-    VALUES (
-
-      'next_page_text',
-
-      'Older posts',
-
-      '0'
-    )"
-  )) {
-
-    array_push(
-
-      $errors,
-
-      "failed to insert next_page_text into " . DB_PREF . "tags"
-    );
-  }
-
-  if (!$Database->performQuery(
-
-    "INSERT INTO " . DB_PREF . "tags (
-
-      title,
-
-      body,
-
-      evaluate
-    )
-    VALUES (
-
-      'previous_page_text',
-
-      'Newer posts',
-
-      '0'
-    )"
-  )) {
-
-    array_push(
-
-      $errors,
-
-      "failed to insert previous_page_text into " . DB_PREF . "tags"
-    );
-  }
-
-  if (!$Database->performQuery(
-
-    "INSERT INTO " . DB_PREF . "tags (
-
-      title,
-
-      body,
-
-      evaluate
-    )
-    VALUES (
-
-      'disqus_forum_name',
-
-      '',
-
-      '0'
-    )"
-  )) {
-
-    array_push(
-
-      $errors,
-
-      "failed to insert disqus_forum_name into " . DB_PREF . "tags"
-    );
-  }
-
-  if (!$Database->performQuery(
-
-    "INSERT INTO " . DB_PREF . "tags (
-
-      title,
-
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'blog_url',
 
-      '{$this_url}',
-
-      '0'
+      '{$this_url}'
     )"
   )) {
 
@@ -456,17 +301,37 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
+      body
+    )
+    VALUES (
 
-      evaluate
+      'theme_directory',
+
+      '{%blog_url%}/content/themes'
+    )"
+  )) {
+
+    array_push(
+
+      $errors,
+
+      "failed to insert theme_directory into " . DB_PREF . "tags"
+    );
+  }
+
+  if (!$Database->performQuery(
+
+    "INSERT INTO " . DB_PREF . "tags (
+
+      title,
+
+      body
     )
     VALUES (
 
       '404_url',
 
-      '{$this_url}/page/page-not-found',
-
-      '0'
+      '{%blog_url%}/page/page+not+found'
     )"
   )) {
 
@@ -484,17 +349,13 @@ if (!$Database->checkTableExistence("tags")) {
 
       title,
 
-      body,
-
-      evaluate
+      body
     )
     VALUES (
 
       'keyword_prefix',
 
-      '#',
-
-      '0'
+      '#'
     )"
   )) {
 
@@ -505,49 +366,25 @@ if (!$Database->checkTableExistence("tags")) {
       "failed to insert keyword_prefix into " . DB_PREF . "tags"
     );
   }
-}
-
-if (!$Database->checkTableExistence("links")) {
 
   if (!$Database->performQuery(
 
-    "CREATE TABLE " . DB_PREF . "links (
-
-      id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-
-      uri VARCHAR(256) NOT NULL,
-
-      title VARCHAR(99) NOT NULL,
-
-      target VARCHAR(6) NOT NULL
-    )"
-  )) {
-
-    array_push(
-
-      $errors,
-
-      "failed to create " . DB_PREF . "links table"
-    );
-  }
-
-  if (!$Database->performQuery(
-
-    "INSERT INTO " . DB_PREF . "links (
-
-      uri,
+    "INSERT INTO " . DB_PREF . "tags (
 
       title,
 
-      target
+      body
     )
     VALUES (
 
-      '{%blog_url%}',
+      'navigation_items',
 
-      'Home',
-
-      '_self'
+      '
+      <ul>
+        <li><a href=\"{%blog_url%}\">Home</a></li>
+        <li><a href=\"{%blog_url%}/page/search\">Search</a></li>
+      </ul>
+      '
     )"
   )) {
 
@@ -555,35 +392,7 @@ if (!$Database->checkTableExistence("links")) {
 
       $errors,
 
-      "failed to insert home into " . DB_PREF . "links"
-    );
-  }
-
-  if (!$Database->performQuery(
-
-    "INSERT INTO " . DB_PREF . "links (
-
-      uri,
-
-      title,
-
-      target
-    )
-    VALUES (
-
-      '{%blog_url%}/page/search',
-
-      'Search',
-
-      '_self'
-    )"
-  )) {
-
-    array_push(
-
-      $errors,
-
-      "failed to insert search into " . DB_PREF . "links"
+      "failed to insert navigation_items into " . DB_PREF . "tags"
     );
   }
 }
@@ -676,7 +485,7 @@ if (!$Database->checkTableExistence("pages")) {
     )
     VALUES (
 
-      'page-not-found',
+      'page+not+found',
 
       'Page Not Found',
 
@@ -694,7 +503,7 @@ if (!$Database->checkTableExistence("pages")) {
 
       $errors,
 
-      "failed to insert page-not-found into " . DB_PREF . "pages"
+      "failed to insert page+not+found into " . DB_PREF . "pages"
     );
   }
 }
@@ -737,8 +546,8 @@ if (!$Database->checkTableExistence("posts")) {
 
   $body = "Hi there. Welcome to Kaku. This is the very first post. ";
   $body .= "Head over to the <a href=\"{%blog_url%}/admin\">admin ";
-  $body .= "panel</a> to get started. The username is <b>admin</b>";
-  $body .= " and the password is <b>password</b>.";
+  $body .= "panel</a> to get started. The username is admin";
+  $body .= " and the password is password.";
 
   if (!$Database->performQuery(
 
@@ -764,7 +573,7 @@ if (!$Database->checkTableExistence("posts")) {
     )
     VALUES (
 
-      'welcome-to-kaku',
+      'welcome+to+kaku',
 
       '{$body}',
 
@@ -778,7 +587,7 @@ if (!$Database->checkTableExistence("posts")) {
 
       '1',
 
-      'The very first.',
+      'The very first post.',
 
       '0'
     )"
@@ -788,7 +597,7 @@ if (!$Database->checkTableExistence("posts")) {
 
       $errors,
 
-      "failed to insert welcome-to-kaku into " . DB_PREF . "posts"
+      "failed to insert welcome+to+kaku into " . DB_PREF . "posts"
     );
   }
 }
@@ -945,6 +754,49 @@ if (!$Database->checkTableExistence("extensions")) {
       "failed to insert Pagination into " . DB_PREF . "extensions"
     );
   }
+
+  if (!$Database->performQuery(
+
+    "INSERT INTO " . DB_PREF . "extensions (
+
+      title,
+
+      activate
+    )
+    VALUES (
+
+      'Truncate',
+
+      '1'
+    )"
+  )) {
+
+    array_push(
+
+      $errors,
+
+      "failed to insert Truncate into " . DB_PREF . "extensions"
+    );
+  }
+}
+
+$directories = glob("./content/extensions/*", GLOB_ONLYDIR);
+
+if (count($directories) > 0) {
+
+  foreach ($directories as $directory) {
+
+    // Get directory name without path.
+    $directory_name = str_replace("./content/extensions/", "", $directory);
+
+    $extension_full_path = "{$directory}/install.php";
+
+    if (file_exists($extension_full_path)) {
+
+      // Include the extension's install script.
+      require $extension_full_path;
+    }
+  }
 }
 
 if (!empty($errors)) {
@@ -957,17 +809,6 @@ if (!empty($errors)) {
     )) {
 
       array_push($errors, "failed to drop " . DB_PREF . "tags table");
-    }
-  }
-
-  if ($Database->checkTableExistence("links")) {
-
-    if (!$Database->performQuery(
-
-      "DROP TABLE " . DB_PREF . "links"
-    )) {
-
-      array_push($errors, "failed to drop " . DB_PREF . "links table");
     }
   }
 

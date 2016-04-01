@@ -1,36 +1,34 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_EXTENSION")) exit();
-
-$name = "Post Pagination";
-
-class Pagination extends Utility {
+class Pagination extends Extension {
 
   private $DatabaseHandle;
 
   public function __construct() {
 
-    //
+    Extension::setName("Post Pagination");
   }
 
-  public function getTags() {
+  public function manageHooks() {
 
-    return array(
+    global $Hook;
+
+    $Hook->addFilter(
 
       "next_page",
 
-      "previous_page"
+      $this,
+
+      "getNextPage"
     );
-  }
 
-  public function getReplacements() {
+    $Hook->addFilter(
 
-    return array(
+      "previous_page",
 
-      $this->getNextPage(),
+      $this,
 
-      $this->getPreviousPage()
+      "getPreviousPage"
     );
   }
 
@@ -39,7 +37,32 @@ class Pagination extends Utility {
     $this->DatabaseHandle = $handle;
   }
 
-  private function getNextPage() {
+  public function getNextPage() {
+
+    $next_page_text = "";
+
+    $statement = "
+
+      SELECT next_page_text
+      FROM " . DB_PREF . "extension_pagination
+      WHERE 1 = 1
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or is empty.
+      $next_page_text =  "Older posts";
+    }
+    else {
+
+      // Fetch the result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get the text.
+      $next_page_text = $result->next_page_text;
+    }
 
     $statement = "
 
@@ -66,7 +89,9 @@ class Pagination extends Utility {
 
       if ($_GET["page_number"] == 0) {
 
-        $root_address = Utility::getRootAddress();
+        $Utility = new Utility;
+
+        $root_address = $Utility->getRootAddress();
 
         // Redirect to index.
         header("Location: {$root_address}");
@@ -86,14 +111,14 @@ class Pagination extends Utility {
 
       if (isset($_GET["page_number"])) {
 
-        $url = "{%blog_url%}/page/" . ($_GET["page_number"] + 1);
+        $url = "{%blog_url%}/range/" . ($_GET["page_number"] + 1);
       }
       else {
 
-        $url = "{%blog_url%}/page/2";
+        $url = "{%blog_url%}/range/2";
       }
 
-      $message = "<a href=\"{$url}\">{%next_page_text%}</a>";
+      $message = "<a href=\"{$url}\">{$next_page_text}</a>";
 
       return $message;
     }
@@ -103,9 +128,34 @@ class Pagination extends Utility {
     }
   }
 
-  private function getPreviousPage() {
+  public function getPreviousPage() {
 
-    $link = "{%previous_page_text%}";
+    $next_page_text = "";
+
+    $statement = "
+
+      SELECT previous_page_text
+      FROM " . DB_PREF . "extension_pagination
+      WHERE 1 = 1
+    ";
+
+    $query = $this->DatabaseHandle->query($statement);
+
+    if (!$query || $query->rowCount() == 0) {
+
+      // Query failed or is empty.
+      $previous_page_text =  "Newer posts";
+    }
+    else {
+
+      // Fetch the result as an object.
+      $result = $query->fetch(PDO::FETCH_OBJ);
+
+      // Get the text.
+      $previous_page_text = $result->previous_page_text;
+    }
+
+    $link = "{$previous_page_text}";
 
     if (isset($_GET["page_number"])) {
 
@@ -116,7 +166,7 @@ class Pagination extends Utility {
         return "<a href=\"{%blog_url%}\">{$link}</a>";
       }
 
-      return "<a href=\"{%blog_url%}/page/{$previous_page}\">{$link}</a>";
+      return "<a href=\"{%blog_url%}/range/{$previous_page}\">{$link}</a>";
     }
 
     return "";

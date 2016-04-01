@@ -1,11 +1,13 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_INCLUDE")) exit();
-
 class Post extends Utility {
 
-  private $DatabaseHandle;
+  private $Database;
+
+  public function __construct() {
+
+    //
+  }
 
   public function getBody() {
 
@@ -19,7 +21,7 @@ class Post extends Utility {
         WHERE url = ?
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->Database->prepare($statement);
 
       // Prevent SQL injections.
       $query->bindParam(1, $_GET["post_url"]);
@@ -47,9 +49,6 @@ class Post extends Utility {
       // Get post body.
       $body = $result->body;
 
-      // Remove truncate tag.
-      $body = str_replace("{%truncate%}", "", $body);
-
       // Display post body.
       return $body;
     }
@@ -63,7 +62,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -91,7 +90,7 @@ class Post extends Utility {
         OFFSET {$offset}
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -108,22 +107,6 @@ class Post extends Utility {
 
         // Get post body.
         $body = $result->body;
-
-        if (strpos($body, "{%truncate%}") !== false) {
-
-          $truncate_position = strpos($body, "{%truncate%}");
-
-          // Cut the body at the truncate position.
-          $body = substr($body, 0, $truncate_position);
-
-          // Include a "read more" link to the full post.
-          $body .= "
-
-            <a href=\"{%blog_url%}/post/{%post_url_{$count}%}\">
-              {%lure_text%}
-            </a>
-          ";
-        }
 
         $bodies[] = $body;
 
@@ -142,7 +125,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -166,7 +149,7 @@ class Post extends Utility {
         LIMIT {$posts_per_page}
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -183,22 +166,6 @@ class Post extends Utility {
 
         // Get post body.
         $body = $result->body;
-
-        if (strpos($body, "{%truncate%}") !== false) {
-
-          $truncate_position = strpos($body, "{%truncate%}");
-
-          // Cut the body at the truncate position.
-          $body = substr($body, 0, $truncate_position);
-
-          // Include a "read more" link to the full post.
-          $body .= "
-
-            <a href=\"{%blog_url%}/post/{%post_url_{$count}%}\">
-              {%lure_text%}
-            </a>
-          ";
-        }
 
         $bodies[] = $body;
 
@@ -218,7 +185,7 @@ class Post extends Utility {
       WHERE title = 'keyword_prefix'
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $query = $this->Database->query($statement);
 
     if (!$query || $query->rowCount() == 0) {
 
@@ -242,7 +209,7 @@ class Post extends Utility {
         WHERE url = ?
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->Database->prepare($statement);
 
       // Prevent SQL injections.
       $query->bindParam(1, $_GET["post_url"]);
@@ -273,7 +240,7 @@ class Post extends Utility {
           $keyword = trim($keyword);
 
           // Encode spaces.
-          $keyword_url = str_replace(" ", "%20", $keyword);
+          $keyword_url = str_replace(" ", "+", $keyword);
 
           // Create a list item for each keyword.
           $keywords_markup .= "<li>";
@@ -297,7 +264,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -325,7 +292,7 @@ class Post extends Utility {
         OFFSET {$offset}
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -353,7 +320,7 @@ class Post extends Utility {
             $keyword = trim($keyword);
 
             // Encode spaces.
-            $keyword_url = str_replace(" ", "%20", $keyword);
+            $keyword_url = str_replace(" ", "+", $keyword);
 
             // Create a list item for each keyword.
             $keywords_markup .= "<li>";
@@ -380,7 +347,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -404,7 +371,7 @@ class Post extends Utility {
         LIMIT {$posts_per_page}
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -432,7 +399,7 @@ class Post extends Utility {
             $keyword = trim($keyword);
 
             // Encode spaces.
-            $keyword_url = str_replace(" ", "%20", $keyword);
+            $keyword_url = str_replace(" ", "+", $keyword);
 
             // Create a list item for each keyword.
             $keywords_markup .= "<li>";
@@ -463,7 +430,7 @@ class Post extends Utility {
         WHERE url = ?
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->Database->prepare($statement);
 
       // Prevent SQL injections.
       $query->bindParam(1, $_GET["post_url"]);
@@ -492,7 +459,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -520,7 +487,7 @@ class Post extends Utility {
         OFFSET {$offset}
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -549,7 +516,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -573,7 +540,7 @@ class Post extends Utility {
         LIMIT {$posts_per_page}
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -618,7 +585,7 @@ class Post extends Utility {
       ORDER BY id DESC
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $query = $this->Database->query($statement);
 
     if (!$query || $query->rowCount() == 0) {
 
@@ -640,7 +607,7 @@ class Post extends Utility {
       OFFSET {$offset}
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $query = $this->Database->query($statement);
 
     if (!$query) {
 
@@ -656,9 +623,9 @@ class Post extends Utility {
 
       while ($post = $query->fetch(PDO::FETCH_OBJ)) {
 
-        $search = array();
+        $search = [];
 
-        $replace = array();
+        $replace = [];
 
         $search[] = "{%post_url%}";
         $search[] = "{%post_body%}";
@@ -705,7 +672,7 @@ class Post extends Utility {
         WHERE url = ?
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->Database->prepare($statement);
 
       // Prevent SQL injections.
       $query->bindParam(1, $_GET["post_url"]);
@@ -732,7 +699,7 @@ class Post extends Utility {
         WHERE id = '{$author_id}'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -756,7 +723,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -784,7 +751,7 @@ class Post extends Utility {
         OFFSET {$offset}
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->Database->prepare($statement);
 
       // Prevent SQL injections.
       $query->bindParam(1, $_GET["post_url"]);
@@ -813,7 +780,7 @@ class Post extends Utility {
           WHERE id = '{$author_id}'
         ";
 
-        $query = $this->DatabaseHandle->query($statement);
+        $query = $this->Database->query($statement);
 
         if (!$query || $query->rowCount() == 0) {
 
@@ -842,7 +809,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -866,7 +833,7 @@ class Post extends Utility {
         LIMIT {$posts_per_page}
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->Database->prepare($statement);
 
       // Prevent SQL injections.
       $query->bindParam(1, $_GET["post_url"]);
@@ -895,7 +862,7 @@ class Post extends Utility {
           WHERE id = '{$author_id}'
         ";
 
-        $query = $this->DatabaseHandle->query($statement);
+        $query = $this->Database->query($statement);
 
         if (!$query || $query->rowCount() == 0) {
 
@@ -926,7 +893,7 @@ class Post extends Utility {
       ORDER BY id DESC
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $query = $this->Database->query($statement);
 
     if (!$query || $query->rowCount() == 0) {
 
@@ -945,7 +912,7 @@ class Post extends Utility {
       LIMIT {$posts_per_page}
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $query = $this->Database->query($statement);
 
     if (!$query) {
 
@@ -961,9 +928,9 @@ class Post extends Utility {
 
       while ($post = $query->fetch(PDO::FETCH_OBJ)) {
 
-        $search = array();
+        $search = [];
 
-        $replace = array();
+        $replace = [];
 
         $search[] = "{%post_url%}";
         $search[] = "{%post_body%}";
@@ -1004,7 +971,7 @@ class Post extends Utility {
         WHERE url = ?
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->Database->prepare($statement);
 
       // Prevent SQL injections.
       $query->bindParam(1, $_GET["post_url"]);
@@ -1036,7 +1003,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1064,7 +1031,7 @@ class Post extends Utility {
         OFFSET {$offset}
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1093,7 +1060,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1117,7 +1084,7 @@ class Post extends Utility {
         LIMIT {$posts_per_page}
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1148,7 +1115,7 @@ class Post extends Utility {
       WHERE url = ?
     ";
 
-    $query = $this->DatabaseHandle->prepare($statement);
+    $query = $this->Database->prepare($statement);
 
     // Prevent SQL injections.
     $query->bindParam(1, $_GET["post_url"]);
@@ -1167,6 +1134,12 @@ class Post extends Utility {
     // Get post description.
     $description = $result->description;
 
+    if (strlen($description) == 0) {
+
+      // The post lacks a description.
+      $description = "No description.";
+    }
+
     return $description;
   }
 
@@ -1182,7 +1155,7 @@ class Post extends Utility {
         WHERE title = 'date_format'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1204,7 +1177,7 @@ class Post extends Utility {
         WHERE url = ?
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->Database->prepare($statement);
 
       // Prevent SQL injections.
       $query->bindParam(1, $_GET["post_url"]);
@@ -1233,7 +1206,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1258,7 +1231,7 @@ class Post extends Utility {
         WHERE title = 'date_format'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1283,7 +1256,7 @@ class Post extends Utility {
         OFFSET {$offset}
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->Database->prepare($statement);
 
       // Prevent SQL injections.
       $query->bindParam(1, $_GET["post_url"]);
@@ -1317,7 +1290,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1339,7 +1312,7 @@ class Post extends Utility {
         WHERE title = 'date_format'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1363,7 +1336,7 @@ class Post extends Utility {
         LIMIT {$posts_per_page}
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->Database->prepare($statement);
 
       // Prevent SQL injections.
       $query->bindParam(1, $_GET["post_url"]);
@@ -1401,7 +1374,7 @@ class Post extends Utility {
         WHERE url = ?
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->Database->prepare($statement);
 
       // Prevent SQL injections.
       $query->bindParam(1, $_GET["post_url"]);
@@ -1430,7 +1403,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1458,7 +1431,7 @@ class Post extends Utility {
         OFFSET {$offset}
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1487,7 +1460,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1511,7 +1484,7 @@ class Post extends Utility {
         LIMIT {$posts_per_page}
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1544,7 +1517,7 @@ class Post extends Utility {
         WHERE url = ?
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $query = $this->Database->prepare($statement);
 
       // Prevent SQL injections.
       $query->bindParam(1, $_GET["post_url"]);
@@ -1623,7 +1596,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1651,7 +1624,7 @@ class Post extends Utility {
         OFFSET {$offset}
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1730,7 +1703,7 @@ class Post extends Utility {
         WHERE title = 'posts_per_page'
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1754,7 +1727,7 @@ class Post extends Utility {
         LIMIT {$posts_per_page}
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $query = $this->Database->query($statement);
 
       if (!$query || $query->rowCount() == 0) {
 
@@ -1825,9 +1798,9 @@ class Post extends Utility {
     }
   }
 
-  public function setDatabaseHandle($Handle) {
+  public function setDatabaseHandle($DatabaseHandle) {
 
-    $this->DatabaseHandle = $Handle;
+    $this->Database = $DatabaseHandle;
   }
 }
 

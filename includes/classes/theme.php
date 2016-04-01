@@ -1,14 +1,17 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_INCLUDE")) exit();
-
 class Theme extends Utility {
 
-  private $DatabaseHandle;
+  private $Database;
+
+  public function __construct() {
+
+    //
+  }
 
   public function getFileContents($file_name) {
 
+    // Select the theme name.
     $statement = "
 
       SELECT body
@@ -17,7 +20,7 @@ class Theme extends Utility {
       ORDER BY id DESC
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $query = $this->Database->query($statement);
 
     if (!$query || $query->rowCount() == 0) {
 
@@ -66,7 +69,7 @@ class Theme extends Utility {
     if (!in_array($file_name, $theme_files_without_extension)) {
 
       // Theme file doesn't exist.
-      Utility::displayError("{$file_path} does not exist");
+      Utility::displayError("{$theme_directory}/{$file_name} does not exist");
     }
 
     // Get key of file to match with $theme_files array.
@@ -75,51 +78,24 @@ class Theme extends Utility {
     // Get the file name with the extension.
     $file_name = $theme_files[$key];
 
+    // Begin a temporary buffer for the theme file.
+    ob_start();
+
+    // Require the theme file to automatically parse any PHP code.
+    require "{$theme_directory}/{$file_name}";
+
+    $theme_file_contents = ob_get_contents();
+
+    // End and erase the temporary buffer.
+    ob_end_clean();
+
     // Return contents of theme file.
-    return file_get_contents("{$theme_directory}/{$file_name}");
+    return $theme_file_contents;
   }
 
-  public function setDatabaseHandle($Handle) {
+  public function setDatabaseHandle($DatabaseHandle) {
 
-    $this->DatabaseHandle = $Handle;
-  }
-
-  public function getNavigationItems() {
-
-    $statement = "
-
-      SELECT uri, title, target
-      FROM " . DB_PREF . "links
-      ORDER BY id ASC
-    ";
-
-    $query = $this->DatabaseHandle->query($statement);
-
-    if (!$query) {
-
-      // Query failed.
-      Utility::displayError("failed to get navigation items");
-    }
-
-    if ($query->rowCount() > 0) {
-
-      $markup = "<ul>";
-
-      while ($link = $query->fetch(PDO::FETCH_OBJ)) {
-
-        // Create a list item for each link.
-        $markup .= "<li>";
-        $markup .= "<a href=\"{$link->uri}\" target=\"{$link->target}\">";
-        $markup .= "{$link->title}</a>";
-        $markup .= "</li>";
-      }
-
-      $markup .= "</ul>";
-
-      return $markup;
-    }
-
-    return;
+    $this->Database = $DatabaseHandle;
   }
 }
 
