@@ -10,19 +10,19 @@ class Hook {
 
   private $actions;
   private $filters;
-
-  private $action_objects;
+  private $filter_classes;
   private $filter_objects;
   private $filter_methods;
+  private $action_contents;
 
   public function __construct() {
 
     $this->actions = [];
     $this->filters = [];
-
-    $this->action_objects = [];
+    $this->filter_classes = [];
     $this->filter_objects = [];
     $this->filter_methods = [];
+    $this->action_contents = [];
   }
 
   public function doAction($action) {
@@ -32,7 +32,7 @@ class Hook {
       if (array_key_exists($action, $this->filters)) {
 
         // Get the contents of the original action.
-        $callback = $this->action_objects[$action];
+        $callback = $this->action_contents[$action];
 
         for ($i = 0; $i < count($this->filters[$action]); ++$i) {
 
@@ -41,7 +41,7 @@ class Hook {
 
             [
 
-              $this->filter_objects[$action][$i],
+              $this->filter_classes[$action][$i],
 
               $this->filter_methods[$action][$i]
             ],
@@ -56,26 +56,31 @@ class Hook {
       else {
 
         // Return the original contents of the action.
-        return $this->action_objects[$action];
+        return $this->action_contents[$action];
       }
     }
   }
 
-  public function addAction($action, $object) {
+  public function addAction($action, $contents) {
 
     if (!in_array($action, $this->actions)) {
 
       $this->actions[$action] = $action;
 
-      $this->action_objects[$action] = $object;
+      $this->action_contents[$action] = $contents;
     }
   }
 
-  public function addFilter($action, $object, $method) {
+  public function addFilter($action, $method) {
 
     if (!isset($this->filters[$action])) {
 
       $this->filters[$action] = [];
+    }
+
+    if (!isset($this->filter_classes[$action])) {
+
+      $this->filter_classes[$action] = [];
     }
 
     if (!isset($this->filter_objects[$action])) {
@@ -90,8 +95,10 @@ class Hook {
 
     $this->filters[$action][] = $action;
 
-    $this->filter_objects[$action][] = $object;
     $this->filter_methods[$action][] = $method;
+
+    // Get the name of the class that added the filter.
+    $this->filter_classes[$action][] = debug_backtrace()[1]["class"];
   }
 }
 
