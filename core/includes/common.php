@@ -14,8 +14,11 @@ foreach (glob(KAKU_ROOT . "/core/classes/*.php") as $class) {
   // Get the name of the freshly-required class.
   $class_name = reset($class_difference);
 
-  // Instantiate each of the class files.
+  // Instantiate the class file.
   $$class_name = new $class_name;
 }
+
+// Connect to the database.
+$Database->connect();
 
 ?>
