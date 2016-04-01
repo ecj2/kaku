@@ -187,8 +187,7 @@ else {
         <label for=\"body\">Body</label>
         <textarea id=\"body\" name=\"body\" required>{$body}</textarea>
         <label for=\"description\">Description (Optional)</label>
-        <textarea id=\"description\" name=\"description\">
-        {$description}</textarea>
+        <textarea id=\"description\" name=\"description\">{$description}</textarea>
         <input type=\"checkbox\" id=\"show_on_search\"
         name=\"show_on_search\"
     ";

@@ -73,9 +73,7 @@ else {
 
         <form method=\"post\" class=\"edit_redirect_rules\">
           <label for=\"redirect_rules\">Redirect Rules</label>
-          <textarea id=\"body\" name=\"redirect_rules\">
-          {$redirect_rules}
-          </textarea>
+          <textarea id=\"body\" name=\"redirect_rules\">{$redirect_rules}</textarea>
           <input type=\"submit\" value=\"Save\">
         </form>
       ";
