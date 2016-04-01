@@ -178,7 +178,12 @@ else {
     $allow_comments = $post->allow_comments;
 
     // Encode { and } to prevent it from being replaced by the output buffer.
+    $url = str_replace(["{", "}"], ["&#123;", "&#125;"], $url);
     $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
+    $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $title);
+    $epoch = str_replace(["{", "}"], ["&#123;", "&#125;"], $epoch);
+    $keywords = str_replace(["{", "}"], ["&#123;", "&#125;"], $keywords);
+    $description = str_replace(["{", "}"], ["&#123;", "&#125;"], $description);
 
     $page_body .= "
 

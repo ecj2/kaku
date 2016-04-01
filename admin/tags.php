@@ -157,10 +157,13 @@ else {
 
     while ($tag = $query->fetch(PDO::FETCH_OBJ)) {
 
+      // Encode { and } to prevent it from being replaced by the output buffer.
+      $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $tag->title);
+
       $page_body .= "
 
         <tr>
-          <td>{$tag->title}</td>
+          <td>{$title}</td>
           <td><a href=\"edit_tag.php?id={$tag->id}\">Edit</a></td>
           <td><a href=\"delete_tag.php?id={$tag->id}\">Delete</a></td>
         </tr>

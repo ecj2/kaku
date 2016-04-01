@@ -138,6 +138,7 @@ else {
 
     // Encode { and } to prevent it from being replaced by the output buffer.
     $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
+    $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $title);
 
     $page_body .= "
 
