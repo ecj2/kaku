@@ -1,27 +1,23 @@
 <!DOCTYPE html>
-<html lang="{%blog_language%}">
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>{%page_title%} - Kaku</title>
-    <link rel="shortcut icon" href="{%blog_url%}/admin/content/themes/default/img/bookmark.ico">
+    <title>{%page_title%} &raquo; Kaku</title>
     <link rel="stylesheet" href="{%blog_url%}/admin/content/themes/default/css/main.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans%7CLora">
-    <meta name="description" content="Log in.">
-    <meta name="viewport" content="width=700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
   </head>
   <body>
+    <div id="bar"></div>
     <div id="wrap">
       <header class="top">
-        <h1><a href="./">Kaku</a></h1>
+        <h1><a href="{%blog_url%}/admin">Kaku</a></h1>
       </header>
-      <main>
-        <article>
-          <header>
-            <h2>{%page_title%}</h2>
-          </header>
-          {%page_body%}
-        </article>
-      </main>
+      <article>
+        <header>
+          <h1>{%page_title%}</h1>
+        </header>
+        {%page_body%}
+      </article>
       <footer>
         Powered by <a href="https://github.com/ecj2/kaku">Kaku</a>
       </footer>
