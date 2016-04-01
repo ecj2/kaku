@@ -1,101 +1,101 @@
 <?php
 
-class Theme extends Utility {
+if (!defined("KAKU_ACCESS")) {
 
-  private $Database;
+  // Deny direct access to this file.
+  exit();
+}
 
-  public function __construct() {
-
-    //
-  }
+class Template {
 
   public function getFileContents($file_name) {
 
-    // Select the theme name.
+    // Select the template name.
     $statement = "
 
       SELECT body
       FROM " . DB_PREF . "tags
-      WHERE title = 'theme_name'
+      WHERE title = 'template_name'
       ORDER BY id DESC
     ";
 
-    $query = $this->Database->query($statement);
+    $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-    if (!$query || $query->rowCount() == 0) {
+    if (!$Query) {
 
-      // Query failed or theme_name doesn't exist.
-      Utility::displayError("failed to get theme name");
+      // Something went wrong.
+      $GLOBALS["Utility"]->displayError("failed to select template name");
+    }
+
+    if ($Query->rowCount() == 0) {
+
+      // The template_name tag does not exist.
+      $GLOBALS["Utility"]->displayError("template_name tag does not exist");
     }
 
     // Fetch the result as an object.
-    $row = $query->fetch(PDO::FETCH_OBJ);
+    $Result = $Query->fetch(PDO::FETCH_OBJ);
 
-    // Get the theme name.
-    $theme_name = $row->body;
+    // Get the template name.
+    $template_name = $Result->body;
 
-    $theme_directory = "content/themes/{$theme_name}";
+    $template_directory = KAKU_ROOT . "/templates/{$template_name}";
 
-    // Get files from theme directory.
-    $theme_files = scandir($theme_directory);
+    // Get files from the template directory.
+    $template_files = scandir($template_directory);
 
     // Remove . and .. from array.
-    unset($theme_files[0]);
-    unset($theme_files[1]);
+    unset($template_files[0]);
+    unset($template_files[1]);
 
     // Reset the array key count.
-    $theme_files = array_values($theme_files);
+    $template_files = array_values($template_files);
 
-    $theme_files_without_extension = [];
+    $template_files_without_extension = [];
 
-    for ($i = 0; $i < count($theme_files); ++$i) {
+    for ($i = 0; $i < count($template_files); ++$i) {
 
       // Get file names without extensions.
-      $theme_files_without_extension[] = substr(
+      $template_files_without_extension[] = substr(
 
-        $theme_files[$i],
+        $template_files[$i],
 
         0,
 
         strrpos(
 
-          $theme_files[$i],
+          $template_files[$i],
 
           "."
         )
       );
     }
 
-    if (!in_array($file_name, $theme_files_without_extension)) {
+    if (!in_array($file_name, $template_files_without_extension)) {
 
-      // Theme file doesn't exist.
-      Utility::displayError("{$theme_directory}/{$file_name} does not exist");
+      // The template file does not exist.
+      $GLOBALS["Utility"]->displayError("{$template_directory}/{$file_name} does not exist");
     }
 
-    // Get key of file to match with $theme_files array.
-    $key = array_search($file_name, $theme_files_without_extension);
+    // Get the key of the file to match with the template_files array.
+    $key = array_search($file_name, $template_files_without_extension);
 
     // Get the file name with the extension.
-    $file_name = $theme_files[$key];
+    $file_name = $template_files[$key];
 
-    // Begin a temporary buffer for the theme file.
+    // Begin a temporary buffer for the template file.
     ob_start();
 
-    // Require the theme file to automatically parse any PHP code.
-    require "{$theme_directory}/{$file_name}";
+    // Require the template file to automatically parse any PHP code.
+    require "{$template_directory}/{$file_name}";
 
-    $theme_file_contents = ob_get_contents();
+    $template_file_contents = ob_get_contents();
 
     // End and erase the temporary buffer.
     ob_end_clean();
 
-    // Return contents of theme file.
-    return $theme_file_contents;
-  }
-
-  public function setDatabaseHandle($DatabaseHandle) {
-
-    $this->Database = $DatabaseHandle;
+    // Return contents of template file.
+    return $template_file_contents;
   }
 }
 
