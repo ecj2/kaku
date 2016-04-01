@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /admin/
-Disallow: /includes/
-Disallow: /content/extensions/
+Disallow: /core/
+Disallow: /extensions/
