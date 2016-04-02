@@ -1,7 +1,27 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_INCLUDE")) exit();
+if (!defined("KAKU_ACCESS")) {
+
+  // Deny direct access to this file.
+  exit();
+}
+
+// Select published posts.
+$statement = "
+
+  SELECT url, title, epoch, description
+  FROM " . DB_PREF . "posts
+  WHERE draft = '0'
+  ORDER BY id DESC
+";
+
+$Query = $Database->getHandle()->query($statement);
+
+if (!$Query) {
+
+  // Something went wrong.
+  $GLOBALS["Utility"]->displayError("failed to get posts for feed");
+}
 
 // Pretend to be an XML document.
 header("Content-Type: application/xml; charset=utf-8");
@@ -17,41 +37,30 @@ echo "<link>{%blog_url%}</link>\n";
 echo "<description>{%blog_description%}</description>\n";
 echo "<language>{%blog_language%}</language>\n";
 
-// Select published posts.
-$statement = "
+if ($Query && $Query->rowCount() > 0) {
 
-  SELECT url, title, epoch, description
-  FROM " . DB_PREF . "posts
-  WHERE draft = '0'
-  ORDER BY id DESC
-";
-
-$query = $Database->getHandle()->query($statement);
-
-if ($query && $query->rowCount() > 0) {
-
-  while ($post = $query->fetch(PDO::FETCH_OBJ)) {
+  while ($Post = $Query->fetch(PDO::FETCH_OBJ)) {
 
     // Generate an item for each post.
 
     echo "<item>\n";
-    echo "<title>{$post->title}</title>\n";
-    echo "<link>{%blog_url%}/post/{$post->url}</link>\n";
+    echo "<title>{$Post->title}</title>\n";
+    echo "<link>{%blog_url%}/post/{$Post->url}</link>\n";
 
     echo "<description>\n";
 
-    if (strlen(trim($post->description)) == 0) {
+    if (strlen(trim($Post->description)) == 0) {
 
       // This post lacks a description.
       echo "No description.";
     }
     else {
 
-      echo trim($post->description);
+      echo trim($Post->description);
     }
 
     echo "</description>\n";
-    echo "<pubDate>" . date("D, d M Y H:i:s O", $post->epoch) ."</pubDate>\n";
+    echo "<pubDate>" . date("D, d M Y H:i:s O", $Post->epoch) ."</pubDate>\n";
     echo "</item>\n";
   }
 }
