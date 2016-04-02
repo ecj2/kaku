@@ -8,7 +8,7 @@ if (!defined("KAKU_ACCESS")) {
 
 class Template {
 
-  public function getFileContents($file_name) {
+  public function getFileContents($file_name, $echo_contents = false) {
 
     // Select the template name.
     $statement = "
@@ -105,8 +105,16 @@ class Template {
       $template_file_contents
     );
 
-    // Return contents of template file.
-    return $GLOBALS["Hook"]->doAction("{$file_name_no_extension}_file_contents");
+    if ($echo_contents) {
+
+      // Echo contents of template file.
+      echo $GLOBALS["Hook"]->doAction("{$file_name_no_extension}_file_contents");
+    }
+    else {
+
+      // Return contents of template file.
+      return $GLOBALS["Hook"]->doAction("{$file_name_no_extension}_file_contents");
+    }
   }
 }
 
