@@ -1,23 +1,20 @@
 <?php
 
-class Truncate extends Extension {
+if (!defined("KAKU_ACCESS")) {
 
-  private $DatabaseHandle;
+  // Deny direct access to this file.
+  exit();
+}
+
+class Truncate extends Extension {
 
   public function __construct() {
 
     Extension::setName("Truncate Posts");
-  }
 
-  public function manageHooks() {
-
-    global $Hook;
-
-    $Hook->addFilter(
+    $GLOBALS["Hook"]->addFilter(
 
       "post_body",
-
-      $this,
 
       "truncatePostBody"
     );
@@ -27,7 +24,7 @@ class Truncate extends Extension {
 
     if (isset($_GET["post_url"])) {
 
-      // Remove truncate tag.
+      // Remove truncate tag when viewing a post.
       return str_replace("{%truncate%}", "", $callback);
     }
     else {
@@ -65,11 +62,6 @@ class Truncate extends Extension {
     }
   }
 
-  public function setDatabaseHandle($handle) {
-
-    $this->DatabaseHandle = $handle;
-  }
-
   private function getLureText() {
 
     $statement = "
@@ -77,22 +69,23 @@ class Truncate extends Extension {
       SELECT lure
       FROM " . DB_PREF . "extension_truncate
       WHERE 1 = 1
+      LIMIT 1
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-    if (!$query || $query->rowCount() == 0) {
+    if (!$Query || $Query->rowCount() == 0) {
 
-      // Query failed or is empty.
+      // Query failed or returned zero rows.
       return "Read more...";
     }
     else {
 
       // Fetch the result as an object.
-      $result = $query->fetch(PDO::FETCH_OBJ);
+      $Result = $query->fetch(PDO::FETCH_OBJ);
 
-      // Get lure text.
-      return $result->lure;
+      // Get the lure text.
+      return $Result->lure;
     }
   }
 }

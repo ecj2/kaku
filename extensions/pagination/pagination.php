@@ -1,86 +1,86 @@
 <?php
 
-class Pagination extends Extension {
+if (!defined("KAKU_ACCESS")) {
 
-  private $DatabaseHandle;
+  // Deny direct access to this file.
+  exit();
+}
+
+class Pagination extends Extension {
 
   public function __construct() {
 
     Extension::setName("Post Pagination");
-  }
 
-  public function manageHooks() {
-
-    global $Hook;
-
-    $Hook->addFilter(
+    $GLOBALS["Hook"]->addFilter(
 
       "next_page",
-
-      $this,
 
       "getNextPage"
     );
 
-    $Hook->addFilter(
+    $GLOBALS["Hook"]->addFilter(
 
       "previous_page",
-
-      $this,
 
       "getPreviousPage"
     );
   }
 
-  public function setDatabaseHandle($handle) {
-
-    $this->DatabaseHandle = $handle;
-  }
-
   public function getNextPage() {
 
-    $next_page_text = "";
+    $next_page_text = null;
 
+    // Select the next page text.
     $statement = "
 
       SELECT next_page_text
       FROM " . DB_PREF . "extension_pagination
       WHERE 1 = 1
+      LIMIT 1
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-    if (!$query || $query->rowCount() == 0) {
+    if (!$Query || $Query->rowCount() == 0) {
 
-      // Query failed or is empty.
+      // The query failed or returned zero rows.
       $next_page_text =  "Older posts";
     }
     else {
 
       // Fetch the result as an object.
-      $result = $query->fetch(PDO::FETCH_OBJ);
+      $Result = $query->fetch(PDO::FETCH_OBJ);
 
       // Get the text.
-      $next_page_text = $result->next_page_text;
+      $next_page_text = $Result->next_page_text;
     }
 
+    // Select the posts per page tag.
     $statement = "
 
       SELECT body
       FROM " . DB_PREF . "tags
       WHERE title = 'posts_per_page'
       ORDER BY id DESC
+      LIMIT 1
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-    if (!$query || $query->rowCount() == 0) {
+    if (!$Query) {
 
-      // Query failed or returned zero rows.
-      exit("failed to get posts per page");
+      // Something went wrong.
+      $GLOBALS["Utility"]->displayError("failed to select posts_per_page");
     }
 
-    $posts_per_page = $query->fetch(PDO::FETCH_OBJ)->body;
+    if ($Query->rowCount() == 0) {
+
+      // The posts_per_page tag does not exit.
+      $GLOBALS["Utility"]->displayError("posts_per_page tag does not exist");
+    }
+
+    $posts_per_page = $Query->fetch(PDO::FETCH_OBJ)->body;
 
     $offset = 0;
     $row_count = $posts_per_page + 1;
@@ -89,9 +89,35 @@ class Pagination extends Extension {
 
       if ($_GET["page_number"] == 0) {
 
-        $Utility = new Utility;
+        $host = $_SERVER["HTTP_HOST"];
 
-        $root_address = $Utility->getRootAddress();
+        $protocol;
+
+        if (!empty($_SERVER["HTTP_X_FORWARDED_PROTO"])) {
+
+          $protocol = $_SERVER["HTTP_X_FORWARDED_PROTO"] . "://";
+        }
+        else {
+
+          if (!empty($_SERVER["HTTPS"])) {
+
+            $protocol = "https://";
+          }
+          else {
+
+            $protocol = "http://";
+          }
+        }
+
+        $sub_directory = substr(
+
+          dirname(dirname(__DIR__)),
+
+          strlen($_SERVER["DOCUMENT_ROOT"])
+        );
+
+        // Get the absolute URL of where Kaku is installed.
+        $root_address = $protocol . $host . $sub_directory;
 
         // Redirect to index.
         header("Location: {$root_address}");
@@ -101,13 +127,18 @@ class Pagination extends Extension {
       $row_count = $posts_per_page + 1;
     }
 
-    $statement = "SELECT 1 FROM " . DB_PREF . "posts WHERE ";
-    $statement .= "draft = '0' ORDER BY id ";
-    $statement .= "DESC LIMIT {$offset}, {$row_count}";
+    $statement = "
 
-    $query = $this->DatabaseHandle->query($statement);
+      SELECT 1
+      FROM " . DB_PREF . "posts
+      WHERE draft = '0'
+      ORDER BY id DESC
+      LIMIT {$offset}, {$row_count}
+    ";
 
-    if ($query->rowCount() > $posts_per_page) {
+    $Query = $GLOBALS["Database"]->getHandle()->query($statement);
+
+    if ($Query->rowCount() > $posts_per_page) {
 
       if (isset($_GET["page_number"])) {
 
@@ -137,22 +168,23 @@ class Pagination extends Extension {
       SELECT previous_page_text
       FROM " . DB_PREF . "extension_pagination
       WHERE 1 = 1
+      LIMIT 1
     ";
 
-    $query = $this->DatabaseHandle->query($statement);
+    $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-    if (!$query || $query->rowCount() == 0) {
+    if (!$Query || $Query->rowCount() == 0) {
 
-      // Query failed or is empty.
+      // Query failed or returned zero rows.
       $previous_page_text =  "Newer posts";
     }
     else {
 
       // Fetch the result as an object.
-      $result = $query->fetch(PDO::FETCH_OBJ);
+      $Result = $query->fetch(PDO::FETCH_OBJ);
 
       // Get the text.
-      $previous_page_text = $result->previous_page_text;
+      $previous_page_text = $Result->previous_page_text;
     }
 
     $link = "{$previous_page_text}";

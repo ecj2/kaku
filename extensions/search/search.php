@@ -1,38 +1,30 @@
 <?php
 
-class Search extends Extension {
+if (!defined("KAKU_ACCESS")) {
 
-  private $DatabaseHandle;
+  // Deny direct access to this file.
+  exit();
+}
+
+class Search extends Extension {
 
   public function __construct() {
 
     Extension::setName("Simple Search");
-  }
 
-  public function manageHooks() {
-
-    global $Hook;
-
-    $Hook->addFilter(
+    $GLOBALS["Hook"]->addFilter(
 
       "search",
 
-      $this,
-
       "manageSearch"
     );
-  }
-
-  public function setDatabaseHandle($handle) {
-
-    $this->DatabaseHandle = $handle;
   }
 
   public function manageSearch() {
 
     if (isset($_GET["term"])) {
 
-      // Remove whitespace from beginning and end of search term.
+      // Remove whitespace from the beginning and the end of the search term.
       $_GET["term"] = trim($_GET["term"]);
 
       // Select from posts and pages where something is like the search term.
@@ -55,24 +47,25 @@ class Search extends Extension {
         ORDER BY title ASC
       ";
 
-      $query = $this->DatabaseHandle->prepare($statement);
+      $Query = $GLOBALS["Database"]->getHandle()->prepare($statement);
 
       $search_term = "%{$_GET["term"]}%";
 
       // Prevent SQL injections.
-      $query->bindParam(1, $search_term);
-      $query->bindParam(2, $search_term);
-      $query->bindParam(3, $search_term);
-      $query->bindParam(4, $search_term);
+      $Query->bindParam(1, $search_term);
+      $Query->bindParam(2, $search_term);
+      $Query->bindParam(3, $search_term);
+      $Query->bindParam(4, $search_term);
 
-      $query->execute();
+      $Query->execute();
 
-      if (!$query) {
+      if (!$Query) {
 
-        // Query failed.
-        return "An error occurred.";
+        // Something went wrong.
+        $GLOBALS["Utility"]->displayError("failed to select for search");
       }
-      else if ($query->rowCount() == 0) {
+
+      if ($Query->rowCount() == 0) {
 
         // Query returned zero rows.
         $markup = "No results found for \"{$_GET["term"]}\".<br><br>";
@@ -84,62 +77,60 @@ class Search extends Extension {
 
         return $markup;
       }
+
+      $markup = null;
+
+      if ($Query->rowCount() == 1) {
+
+        // One result found.
+        $markup .= "{$Query->rowCount()} result found ";
+      }
       else {
 
-        $markup = "";
+        // Multiple results found.
+        $markup .= "{$Query->rowCount()} results found ";
+      }
 
-        if ($query->rowCount() == 1) {
+      $markup .= "for \"{$_GET["term"]}\":";
 
-          // One result found.
-          $markup .= "{$query->rowCount()} result found ";
+      $markup .= "<br><br><form style=\"display: inline;\" ";
+      $markup .= "method=\"get\"><input type=\"search\" name=\"term\">";
+      $markup .= "<input type=\"submit\" value=\"Search\">";
+      $markup .= "</form>";
+
+      while ($Result = $Query->fetch(PDO::FETCH_OBJ)) {
+
+        // Get a link and description for each search result.
+
+        $markup .= "<br><br><a href=\"{%blog_url%}/";
+
+        if ($Result->table_name == "pages") {
+
+          // Result is a page.
+          $markup .= "page/{$Result->url}\">";
         }
         else {
 
-          // Multiple results found.
-          $markup .= "{$query->rowCount()} results found ";
+          // Result is a post.
+          $markup .= "post/{$Result->url}\">";
         }
 
-        $markup .= "for \"{$_GET["term"]}\":";
+        $markup .= "{$Result->title}</a><br>";
 
-        $markup .= "<br><br><form style=\"display: inline;\" ";
-        $markup .= "method=\"get\"><input type=\"search\" name=\"term\">";
-        $markup .= "<input type=\"submit\" value=\"Search\">";
-        $markup .= "</form>";
+        if (empty(trim($Result->description))) {
 
-        while ($result = $query->fetch(PDO::FETCH_OBJ)) {
-
-          // Get a link and description for each search result.
-
-          $markup .= "<br><br><a href=\"{%blog_url%}/";
-
-          if ($result->table_name == "pages") {
-
-            // Result is a page.
-            $markup .= "page/{$result->url}\">";
-          }
-          else {
-
-            // Result is a post.
-            $markup .= "post/{$result->url}\">";
-          }
-
-          $markup .= "{$result->title}</a><br>";
-
-          if (empty(trim($result->description))) {
-
-            // The resource has no description.
-            $markup .= "No description.";
-          }
-          else {
-
-            // The resource has a description.
-            $markup .= "{$result->description}";
-          }
+          // The resource has no description.
+          $markup .= "No description.";
         }
+        else {
 
-        // Display the results.
-        return $markup;
+          // The resource has a description.
+          $markup .= "{$Result->description}";
+        }
       }
+
+      // Display the results.
+      return $markup;
     }
     else {
 

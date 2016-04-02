@@ -1,5 +1,11 @@
 <?php
 
+if (!defined("KAKU_ACCESS")) {
+
+  // Deny direct access to this file.
+  exit();
+}
+
 class DisqusForum extends Extension {
 
   private $DatabaseHandle;
@@ -7,25 +13,13 @@ class DisqusForum extends Extension {
   public function __construct() {
 
     Extension::setName("Disqus Forum");
-  }
 
-  public function manageHooks() {
-
-    global $Hook;
-
-    $Hook->addFilter(
+    $GLOBALS["Hook"]->addFilter(
 
       "comment_source",
 
-      $this,
-
       "getDisqusForum"
     );
-  }
-
-  public function setDatabaseHandle($handle) {
-
-    $this->DatabaseHandle = $handle;
   }
 
   public function getDisqusForum() {
@@ -39,22 +33,23 @@ class DisqusForum extends Extension {
         SELECT forum_name
         FROM " . DB_PREF . "extension_disqus
         WHERE 1 = 1
+        LIMIT 1
       ";
 
-      $query = $this->DatabaseHandle->query($statement);
+      $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-      if (!$query || $query->rowCount() == 0) {
+      if (!$Query || $Query->rowCount() == 0) {
 
-        // Query failed or is empty.
+        // Query failed or returned zero rows.
         return "Comments have not been configured.";
       }
       else {
 
         // Fetch the result as an object.
-        $result = $query->fetch(PDO::FETCH_OBJ);
+        $Result = $query->fetch(PDO::FETCH_OBJ);
 
         // Get the forum name.
-        $forum_name = $result->forum_name;
+        $forum_name = $Result->forum_name;
 
         if ($forum_name == "") {
 
