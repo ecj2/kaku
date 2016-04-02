@@ -1,15 +1,16 @@
 <?php
 
-// Prevent direct access to this file.
-if (!defined("KAKU_INCLUDE")) exit();
+if (!defined("KAKU_ACCESS")) {
+
+  // Deny direct access to this file.
+  exit();
+}
 
 $errors = array();
 
 if (!$Database->checkTableExistence("tags")) {
 
-  $Utility = new Utility;
-
-  $this_url = $Utility->getRootAddress();
+  $this_url = $GLOBALS["Utility"]->getRootAddress();
 
   if (!$Database->performQuery(
 
@@ -113,7 +114,7 @@ if (!$Database->checkTableExistence("tags")) {
     )
     VALUES (
 
-      'theme_name',
+      'template_name',
 
       'default'
     )"
@@ -123,7 +124,7 @@ if (!$Database->checkTableExistence("tags")) {
 
       $errors,
 
-      "failed to insert theme_name into " . DB_PREF . "tags"
+      "failed to insert template_name into " . DB_PREF . "tags"
     );
   }
 
@@ -137,7 +138,7 @@ if (!$Database->checkTableExistence("tags")) {
     )
     VALUES (
 
-      'admin_theme_name',
+      'admin_template_name',
 
       'default'
     )"
@@ -147,7 +148,7 @@ if (!$Database->checkTableExistence("tags")) {
 
       $errors,
 
-      "failed to insert admin_theme_name into " . DB_PREF . "tags"
+      "failed to insert admin_template_name into " . DB_PREF . "tags"
     );
   }
 
@@ -305,9 +306,9 @@ if (!$Database->checkTableExistence("tags")) {
     )
     VALUES (
 
-      'theme_directory',
+      'template_directory',
 
-      '{%blog_url%}/content/themes'
+      '{%blog_url%}/templates'
     )"
   )) {
 
@@ -315,7 +316,7 @@ if (!$Database->checkTableExistence("tags")) {
 
       $errors,
 
-      "failed to insert theme_directory into " . DB_PREF . "tags"
+      "failed to insert template_directory into " . DB_PREF . "tags"
     );
   }
 
