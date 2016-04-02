@@ -49,8 +49,17 @@ class Utility {
       strlen($_SERVER["DOCUMENT_ROOT"])
     );
 
-    // Return absolute URL of where Kaku is installed.
-    return $protocol . $host . $sub_directory;
+    // Get the absolute URL of where Kaku is installed.
+    $root_address = $protocol . $host . $sub_directory;
+
+    $GLOBALS["Hook"]->addAction(
+
+      "root_address",
+
+      $root_address
+    );
+
+    return $GLOBALS["Hook"]->doAction("root_address");
   }
 }
 
