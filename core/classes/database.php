@@ -37,6 +37,42 @@ class Database {
 
     return $this->Handle;
   }
+
+  public function performQuery($statement) {
+
+    // Perform the given query statement.
+    $Query = $this->Handle->query($statement);
+
+    if (!$Query) {
+
+      // Query failed.
+      return false;
+    }
+    else {
+
+      // Query was successful.
+      return true;
+    }
+  }
+
+  public function checkTableExistence($table_name) {
+
+    // Check if the given table exists.
+    $statement = "SHOW TABLES LIKE '" . DB_PREF . "{$table_name}'";
+
+    $Query = $this->Handle->query($statement);
+
+    if (!$Query || $Query->rowCount() == 0) {
+
+      // The table doesn't exist.
+      return false;
+    }
+    else {
+
+      // Table exists.
+      return true;
+    }
+  }
 }
 
 ?>
