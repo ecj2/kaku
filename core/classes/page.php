@@ -1,22 +1,21 @@
 <?php
 
-class Page extends Utility {
+if (!defined("KAKU_ACCESS")) {
 
-  private $Database;
+  // Deny direct access to this file.
+  exit();
+}
 
-  public function __construct() {
-
-    //
-  }
+class Page {
 
   public function getBody() {
 
-    return $this->getData("body");
+    $this->getData("body");
   }
 
   public function getTitle() {
 
-    return $this->getData("title");
+    $this->getData("title");
   }
 
   public function getDescription() {
@@ -32,18 +31,7 @@ class Page extends Utility {
     return $description;
   }
 
-  public function setDatabaseHandle($DatabaseHandle) {
-
-    $this->Database = $DatabaseHandle;
-  }
-
   private function getData($column) {
-
-    if (!isset($_GET["page_url"])) {
-
-      // Disallow this method from being used if not viewing a page.
-      return;
-    }
 
     // Select the given column.
     $statement = "
@@ -51,31 +39,42 @@ class Page extends Utility {
       SELECT {$column}
       FROM " . DB_PREF . "pages
       WHERE url = ?
+      LIMIT 1
     ";
 
-    $query = $this->Database->prepare($statement);
+    $Query = $GLOBALS["Database"]->getHandle()->prepare($statement);
 
     // Prevent SQL injections.
-    $query->bindParam(1, $_GET["page_url"]);
+    $Query->bindParam(1, $_GET["page_url"]);
 
-    $query->execute();
+    $Query->execute();
 
-    if (!$query) {
+    if (!$Query) {
 
-      // Query failed.
-      Utility::displayError("failed to get page");
+      // Something went wrong.
+      $GLOBALS["Utility"]->displayError("failed to select page data");
     }
-    else if ($query->rowCount() == 0) {
 
-      $address = Utility::getRootAddress();
+    if ($Query->rowCount() == 0) {
+
+      // Get the absolute URL of where Kaku is installed.
+      $root_address = $GLOBALS["Utility"]->getRootAddress();
 
       // Query returned zero rows. Redirect to 404 page.
-      header("Location: {$address}/error.php?code=404");
+      header("Location: {$root_address}/error.php?code=404");
     }
     else {
 
+      // Allow extensions to hook into this column of data.
+      $GLOBALS["Hook"]->addAction(
+
+        "page_{$column}",
+
+        $Query->fetch(PDO::FETCH_OBJ)->$column
+      );
+
       // Return the desired data.
-      return $query->fetch(PDO::FETCH_OBJ)->$column;
+      return $GLOBALS["Hook"]->doAction("page_{$column}");
     }
   }
 }
