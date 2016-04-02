@@ -21,4 +21,27 @@ foreach (glob(KAKU_ROOT . "/core/classes/*.php") as $class) {
 // Connect to the database.
 $Database->connect();
 
+if (isset($_GET["path"])) {
+
+  // Break the path components up into an array.
+  $path = explode("/", $_GET["path"]);
+
+  for ($i = 0; $i < count($path); ++$i) {
+
+    if ($i % 2) {
+
+      continue;
+    }
+
+    if (array_key_exists($i + 1, $path)) {
+
+      // Add onto the array using the first part as the key and the second as the value.
+      $path[$path[$i]] = $path[$i + 1];
+    }
+  }
+
+  // Add the assembled path components to the superglobal.
+  $_GET += $path;
+}
+
 ?>
