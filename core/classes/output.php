@@ -210,6 +210,8 @@ class Output {
 
   public function replaceBufferContents($buffer_contents) {
 
+    static $first_pass = true;
+
     // Replace tags in buffer.
     $buffer_contents = str_replace(
 
@@ -219,6 +221,15 @@ class Output {
 
       $buffer_contents
     );
+
+    if ($first_pass) {
+
+      // Do not apply recursion again after this pass.
+      $first_pass = false;
+
+      // Apply recursion depth to hook-replaced tags.
+      $this->replaceTags();
+    }
 
     return $buffer_contents;
   }
