@@ -45,7 +45,7 @@ class Page {
     $Query = $GLOBALS["Database"]->getHandle()->prepare($statement);
 
     // Prevent SQL injections.
-    $Query->bindParam(1, $_GET["page_url"]);
+    $Query->bindParam(1, $_GET["page"]);
 
     $Query->execute();
 
