@@ -17,12 +17,8 @@ if (!$Database->checkTableExistence("extension_disqus")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to create " . DB_PREF . "extension_disqus table"
-    );
+    // Failed to create the extension_disqus table.
+    $errors[] = "failed to create " . DB_PREF . "extension_disqus table";
   }
 
   // Set a default value for the forum name.
@@ -38,12 +34,8 @@ if (!$Database->checkTableExistence("extension_disqus")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert into " . DB_PREF . "extension_disqus"
-    );
+    // Failed to set a default value for the forum name.
+    $errors[] = "failed to insert into " . DB_PREF . "extension_disqus";
   }
 }
 

@@ -17,12 +17,8 @@ if (!$Database->checkTableExistence("extension_truncate")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to create " . DB_PREF . "extension_truncate table"
-    );
+    // Failed to create the extension_truncate table.
+    $errors[] = "failed to create " . DB_PREF . "extension_truncate table";
   }
 
   // Set a default value for the lure.
@@ -38,12 +34,8 @@ if (!$Database->checkTableExistence("extension_truncate")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert into " . DB_PREF . "extension_truncate"
-    );
+    // Failed to set a default value for the lure.
+    $errors[] = "failed to insert into " . DB_PREF . "extension_truncate";
   }
 }
 

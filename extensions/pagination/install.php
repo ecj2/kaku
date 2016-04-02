@@ -19,12 +19,8 @@ if (!$Database->checkTableExistence("extension_pagination")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to create " . DB_PREF . "extension_pagination table"
-    );
+    // Failed to create the extension_pagination table.
+    $errors[] = "failed to create " . DB_PREF . "extension_pagination table";
   }
 
   // Set default values.
@@ -44,12 +40,8 @@ if (!$Database->checkTableExistence("extension_pagination")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert into " . DB_PREF . "extension_pagination"
-    );
+    // Failed to set default values.
+    $errors[] = "failed to insert into " . DB_PREF . "extension_pagination";
   }
 }
 
