@@ -89,35 +89,8 @@ class Pagination extends Extension {
 
       if ($_GET["page_number"] == 0) {
 
-        $host = $_SERVER["HTTP_HOST"];
-
-        $protocol;
-
-        if (!empty($_SERVER["HTTP_X_FORWARDED_PROTO"])) {
-
-          $protocol = $_SERVER["HTTP_X_FORWARDED_PROTO"] . "://";
-        }
-        else {
-
-          if (!empty($_SERVER["HTTPS"])) {
-
-            $protocol = "https://";
-          }
-          else {
-
-            $protocol = "http://";
-          }
-        }
-
-        $sub_directory = substr(
-
-          dirname(dirname(__DIR__)),
-
-          strlen($_SERVER["DOCUMENT_ROOT"])
-        );
-
         // Get the absolute URL of where Kaku is installed.
-        $root_address = $protocol . $host . $sub_directory;
+        $root_address = $GLOBALS["Utility"]->getRootAddress();
 
         // Redirect to index.
         header("Location: {$root_address}");
