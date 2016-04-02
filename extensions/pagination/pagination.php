@@ -50,7 +50,7 @@ class Pagination extends Extension {
     else {
 
       // Fetch the result as an object.
-      $Result = $query->fetch(PDO::FETCH_OBJ);
+      $Result = $Query->fetch(PDO::FETCH_OBJ);
 
       // Get the text.
       $next_page_text = $Result->next_page_text;
@@ -181,7 +181,7 @@ class Pagination extends Extension {
     else {
 
       // Fetch the result as an object.
-      $Result = $query->fetch(PDO::FETCH_OBJ);
+      $Result = $Query->fetch(PDO::FETCH_OBJ);
 
       // Get the text.
       $previous_page_text = $Result->previous_page_text;
