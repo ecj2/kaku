@@ -80,6 +80,9 @@ class Template {
     // Get the key of the file to match with the template_files array.
     $key = array_search($file_name, $template_files_without_extension);
 
+    // Make a copy of the file name without its extension.
+    $file_name_no_extension = $file_name;
+
     // Get the file name with the extension.
     $file_name = $template_files[$key];
 
@@ -94,8 +97,16 @@ class Template {
     // End and erase the temporary buffer.
     ob_end_clean();
 
+    // Add an action to the contents of the file to allow extensions to manipulate it.
+    $GLOBALS["Hook"]->addAction(
+
+      "{$file_name_no_extension}_file_contents",
+
+      $template_file_contents
+    );
+
     // Return contents of template file.
-    return $template_file_contents;
+    return $GLOBALS["Hook"]->doAction("{$file_name_no_extension}_file_contents");
   }
 }
 
