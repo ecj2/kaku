@@ -6,12 +6,12 @@ if (!defined("KAKU_ACCESS")) {
   exit();
 }
 
-$errors = array();
+// Errors will be stored in this array.
+$errors = [];
 
 if (!$Database->checkTableExistence("tags")) {
 
-  $this_url = $GLOBALS["Utility"]->getRootAddress();
-
+  // Create the tags table.
   if (!$Database->performQuery(
 
     "CREATE TABLE " . DB_PREF . "tags (
@@ -24,14 +24,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to create " . DB_PREF . "tags table"
-    );
+    // Failed to create the tags table.
+    $errors[] = "failed to create " . DB_PREF . "tags table";
   }
 
+  // Insert blog_title into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -48,14 +45,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert blog_title into " . DB_PREF . "tags"
-    );
+    // Failed to insert blog_title.
+    $errors[] = "failed to insert blog_title into " . DB_PREF . "tags";
   }
 
+  // Insert blog_language into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -72,14 +66,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert blog_language into " . DB_PREF . "tags"
-    );
+    // Failed to insert blog_language.
+    $errors[] = "failed to insert blog_language into " . DB_PREF . "tags";
   }
 
+  // Insert blog_description into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -96,14 +87,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert blog_description into " . DB_PREF . "tags"
-    );
+    // Failed to insert blog_description.
+    $errors[] = "failed to insert blog_description into " . DB_PREF . "tags";
   }
 
+  // Insert template_name into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -120,14 +108,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert template_name into " . DB_PREF . "tags"
-    );
+    // Failed to insert template_name.
+    $errors[] = "failed to insert template_name into " . DB_PREF . "tags";
   }
 
+  // Insert admin_template_name into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -144,14 +129,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert admin_template_name into " . DB_PREF . "tags"
-    );
+    // Failed to insert admin_template_name.
+    $errors[] = "failed to insert admin_template_name into " . DB_PREF . "tags";
   }
 
+  // Insert posts_per_page into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -168,14 +150,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert posts_per_page into " . DB_PREF . "tags"
-    );
+    // Failed to insert posts_per_page.
+    $errors[] = "failed to insert posts_per_page into " . DB_PREF . "tags";
   }
 
+  // Insert footer into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -192,14 +171,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert footer into " . DB_PREF . "tags"
-    );
+    // Failed to insert footer.
+    $errors[] = "failed to insert footer into " . DB_PREF . "tags";
   }
 
+  // Insert date_format into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -216,14 +192,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert date_format into " . DB_PREF . "tags"
-    );
+    // Failed to insert date_format.
+    $errors[] = "failed to insert date_format into " . DB_PREF . "tags";
   }
 
+  // Insert recursion_depth into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -240,14 +213,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert recursion_depth into " . DB_PREF . "tags"
-    );
+    // Failed to insert recursion_depth.
+    $errors[] = "failed to insert recursion_depth into " . DB_PREF . "tags";
   }
 
+  // Insert comment_disabled_text into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -264,14 +234,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert comment_disabled_text into " . DB_PREF . "tags"
-    );
+    // Failed to insert comment_disabled_text.
+    $errors[] = "failed to insert comment_disabled_text into " . DB_PREF . "tags";
   }
 
+  // Insert blog_url into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -284,18 +251,15 @@ if (!$Database->checkTableExistence("tags")) {
 
       'blog_url',
 
-      '{$this_url}'
+      '" . $GLOBALS["Utility"]->getRootAddress() . "'
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert blog_url into " . DB_PREF . "tags"
-    );
+    // Failed to insert blog_url.
+    $errors[] = "failed to insert blog_url into " . DB_PREF . "tags";
   }
 
+  // Insert template_directory into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -312,14 +276,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert template_directory into " . DB_PREF . "tags"
-    );
+    // Failed to insert template_directory.
+    $errors[] = "failed to insert template_directory into " . DB_PREF . "tags";
   }
 
+  // Insert 404_url into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -336,14 +297,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert 404_url into " . DB_PREF . "tags"
-    );
+    // Failed to insert 404_url.
+    $errors[] = "failed to insert 404_url into " . DB_PREF . "tags";
   }
 
+  // Insert keyword_prefix into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -360,14 +318,11 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert keyword_prefix into " . DB_PREF . "tags"
-    );
+    // Failed to insert keyword_prefix.
+    $errors[] = "failed to insert keyword_prefix into " . DB_PREF . "tags";
   }
 
+  // Insert navigation_items into the tags table.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "tags (
@@ -389,17 +344,14 @@ if (!$Database->checkTableExistence("tags")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert navigation_items into " . DB_PREF . "tags"
-    );
+    // Failed to insert navigation_items.
+    $errors[] = "failed to insert navigation_items into " . DB_PREF . "tags";
   }
 }
 
 if (!$Database->checkTableExistence("pages")) {
 
+  // Create the pages table.
   if (!$Database->performQuery(
 
     "CREATE TABLE " . DB_PREF . "pages (
@@ -420,14 +372,11 @@ if (!$Database->checkTableExistence("pages")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to create " . DB_PREF . "pages table"
-    );
+    // Failed to create the pages table.
+    $errors[] = "failed to create " . DB_PREF . "pages table";
   }
 
+  // Insert search page.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "pages (
@@ -460,14 +409,11 @@ if (!$Database->checkTableExistence("pages")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert search into " . DB_PREF . "pages"
-    );
+    // Failed to insert search page.
+    $errors[] = "failed to insert search into " . DB_PREF . "pages";
   }
 
+  // Insert page not found page.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "pages (
@@ -500,17 +446,14 @@ if (!$Database->checkTableExistence("pages")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert page+not+found into " . DB_PREF . "pages"
-    );
+    // Failed to insert page not found page.
+    $errors[] = "failed to insert page+not+found into " . DB_PREF . "pages";
   }
 }
 
 if (!$Database->checkTableExistence("posts")) {
 
+  // Create the posts table.
   if (!$Database->performQuery(
 
     "CREATE TABLE " . DB_PREF . "posts (
@@ -537,19 +480,17 @@ if (!$Database->checkTableExistence("posts")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to create " . DB_PREF . "posts table"
-    );
+    // Failed to create the posts table.
+    $errors[] = "failed to create " . DB_PREF . "posts table";
   }
 
+  // Create the body for the first post.
   $body = "Hi there. Welcome to Kaku. This is the very first post. ";
   $body .= "Head over to the <a href=\"{%blog_url%}/admin\">admin ";
   $body .= "panel</a> to get started. The username is admin";
   $body .= " and the password is password.";
 
+  // Insert the first post.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "posts (
@@ -594,17 +535,14 @@ if (!$Database->checkTableExistence("posts")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert welcome+to+kaku into " . DB_PREF . "posts"
-    );
+    // Failed to insert the first post.
+    $errors[] = "failed to insert welcome+to+kaku into " . DB_PREF . "posts";
   }
 }
 
 if (!$Database->checkTableExistence("users")) {
 
+  // Create the users table.
   if (!$Database->performQuery(
 
     "CREATE TABLE " . DB_PREF . "users (
@@ -621,14 +559,11 @@ if (!$Database->checkTableExistence("users")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to create " . DB_PREF . "users table"
-    );
+    // Failed to create the users table.
+    $errors[] = "failed to create " . DB_PREF . "users table";
   }
 
+  // Insert the admin user.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "users (
@@ -653,17 +588,14 @@ if (!$Database->checkTableExistence("users")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert admin into " . DB_PREF . "users"
-    );
+    // Failed to insert the admin user.
+    $errors[] = "failed to insert admin into " . DB_PREF . "users";
   }
 }
 
 if (!$Database->checkTableExistence("extensions")) {
 
+  // Create the extensions table.
   if (!$Database->performQuery(
 
     "CREATE TABLE " . DB_PREF . "extensions (
@@ -676,14 +608,11 @@ if (!$Database->checkTableExistence("extensions")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to create " . DB_PREF . "extensions table"
-    );
+    // Failed to create the extensions table.
+    $errors[] = "failed to create " . DB_PREF . "extensions table";
   }
 
+  // Activate the search extension.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "extensions (
@@ -700,14 +629,11 @@ if (!$Database->checkTableExistence("extensions")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert Search into " . DB_PREF . "extensions"
-    );
+    // Failed to activate the search extension.
+    $errors[] = "failed to insert Search into " . DB_PREF . "extensions";
   }
 
+  // Activate the Disqus forum extension.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "extensions (
@@ -724,14 +650,11 @@ if (!$Database->checkTableExistence("extensions")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert DisqusForum into " . DB_PREF . "extensions"
-    );
+    // Failed to activate the Disqus forum extension.
+    $errors[] = "failed to insert DisqusForum into " . DB_PREF . "extensions";
   }
 
+  // Activate the pagination extension.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "extensions (
@@ -748,14 +671,11 @@ if (!$Database->checkTableExistence("extensions")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert Pagination into " . DB_PREF . "extensions"
-    );
+    // Failed to activate the pagination extension.
+    $errors[] = "failed to insert Pagination into " . DB_PREF . "extensions";
   }
 
+  // Activate the truncate extension.
   if (!$Database->performQuery(
 
     "INSERT INTO " . DB_PREF . "extensions (
@@ -772,29 +692,26 @@ if (!$Database->checkTableExistence("extensions")) {
     )"
   )) {
 
-    array_push(
-
-      $errors,
-
-      "failed to insert Truncate into " . DB_PREF . "extensions"
-    );
+    // Failed to activate the truncate extension.
+    $errors[] = "failed to insert Truncate into " . DB_PREF . "extensions";
   }
 }
 
-$directories = glob("./content/extensions/*", GLOB_ONLYDIR);
+// Get a list of the extension directories.
+$directories = glob(KAKU_ROOT . "/extensions/*", GLOB_ONLYDIR);
 
 if (count($directories) > 0) {
 
   foreach ($directories as $directory) {
 
-    // Get directory name without path.
-    $directory_name = str_replace("./content/extensions/", "", $directory);
+    // Get the directory name without the path.
+    $directory_name = str_replace(KAKU_ROOT . "/extensions/", "", $directory);
 
     $extension_full_path = "{$directory}/install.php";
 
     if (file_exists($extension_full_path)) {
 
-      // Include the extension's install script.
+      // Run the extension's install script.
       require $extension_full_path;
     }
   }
@@ -804,66 +721,84 @@ if (!empty($errors)) {
 
   if ($Database->checkTableExistence("tags")) {
 
+    // Drop the tags table.
     if (!$Database->performQuery(
 
       "DROP TABLE " . DB_PREF . "tags"
     )) {
 
-      array_push($errors, "failed to drop " . DB_PREF . "tags table");
+      // Failed to drop the tags table.
+      $errors[] = "failed to drop " . DB_PREF . "tags table";
     }
   }
 
   if ($Database->checkTableExistence("pages")) {
 
+    // Drop the pages table.
     if (!$Database->performQuery(
 
       "DROP TABLE " . DB_PREF . "pages"
     )) {
 
-      array_push($errors, "failed to drop " . DB_PREF . "pages table");
+      // Failed to drop the pages table.
+      $errors[] = "failed to drop " . DB_PREF . "pages table";
     }
   }
 
   if ($Database->checkTableExistence("posts")) {
 
+    // Drop the posts table.
     if (!$Database->performQuery(
 
       "DROP TABLE " . DB_PREF . "posts"
     )) {
 
-      array_push($errors, "failed to drop " . DB_PREF . "posts table");
+      // Failed to drop the posts table.
+      $errors[] = "failed to drop " . DB_PREF . "posts table";
     }
   }
 
   if ($Database->checkTableExistence("users")) {
 
+    // Drop the users table.
     if (!$Database->performQuery(
 
       "DROP TABLE " . DB_PREF . "users"
     )) {
 
-      array_push($errors, "failed to drop " . DB_PREF . "users table");
+      // Failed to drop the users table.
+      $errors[] = "failed to drop " . DB_PREF . "users table";
     }
   }
 
   if ($Database->checkTableExistence("extensions")) {
 
+    // Drop the extensions table.
     if (!$Database->performQuery(
 
       "DROP TABLE " . DB_PREF . "extensions"
     )) {
 
-      array_push($errors, "failed to drop " . DB_PREF . "extensions table");
+      // Failed to drop the extensions table.
+      $errors[] = "failed to drop " . DB_PREF . "extensions table";
     }
   }
 
-  echo "The following errors occurred during installation:<br><br>";
+  if (ob_get_status()["level"] > 0) {
+
+    // Clear the buffer.
+    ob_end_clean();
+  }
+
+  echo "<b>Notice</b>: the following errors occurred during installation:<br><br>";
 
   foreach ($errors as $error) {
 
+    // Display the errors.
     echo ucfirst($error) . ".<br>";
   }
 
+  // Terminate.
   exit();
 }
 
