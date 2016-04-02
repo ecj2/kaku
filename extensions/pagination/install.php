@@ -1,5 +1,11 @@
 <?php
 
+if (!defined("KAKU_ACCESS")) {
+
+  // Deny direct access to this file.
+  exit();
+}
+
 if (!$Database->checkTableExistence("extension_pagination")) {
 
   // Create the extension_pagination table.

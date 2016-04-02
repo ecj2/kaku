@@ -1,5 +1,11 @@
 <?php
 
+if (!defined("KAKU_ACCESS")) {
+
+  // Deny direct access to this file.
+  exit();
+}
+
 if (isset($_POST["forum_name"])) {
 
   $statement = "

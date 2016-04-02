@@ -1,5 +1,11 @@
 <?php
 
+if (!defined("KAKU_ACCESS")) {
+
+  // Deny direct access to this file.
+  exit();
+}
+
 $markup = '
 
   <div id="disqus_thread"></div>

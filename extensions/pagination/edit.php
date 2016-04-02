@@ -1,5 +1,11 @@
 <?php
 
+if (!defined("KAKU_ACCESS")) {
+
+  // Deny direct access to this file.
+  exit();
+}
+
 if (isset($_POST["next_page_text"]) && isset($_POST["previous_page_text"])) {
 
   $statement = "
