@@ -1,87 +1,118 @@
 <?php
 
-class Output extends Utility {
+if (!defined("KAKU_ACCESS")) {
+
+  // Deny direct access to this file.
+  exit();
+}
+
+class Output {
 
   private $search;
   private $replace;
-
-  private $class_name;
-  private $class_file;
-
-  private $Database;
 
   public function __construct() {
 
     $this->search = [];
     $this->replace = [];
 
-    $this->class_name = [];
-    $this->class_file = [];
+    // Start the output buffer.
+    ob_start(
+
+      [
+        $this,
+
+        "replaceBufferContents"
+      ]
+    );
   }
 
-  public function flushBuffer() {
+  public function __destruct() {
 
-    // Flush contents of buffer to the page.
+    // Flush the contents of the buffer to the page.
     ob_get_flush();
   }
 
   public function replaceTags() {
 
-    global $Hook;
-
-    // Get the tag recursion depth.
+    // Select the recursion depth tag.
     $statement = "
 
       SELECT body
       FROM " . DB_PREF . "tags
       WHERE title = 'recursion_depth'
       ORDER BY id DESC
+      LIMIT 1
     ";
 
-    $query = $this->Database->query($statement);
+    $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-    if (!$query || $query->rowCount() == 0) {
+    if (!$Query) {
 
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get recursion depth");
+      // Something went wrong.
+      $GLOBALS["Utility"]->displayError("failed to select recursion_depth");
     }
 
-    $recursion_depth = $query->fetch(PDO::FETCH_OBJ)->body;
+    if ($Query->rowCount() == 0) {
+
+      // The recursion_depth tag does not exit.
+      $GLOBALS["Utility"]->displayError("recursion_depth tag does not exist");
+    }
+
+    // Get the recursion depth.
+    $recursion_depth = $Query->fetch(PDO::FETCH_OBJ)->body;
 
     for ($i = 0; $i < $recursion_depth; ++$i) {
 
-      // Get tags from database.
-      $statement = "SELECT * FROM " . DB_PREF . "tags ORDER BY id DESC";
+      // Select tags from the database.
+      $statement = "
 
-      $query = $this->Database->query($statement);
+        SELECT title, body
+        FROM " . DB_PREF . "tags
+        ORDER BY id DESC
+      ";
 
-      if (!$query || $query->rowCount() == 0) {
+      $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-        // Query failed or returned zero rows.
-        Utility::displayError("failed to replace tags");
+      if (!$Query) {
+
+        // Something went wrong.
+        $GLOBALS["Utility"]->displayError("failed to select tags");
       }
 
-      while ($tag = $query->fetch(PDO::FETCH_OBJ)) {
+      if ($Query->rowCount() == 0) {
 
+        // The tags do not exist.
+        $GLOBALS["Utility"]->displayError("tags do not exist");
+      }
+
+      while ($Tag = $Query->fetch(PDO::FETCH_OBJ)) {
+
+        // Get the contents of the buffer.
         $buffer_contents = $this->replaceBufferContents(ob_get_contents());
 
-        if (strpos($buffer_contents, $tag->title) !== false) {
+        if (strpos($buffer_contents, $Tag->title) !== false) {
 
-          // Replace tag call with value from database.
+          // Replace tag calls with values from the database.
 
-          $Hook->addAction("{$tag->title}", $tag->body);
+          $GLOBALS["Hook"]->addAction(
+
+            $Tag->title,
+
+            $Tag->body
+          );
 
           $this->addTagReplacement(
 
-            $tag->title,
+            $Tag->title,
 
-            $Hook->doAction("{$tag->title}")
+            $GLOBALS["Hook"]->doAction($Tag->title)
           );
         }
       }
     }
 
-    // Find all unfilled tags.
+    // Find unfilled tags.
     preg_match_all(
 
       "/\{\%(.*?)\%\}/",
@@ -93,9 +124,9 @@ class Output extends Utility {
 
     for ($i = 0; $i < count($matches[1]); ++$i) {
 
-      // Replace unfilled tags with hook actions (if applicable).
+      // Replaced unfilled tags with hook actions.
 
-      $Hook->addAction(
+      $GLOBALS["Hook"]->addAction(
 
         $matches[1][$i],
 
@@ -106,58 +137,35 @@ class Output extends Utility {
 
         $matches[1][$i],
 
-        $Hook->doAction($matches[1][$i])
+        $GLOBALS["Hook"]->doAction($matches[1][$i])
       );
     }
   }
 
-  public function startBuffer() {
-
-    ob_start(
-
-      [
-        $this,
-
-        "replaceBufferContents"
-      ]
-    );
-  }
-
   public function loadExtensions() {
 
-    // Get extension directories.
-    $directories = glob("content/extensions/*", GLOB_ONLYDIR);
+    // Get a list of the extension directories.
+    $directories = glob(KAKU_ROOT . "/extensions/*", GLOB_ONLYDIR);
 
     foreach ($directories as $directory) {
 
-      // Get directory name without path.
-      $directory_name = str_replace("content/extensions/", "", $directory);
+      // Get the directory name without the path.
+      $directory_name = str_replace(KAKU_ROOT . "/extensions/", "", $directory);
 
       $extension_full_path = "{$directory}/{$directory_name}.php";
 
       if (file_exists($extension_full_path)) {
 
-        // Get the names of already declared classes.
-        $classes = get_declared_classes();
+        // Get the names of previously declared classes.
+        $declared_classes = get_declared_classes();
 
-        // Require extension source file.
-        require_once $extension_full_path;
+        // Load extension source file.
+        require $extension_full_path;
 
-        $classes = array_diff(get_declared_classes(), $classes);
+        $class_difference = array_diff(get_declared_classes(), $declared_classes);
 
-        // Get name of newly required class.
-        $class_name = reset($classes);
-
-        if (!in_array($class_name, $this->class_name)) {
-
-          // Save class name and file path.
-          $this->class_name[] = $class_name;
-          $this->class_file[] = $extension_full_path;
-        }
-
-        $position = array_search($extension_full_path, $this->class_file);
-
-        $class_name = $this->class_name[$position];
+        // Get the name of the freshly-required class.
+        $class_name = reset($class_difference);
 
         // Determine if the given extension has been activated.
         $statement = "
@@ -167,76 +175,52 @@ class Output extends Utility {
           WHERE title = '{$class_name}'
         ";
 
-        $query = $this->Database->query($statement);
+        $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-        if (!$query || $query->rowCount() == 0) {
+        if (!$Query || $Query->rowCount() == 0) {
 
           // Failed to determine activation status.
           continue;
         }
 
-        // Fetch result as an object.
-        $result = $query->fetch(PDO::FETCH_OBJ);
+        // Fetch the result as an object.
+        $Result = $Query->fetch(PDO::FETCH_OBJ);
 
-        // Get activation status.
-        $activation_status = $result->activate;
+        // Get the extension's activation status.
+        $activation_status = $Result->activate;
 
         if (!$activation_status) {
 
-          // Extension has not been activated; skip it.
+          // The extension has not been activated.
           continue;
         }
 
         // Instantiate the extension.
         $Extension = new $class_name;
-
-        if (method_exists($class_name, "setDatabaseHandle")) {
-
-          // Pass the database handle over to the extension.
-          $Extension->setDatabaseHandle($this->Database);
-        }
-
-        if (method_exists($class_name, "manageHooks")) {
-
-          $Extension->manageHooks();
-        }
       }
     }
   }
 
   public function addTagReplacement($tag_title, $replacement) {
 
+    // The supplied tag will be replaced later when the buffer is flushed.
     $this->search[] = "{%{$tag_title}%}";
     $this->replace[] = $replacement;
   }
 
-  public function setDatabaseHandle($DatabaseHandle) {
-
-    $this->Database = $DatabaseHandle;
-  }
-
-  public function replaceBufferContents($contents) {
-
-    static $first_pass = true;
+  public function replaceBufferContents($buffer_contents) {
 
     // Replace tags in buffer.
-    $contents = str_replace(
+    $buffer_contents = str_replace(
 
       $this->search,
 
       $this->replace,
 
-      $contents
+      $buffer_contents
     );
 
-    if ($first_pass) {
-
-      $first_pass = false;
-
-      $this->replaceTags();
-    }
-
-    return $contents;
+    return $buffer_contents;
   }
 }
 
