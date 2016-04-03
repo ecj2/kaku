@@ -1,21 +1,17 @@
 <?php
 
-class Comment extends Utility {
+if (!defined("KAKU_ACCESS")) {
 
-  private $Database;
+  // Deny direct access to this file.
+  exit();
+}
 
-  public function __construct() {
+class Comment {
 
-    //
-  }
+  public function getSource() {
 
-  public function getSource($comment_block_markup) {
-
-    if (!isset($_GET["post_url"])) {
-
-      // Disallow this method from being used if not viewing a post.
-      return;
-    }
+    // Get the markup for the comment block.
+    $comment_block_markup = $GLOBALS["Template"]->getFileContents("comment_block");
 
     // Determine if comments are allowed on this post.
     $statement = "
@@ -23,29 +19,36 @@ class Comment extends Utility {
       SELECT allow_comments
       FROM " . DB_PREF . "posts
       WHERE url = ?
+      LIMIT 1
     ";
 
-    $query = $this->Database->prepare($statement);
+    $Query = $GLOBALS["Database"]->getHandle()->prepare($statement);
 
     // Prevent SQL injections.
-    $query->bindParam(1, $_GET["post_url"]);
+    $Query->bindParam(1, $_GET["post"]);
 
-    $query->execute();
+    $Query->execute();
 
-    if (!$query || $query->rowCount() == 0) {
+    if (!$Query) {
 
-      // Query failed or returned zero rows.
-      Utility::displayError("failed to get comments");
+      // Something went wrong.
+      $GLOBALS["Utility"]->displayError("failed to get comments");
     }
-    else if ($query->fetch(PDO::FETCH_OBJ)->allow_comments) {
 
-      // Display comment block.
-      return $comment_block_markup;
+    if ($Query->fetch(PDO::FETCH_OBJ)->allow_comments) {
+
+      // Display the comment block.
+      $GLOBALS["Hook"]->addAction(
+
+        "comments",
+
+        $comment_block_markup
+      );
     }
     else {
 
-      // Comments are disabled on this post.
-      return str_replace(
+      // Commenting has been disabled on this post.
+      $disabled_message = str_replace(
 
         "{%comment_source%}",
 
@@ -53,12 +56,14 @@ class Comment extends Utility {
 
         $comment_block_markup
       );
+
+      $GLOBALS["Hook"]->addAction(
+
+        "comments",
+
+        $disabled_message
+      );
     }
-  }
-
-  public function setDatabaseHandle($DatabaseHandle) {
-
-    $this->Database = $DatabaseHandle;
   }
 }
 
