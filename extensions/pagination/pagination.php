@@ -85,9 +85,9 @@ class Pagination extends Extension {
     $offset = 0;
     $row_count = $posts_per_page + 1;
 
-    if (isset($_GET["page_number"])) {
+    if (isset($_GET["range"])) {
 
-      if ($_GET["page_number"] == 0) {
+      if ($_GET["range"] == 0) {
 
         // Get the absolute URL of where Kaku is installed.
         $root_address = $GLOBALS["Utility"]->getRootAddress();
@@ -96,7 +96,7 @@ class Pagination extends Extension {
         header("Location: {$root_address}");
       }
 
-      $offset = ($_GET["page_number"] - 1) * $posts_per_page;
+      $offset = ($_GET["range"] - 1) * $posts_per_page;
       $row_count = $posts_per_page + 1;
     }
 
@@ -113,9 +113,9 @@ class Pagination extends Extension {
 
     if ($Query->rowCount() > $posts_per_page) {
 
-      if (isset($_GET["page_number"])) {
+      if (isset($_GET["range"])) {
 
-        $url = "{%blog_url%}/range/" . ($_GET["page_number"] + 1);
+        $url = "{%blog_url%}/range/" . ($_GET["range"] + 1);
       }
       else {
 
@@ -162,9 +162,9 @@ class Pagination extends Extension {
 
     $link = "{$previous_page_text}";
 
-    if (isset($_GET["page_number"])) {
+    if (isset($_GET["range"])) {
 
-      $previous_page = $_GET["page_number"] - 1;
+      $previous_page = $_GET["range"] - 1;
 
       if ($previous_page < 2) {
 

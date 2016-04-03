@@ -22,7 +22,7 @@ class Truncate extends Extension {
 
   public function truncatePostBody($callback) {
 
-    if (isset($_GET["post_url"])) {
+    if (isset($_GET["post"])) {
 
       // Remove truncate tag when viewing a post.
       return str_replace("{%truncate%}", "", $callback);
@@ -45,12 +45,7 @@ class Truncate extends Extension {
           $body = substr($body, 0, $truncate_position);
 
           // Include a "read more" link to the full post.
-          $body .= "
-
-            <a href=\"{%blog_url%}/post/{%post_url_{$count}%}\">
-              {$lure_text}
-            </a>
-          ";
+          $body .= "<a href=\"{%blog_url%}/post/{%post_url_{$count}%}\">{$lure_text}</a>";
         }
 
         $bodies[] = $body;
