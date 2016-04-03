@@ -35,6 +35,12 @@ class Comment {
       $GLOBALS["Utility"]->displayError("failed to get comments");
     }
 
+    if ($Query->rowCount() == 0) {
+
+      // The post does not exist.
+      header("Location: " . $GLOBALS["Utility"]->getRootAddress() . "/error.php?code=404");
+    }
+
     if ($Query->fetch(PDO::FETCH_OBJ)->allow_comments) {
 
       // Display the comment block.
