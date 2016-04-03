@@ -46,7 +46,7 @@ class DisqusForum extends Extension {
       else {
 
         // Fetch the result as an object.
-        $Result = $query->fetch(PDO::FETCH_OBJ);
+        $Result = $Query->fetch(PDO::FETCH_OBJ);
 
         // Get the forum name.
         $forum_name = $Result->forum_name;
