@@ -10,7 +10,6 @@ class Hook {
 
   private $actions;
   private $filters;
-  private $filter_classes;
   private $filter_objects;
   private $filter_methods;
   private $action_contents;
@@ -19,7 +18,6 @@ class Hook {
 
     $this->actions = [];
     $this->filters = [];
-    $this->filter_classes = [];
     $this->filter_objects = [];
     $this->filter_methods = [];
     $this->action_contents = [];
@@ -41,7 +39,7 @@ class Hook {
 
             [
 
-              $this->filter_classes[$action][$i],
+              $this->filter_objects[$action][$i],
 
               $this->filter_methods[$action][$i]
             ],
@@ -71,16 +69,16 @@ class Hook {
     }
   }
 
-  public function addFilter($action, $method) {
+  public function addFilter($action, $object, $method) {
 
     if (!isset($this->filters[$action])) {
 
       $this->filters[$action] = [];
     }
 
-    if (!isset($this->filter_classes[$action])) {
+    if (!isset($this->filter_objects[$action])) {
 
-      $this->filter_classes[$action] = [];
+      $this->filter_objects[$action] = [];
     }
 
     if (!isset($this->filter_objects[$action])) {
@@ -95,10 +93,9 @@ class Hook {
 
     $this->filters[$action][] = $action;
 
-    $this->filter_methods[$action][] = $method;
+    $this->filter_objects[$action][] = $object;
 
-    // Get the name of the class that added the filter.
-    $this->filter_classes[$action][] = debug_backtrace()[1]["class"];
+    $this->filter_methods[$action][] = $method;
   }
 }
 

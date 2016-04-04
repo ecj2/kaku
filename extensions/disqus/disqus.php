@@ -18,6 +18,8 @@ class DisqusForum extends Extension {
 
       "comment_source",
 
+      $this,
+
       "getDisqusForum"
     );
   }

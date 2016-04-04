@@ -16,12 +16,16 @@ class Pagination extends Extension {
 
       "next_page",
 
+      $this,
+
       "getNextPage"
     );
 
     $GLOBALS["Hook"]->addFilter(
 
       "previous_page",
+
+      $this,
 
       "getPreviousPage"
     );

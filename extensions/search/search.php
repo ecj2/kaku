@@ -16,6 +16,8 @@ class Search extends Extension {
 
       "search",
 
+      $this,
+
       "manageSearch"
     );
   }

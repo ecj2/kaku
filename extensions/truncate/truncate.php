@@ -16,6 +16,8 @@ class Truncate extends Extension {
 
       "post_body",
 
+      $this,
+
       "truncatePostBody"
     );
   }
@@ -77,7 +79,7 @@ class Truncate extends Extension {
     else {
 
       // Fetch the result as an object.
-      $Result = $query->fetch(PDO::FETCH_OBJ);
+      $Result = $Query->fetch(PDO::FETCH_OBJ);
 
       // Get the lure text.
       return $Result->lure;
