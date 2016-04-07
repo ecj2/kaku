@@ -33,7 +33,7 @@ class Truncate extends Extension {
 
       $bodies = [];
 
-      $count = 1;
+      $count = 0;
 
       $lure_text = $this->getLureText();
 
