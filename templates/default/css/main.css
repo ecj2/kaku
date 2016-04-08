@@ -89,7 +89,7 @@ article {
   border-bottom: 1px solid #eee;
 }
 
-article img {
+article img, article iframe, article video {
 
   max-width: 100%;
 }
