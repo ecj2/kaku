@@ -61,7 +61,7 @@ class Page {
       $root_address = $GLOBALS["Utility"]->getRootAddress();
 
       // Query returned zero rows. Redirect to 404 page.
-      header("Location: {$root_address}/error.php?code=404");
+      header("Location: {$root_address}/error?code=404");
     }
     else {
 

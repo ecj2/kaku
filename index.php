@@ -99,6 +99,11 @@ else if (in_array("feed", $_GET)) {
   // View the feed.
   require "feed.php";
 }
+else if (in_array("error", $_GET)) {
+
+  // Redirect to error page.
+  require "core/includes/error.php";
+}
 else {
 
   // Load the template file for viewing the latest posts.

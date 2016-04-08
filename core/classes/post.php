@@ -48,7 +48,7 @@ class Post {
       if ($Query->rowCount() == 0) {
 
         // The post author ID does not exist, or the post is a draft.
-        header("Location: " . $GLOBALS["Utility"]->getRootAddress() . "/error.php?code=404");
+        header("Location: " . $GLOBALS["Utility"]->getRootAddress() . "/error?code=404");
       }
 
       // Get the post's author ID.
@@ -295,7 +295,7 @@ class Post {
       if ($Query->rowCount() == 0) {
 
         // The post does not exist or is a draft.
-        header("Location: " . $GLOBALS["Utility"]->getRootAddress() . "/error.php?code=404");
+        header("Location: " . $GLOBALS["Utility"]->getRootAddress() . "/error?code=404");
       }
 
       switch ($type) {
@@ -640,7 +640,7 @@ class Post {
       if ($Query->rowCount() == 0) {
 
         // The column does not exist or belongs to a draft.
-        header("Location: " . $GLOBALS["Utility"]->getRootAddress() . "/error.php?code=404");
+        header("Location: " . $GLOBALS["Utility"]->getRootAddress() . "/error?code=404");
       }
 
       // Allow extensions to hook into this column of data.

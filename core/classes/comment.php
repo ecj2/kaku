@@ -38,7 +38,7 @@ class Comment {
     if ($Query->rowCount() == 0) {
 
       // The post does not exist.
-      header("Location: " . $GLOBALS["Utility"]->getRootAddress() . "/error.php?code=404");
+      header("Location: " . $GLOBALS["Utility"]->getRootAddress() . "/error?code=404");
     }
 
     if ($Query->fetch(PDO::FETCH_OBJ)->allow_comments) {
