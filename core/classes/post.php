@@ -862,7 +862,7 @@ class Post {
 
       $GLOBALS["Hook"]->addAction(
 
-        "posts_range",
+        "post_range",
 
         $markup
       );
@@ -871,7 +871,7 @@ class Post {
 
       $GLOBALS["Hook"]->addAction(
 
-        "latest_posts",
+        "post_latest",
 
         $markup
       );
