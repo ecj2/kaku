@@ -4,10 +4,10 @@ require "core/includes/common.php";
 
 $Output->loadExtensions();
 
-if (file_exists("install.php")) {
+if (file_exists("core/includes/install.php")) {
 
   // Install Kaku.
-  require "install.php";
+  require "core/includes/install.php";
 }
 
 if (isset($_GET["post"])) {
@@ -97,11 +97,11 @@ else if (isset($_GET["page"])) {
 else if (in_array("feed", $_GET)) {
 
   // View the feed.
-  require "feed.php";
+  require "core/includes/feed.php";
 }
 else if (in_array("error", $_GET)) {
 
-  // Redirect to error page.
+  // Redirect error codes.
   require "core/includes/error.php";
 }
 else {
