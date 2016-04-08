@@ -2,13 +2,13 @@
 
 require "core/includes/common.php";
 
-$Output->loadExtensions();
-
 if (file_exists("core/includes/install.php")) {
 
   // Install Kaku.
   require "core/includes/install.php";
 }
+
+$Output->loadExtensions();
 
 if (isset($_GET["post"])) {
 
