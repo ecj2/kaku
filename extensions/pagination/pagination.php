@@ -91,13 +91,10 @@ class Pagination extends Extension {
 
     if (isset($_GET["range"])) {
 
-      if ($_GET["range"] == 0) {
+      if ($_GET["range"] == 0 || $_GET["range"] == 1 || $_GET["range"] < 0) {
 
-        // Get the absolute URL of where Kaku is installed.
-        $root_address = $GLOBALS["Utility"]->getRootAddress();
-
-        // Redirect to index.
-        header("Location: {$root_address}");
+        // Redirect to the index.
+        header("Location: " . $GLOBALS["Utility"]->getRootAddress());
       }
 
       $offset = ($_GET["range"] - 1) * $posts_per_page;
@@ -131,6 +128,12 @@ class Pagination extends Extension {
       return $message;
     }
     else {
+
+      if (isset($_GET["range"])) {
+
+        // Redirect to the index.
+        header("Location: " . $GLOBALS["Utility"]->getRootAddress());
+      }
 
       return "";
     }
