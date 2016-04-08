@@ -45,70 +45,10 @@ switch ($_GET["code"]) {
       // Get the URL for the 404 page.
       $error_destination = $Query->fetch(PDO::FETCH_OBJ)->body;
 
-      // Select the recursion depth tag.
-      $statement = "
+      // Replace nested tags in 404 page URL.
+      $error_destination = $GLOBALS["Utility"]->replaceNestedTags($error_destination);
 
-        SELECT body
-        FROM " . DB_PREF . "tags
-        WHERE title = 'recursion_depth'
-        ORDER BY id DESC
-        LIMIT 1
-      ";
-
-      $Query = $GLOBALS["Database"]->getHandle()->query($statement);
-
-      if (!$Query || $Query->rowCount() == 0) {
-
-        // Something went wrong.
-        header("Location: {$root_address}");
-      }
-
-      // Get the recursion depth.
-      $recursion_depth = $Query->fetch(PDO::FETCH_OBJ)->body;
-
-      $search = [];
-      $replace = [];
-
-      for ($i = 0; $i < $recursion_depth; ++$i) {
-
-        // Select the tags from the database.
-        $statement = "
-
-          SELECT title, body
-          FROM " . DB_PREF . "tags
-          ORDER BY id DESC
-        ";
-
-        $Query = $GLOBALS["Database"]->getHandle()->query($statement);
-
-        if (!$Query || $Query->rowCount() == 0) {
-
-          // Something went wrong.
-          header("Location: {$root_address}");
-        }
-
-        while ($Tag = $Query->fetch(PDO::FETCH_OBJ)) {
-
-          if (strpos($error_destination, $Tag->title) !== false) {
-
-            // Replace tag calls with values from the database.
-
-            $GLOBALS["Hook"]->addAction(
-
-              $Tag->title,
-
-              $Tag->body
-            );
-
-            $search[] = "{%{$Tag->title}%}";
-            $replace = $GLOBALS["Hook"]->doAction($Tag->title);
-          }
-        }
-      }
-
-      // Replace nested tags inside the error destination.
-      $error_destination = str_replace($search, $replace, $error_destination);
-
+      // Redirect to the 404 page.
       header("Location: {$error_destination}");
     }
   break;

@@ -61,6 +61,85 @@ class Utility {
 
     return $GLOBALS["Hook"]->doAction("root_address");
   }
+
+  public function replaceNestedTags($content) {
+
+    // Select the recursion depth tag.
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = 'recursion_depth'
+      ORDER BY id DESC
+      LIMIT 1
+    ";
+
+    $Query = $GLOBALS["Database"]->getHandle()->query($statement);
+
+    if (!$Query) {
+
+      // Something went wrong.
+      $this->displayError("failed to select recursion_depth");
+    }
+
+    if ($Query->rowCount() == 0) {
+
+      // The recursion_depth tag does not exist.
+      $this->displayError("the recursion_depth tag does not exist");
+    }
+
+    // Get the recursion depth.
+    $recursion_depth = $Query->fetch(PDO::FETCH_OBJ)->body;
+
+    $search = [];
+    $replace = [];
+
+    for ($i = 0; $i < $recursion_depth; ++$i) {
+
+      // Select the tags.
+      $statement = "
+
+        SELECT title, body
+        FROM " . DB_PREF . "tags
+        ORDER BY id DESC
+      ";
+
+      $Query = $GLOBALS["Database"]->getHandle()->query($statement);
+
+      if (!$Query) {
+
+        // Something went wrong.
+        $this->displayError("failed to select tags");
+      }
+
+      if ($Query->rowCount() == 0) {
+
+        // The tags do not exist.
+        $this->displayError("tags do not exist");
+      }
+
+      while ($Tag = $Query->fetch(PDO::FETCH_OBJ)) {
+
+        if (strpos($content, $Tag->title) !== false) {
+
+          // Replace tag calls with values from the database.
+
+          $GLOBALS["Hook"]->addAction(
+
+            $Tag->title,
+
+            $Tag->body
+          );
+
+          $search[] = "{%{$Tag->title}%}";
+          $replace[] = $GLOBALS["Hook"]->doAction($Tag->title);
+        }
+      }
+    }
+
+    // Replace nested tags inside the content.
+    return str_replace($search, $replace, $content);
+  }
 }
 
 ?>
