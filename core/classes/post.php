@@ -833,6 +833,8 @@ class Post {
 
           "{%post_keywords%}",
 
+          "{%post_description%}",
+
           "{%post_relative_epoch%}",
 
           "{%post_absolute_epoch%}",
