@@ -28,7 +28,7 @@ class Post {
         SELECT author_id
         FROM " . DB_PREF . "posts
         WHERE url = ? AND draft = 0
-        ORDER BY id DESC
+        ORDER BY epoch DESC
         LIMIT 1
       ";
 
@@ -138,7 +138,7 @@ class Post {
           SELECT author_id
           FROM " . DB_PREF . "posts
           WHERE draft = 0
-          ORDER BY id DESC
+          ORDER BY epoch DESC
           LIMIT {$posts_per_page}
           OFFSET {$offset}
         ";
@@ -151,7 +151,7 @@ class Post {
           SELECT author_id
           FROM " . DB_PREF . "posts
           WHERE draft = 0
-          ORDER BY id DESC
+          ORDER BY epoch DESC
           LIMIT {$posts_per_page}
         ";
       }
@@ -464,7 +464,7 @@ class Post {
           SELECT epoch
           FROM " . DB_PREF . "posts
           WHERE draft = 0
-          ORDER BY id DESC
+          ORDER BY epoch DESC
           LIMIT {$posts_per_page}
           OFFSET {$offset}
         ";
@@ -477,7 +477,7 @@ class Post {
           SELECT epoch
           FROM " . DB_PREF . "posts
           WHERE draft = 0
-          ORDER BY id DESC
+          ORDER BY epoch DESC
           LIMIT {$posts_per_page}
         ";
       }
@@ -711,7 +711,7 @@ class Post {
           SELECT {$column}
           FROM " . DB_PREF . "posts
           WHERE draft = 0
-          ORDER BY id DESC
+          ORDER BY epoch DESC
           LIMIT {$posts_per_page}
           OFFSET {$offset}
         ";
@@ -724,7 +724,7 @@ class Post {
           SELECT {$column}
           FROM " . DB_PREF . "posts
           WHERE draft = 0
-          ORDER BY id DESC
+          ORDER BY epoch DESC
           LIMIT {$posts_per_page}
         ";
       }
@@ -811,7 +811,7 @@ class Post {
         SELECT *
         FROM " . DB_PREF . "posts
         WHERE draft = 0
-        ORDER BY id DESC
+        ORDER BY epoch DESC
         LIMIT {$posts_per_page}
         OFFSET {$offset}
       ";
@@ -824,7 +824,7 @@ class Post {
         SELECT *
         FROM " . DB_PREF . "posts
         WHERE draft = 0
-        ORDER BY id DESC
+        ORDER BY epoch DESC
         LIMIT {$posts_per_page}
       ";
     }

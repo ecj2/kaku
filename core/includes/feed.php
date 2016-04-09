@@ -12,7 +12,7 @@ $statement = "
   SELECT url, title, epoch, description
   FROM " . DB_PREF . "posts
   WHERE draft = '0'
-  ORDER BY id DESC
+  ORDER BY epoch DESC
 ";
 
 $Query = $Database->getHandle()->query($statement);
