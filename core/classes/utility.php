@@ -135,10 +135,12 @@ class Utility {
           $replace[] = $GLOBALS["Hook"]->doAction($Tag->title);
         }
       }
+
+      // Replace nested tags inside the content.
+      $content = str_replace($search, $replace, $content);
     }
 
-    // Replace nested tags inside the content.
-    return str_replace($search, $replace, $content);
+    return $content;
   }
 }
 
