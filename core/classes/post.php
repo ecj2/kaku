@@ -119,7 +119,11 @@ class Post {
         $GLOBALS["Utility"]->displayError("posts per page tag does not exist");
       }
 
+      // Get the posts per page.
       $posts_per_page = $Query->fetch(PDO::FETCH_OBJ)->body;
+
+      // Replace nested tags in the posts per page.
+      $posts_per_page = $GLOBALS["Utility"]->replaceNestedTags($posts_per_page);
 
       $statement = "";
 
@@ -270,6 +274,9 @@ class Post {
       // Get the date format.
       $date_format = $Query->fetch(PDO::FETCH_OBJ)->body;
 
+      // Replace nested tags in the date format.
+      $date_format = $GLOBALS["Utility"]->replaceNestedTags($date_format);
+
       // Select the post's epoch.
       $statement = "
 
@@ -408,7 +415,11 @@ class Post {
         $GLOBALS["Utility"]->displayError("date format tag does not exist");
       }
 
+      // Get the date format.
       $date_format = $Query->fetch(PDO::FETCH_OBJ)->body;
+
+      // Replace nested tags in the date format.
+      $date_format = $GLOBALS["Utility"]->replaceNestedTags($date_format);
 
       // Select posts per page.
       $statement = "
@@ -434,7 +445,11 @@ class Post {
         $GLOBALS["Utility"]->displayError("posts per page tag does not exist");
       }
 
+      // Get the posts per page.
       $posts_per_page = $Query->fetch(PDO::FETCH_OBJ)->body;
+
+      // Replace nested tags in the posts per page.
+      $posts_per_page = $GLOBALS["Utility"]->replaceNestedTags($posts_per_page);
 
       $statement = "";
 
@@ -677,7 +692,11 @@ class Post {
         $GLOBALS["Utility"]->displayError("posts per page tag does not exist");
       }
 
+      // Get the posts per page.
       $posts_per_page = $Query->fetch(PDO::FETCH_OBJ)->body;
+
+      // Replace nested tags in the posts per page.
+      $posts_per_page = $GLOBALS["Utility"]->replaceNestedTags($posts_per_page);
 
       $statement = "";
 
@@ -774,7 +793,11 @@ class Post {
       $GLOBALS["Utility"]->displayError("posts per page tag does not exist");
     }
 
+    // Get the posts per page.
     $posts_per_page = $Query->fetch(PDO::FETCH_OBJ)->body;
+
+    // Replace nested tags in the posts per page.
+    $posts_per_page = $GLOBALS["Utility"]->replaceNestedTags($posts_per_page);
 
     $statement = "";
 

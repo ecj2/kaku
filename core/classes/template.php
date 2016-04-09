@@ -39,6 +39,9 @@ class Template {
     // Get the template name.
     $template_name = $Result->body;
 
+    // Replace nested tags in the template name.
+    $template_name = $GLOBALS["Utility"]->replaceNestedTags($template_name);
+
     $template_directory = KAKU_ROOT . "/templates/{$template_name}";
 
     // Get files from the template directory.

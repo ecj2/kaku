@@ -84,7 +84,11 @@ class Pagination extends Extension {
       $GLOBALS["Utility"]->displayError("posts_per_page tag does not exist");
     }
 
+    // Get the posts per page.
     $posts_per_page = $Query->fetch(PDO::FETCH_OBJ)->body;
+
+    // Replace nested tags in the posts per page.
+    $posts_per_page = $GLOBALS["Utility"]->replaceNestedTags($posts_per_page);
 
     $offset = 0;
     $row_count = $posts_per_page + 1;
