@@ -79,8 +79,7 @@ else {
 
         <form method=\"post\" class=\"edit_forum_name\">
           <label for=\"forum_name\">Forum Name</label>
-          <input type=\"text\" id=\"forum_name\" name=\"forum_name\" value=\"{$forum_name}\"
-          required>
+          <input type=\"text\" id=\"forum_name\" name=\"forum_name\" value=\"{$forum_name}\">
           <input type=\"submit\" value=\"Save\">
         </form>
       ";

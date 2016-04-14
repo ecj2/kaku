@@ -81,11 +81,9 @@ else {
 
         <form method=\"post\" class=\"edit_pagination_text\">
           <label for=\"next_page_text\">Next Page Text</label>
-          <input type=\"text\" id=\"next_page_text\" name=\"next_page_text\" value=\"{$next_page_text}\"
-          required>
+          <input type=\"text\" id=\"next_page_text\" name=\"next_page_text\" value=\"{$next_page_text}\">
           <label for=\"previous_page_text\">Previous Page Text</label>
-          <input type=\"text\" id=\"previous_page_text\" name=\"previous_page_text\" value=\"{$previous_page_text}\"
-          required>
+          <input type=\"text\" id=\"previous_page_text\" name=\"previous_page_text\" value=\"{$previous_page_text}\">
           <input type=\"submit\" value=\"Save\">
         </form>
       ";
