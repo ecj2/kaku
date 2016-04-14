@@ -24,12 +24,12 @@ class Search extends Extension {
 
   public function manageSearch() {
 
-    if (isset($_GET["term"])) {
+    if (isset($_GET["keywords"])) {
 
-      // Remove whitespace from the beginning and the end of the search term.
-      $_GET["term"] = trim($_GET["term"]);
+      // Remove whitespace from the beginning and the end of the search keywords.
+      $_GET["keywords"] = trim($_GET["keywords"]);
 
-      // Select from posts and pages where something is like the search term.
+      // Select from posts and pages where something is like the search keywords.
       $statement = "
 
         (
@@ -51,13 +51,13 @@ class Search extends Extension {
 
       $Query = $GLOBALS["Database"]->getHandle()->prepare($statement);
 
-      $search_term = "%{$_GET["term"]}%";
+      $search_keywords = "%" . $_GET["keywords"] . "%";
 
       // Prevent SQL injections.
-      $Query->bindParam(1, $search_term);
-      $Query->bindParam(2, $search_term);
-      $Query->bindParam(3, $search_term);
-      $Query->bindParam(4, $search_term);
+      $Query->bindParam(1, $search_keywords);
+      $Query->bindParam(2, $search_keywords);
+      $Query->bindParam(3, $search_keywords);
+      $Query->bindParam(4, $search_keywords);
 
       $Query->execute();
 
@@ -70,10 +70,10 @@ class Search extends Extension {
       if ($Query->rowCount() == 0) {
 
         // Query returned zero rows.
-        $markup = "No results found for \"{$_GET["term"]}\".<br><br>";
+        $markup = "No results found for \"" . $_GET["keywords"] . "\".<br><br>";
 
         $markup .= "<form method=\"get\">";
-        $markup .= "<input type=\"search\" name=\"term\">";
+        $markup .= "<input type=\"search\" name=\"keywords\">";
         $markup .= "<input type=\"submit\" value=\"Search\">";
         $markup .= "</form>";
 
@@ -93,10 +93,10 @@ class Search extends Extension {
         $markup .= "{$Query->rowCount()} results found ";
       }
 
-      $markup .= "for \"{$_GET["term"]}\":";
+      $markup .= "for \"" . $_GET["keywords"] . "\":";
 
       $markup .= "<br><br><form style=\"display: inline;\" ";
-      $markup .= "method=\"get\"><input type=\"search\" name=\"term\">";
+      $markup .= "method=\"get\"><input type=\"search\" name=\"keywords\">";
       $markup .= "<input type=\"submit\" value=\"Search\">";
       $markup .= "</form>";
 
@@ -141,7 +141,7 @@ class Search extends Extension {
       $markup = "Use the form below to search for posts and pages.<br><br>";
 
       $markup .= "<form method=\"get\">";
-      $markup .= "<input type=\"search\" name=\"term\">";
+      $markup .= "<input type=\"search\" name=\"keywords\">";
       $markup .= "<input type=\"submit\" value=\"Search\">";
       $markup .= "</form>";
 
