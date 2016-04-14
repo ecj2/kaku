@@ -92,6 +92,7 @@ article {
 article img, article iframe, article video {
 
   max-width: 100%;
+  border: 0;
 }
 
 article header h1 {
