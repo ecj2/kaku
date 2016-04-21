@@ -555,7 +555,7 @@ if (!$Database->checkTableExistence("users")) {
 
       email VARCHAR(99) NOT NULL,
 
-      password CHAR(60) NOT NULL
+      password VARCHAR(255) NOT NULL
     )"
   )) {
 
