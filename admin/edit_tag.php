@@ -140,6 +140,8 @@ else {
     $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
     $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $title);
 
+    $body = htmlentities($body);
+
     $page_body .= "
 
       <form method=\"post\" class=\"edit_tag\">

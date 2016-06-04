@@ -185,6 +185,8 @@ else {
     $keywords = str_replace(["{", "}"], ["&#123;", "&#125;"], $keywords);
     $description = str_replace(["{", "}"], ["&#123;", "&#125;"], $description);
 
+    $body = htmlentities($body);
+
     $page_body .= "
 
       <form method=\"post\" class=\"edit_post\">
