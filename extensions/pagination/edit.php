@@ -25,13 +25,17 @@ if (isset($_POST["next_page_text"]) && isset($_POST["previous_page_text"])) {
 
   if (!$query) {
 
-    // Failed to update=.
+    // Failed to update.
     header("Location: ./edit_extension.php?title=" . $_GET["title"] . "&result=failure");
+
+    exit();
   }
   else {
 
     // Successfully updated.
     header("Location: ./edit_extension.php?title=" . $_GET["title"] . "&result=success");
+
+    exit();
   }
 }
 else {

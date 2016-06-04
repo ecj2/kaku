@@ -99,6 +99,8 @@ class Pagination extends Extension {
 
         // Redirect to the index.
         header("Location: " . $GLOBALS["Utility"]->getRootAddress());
+
+        exit();
       }
 
       $offset = ($_GET["range"] - 1) * $posts_per_page;
@@ -137,6 +139,8 @@ class Pagination extends Extension {
 
         // Redirect to the index.
         header("Location: " . $GLOBALS["Utility"]->getRootAddress());
+
+        exit();
       }
 
       return "";

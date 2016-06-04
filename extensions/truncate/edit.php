@@ -26,11 +26,15 @@ if (isset($_POST["lure"])) {
 
     // Failed to update lure text.
     header("Location: ./edit_extension.php?title=" . $_GET["title"] . "&result=failure");
+
+    exit();
   }
   else {
 
     // Successfully updated lure text.
     header("Location: ./edit_extension.php?title=" . $_GET["title"] . "&result=success");
+
+    exit();
   }
 }
 else {

@@ -13,6 +13,8 @@ if (!isset($_GET["code"])) {
 
   // No error code was given. Redirect to index.
   header("Location: {$root_address}");
+
+  exit();
 }
 
 switch ($_GET["code"]) {
@@ -34,11 +36,15 @@ switch ($_GET["code"]) {
 
       // Query failed. Redirect to root index.
       header("Location: {$root_address}");
+
+      exit();
     }
     else if ($Query->rowCount() == 0) {
 
       // The tag 404_url does not exist. Redirect to root index.
       header("Location: {$root_address}");
+
+      exit();
     }
     else {
 
@@ -50,6 +56,8 @@ switch ($_GET["code"]) {
 
       // Redirect to the 404 page.
       header("Location: {$error_destination}");
+
+      exit();
     }
   break;
 
@@ -57,6 +65,8 @@ switch ($_GET["code"]) {
 
     // Unknown error code. Redirect to index.
     header("Location: {$root_address}");
+
+    exit();
   break;
 }
 

@@ -26,11 +26,15 @@ if (isset($_POST["forum_name"])) {
 
     // Failed to update forum_name.
     header("Location: ./edit_extension.php?title=" . $_GET["title"] . "&result=failure");
+
+    exit();
   }
   else {
 
     // Successfully updated forum_name.
     header("Location: ./edit_extension.php?title=" . $_GET["title"] . "&result=success");
+
+    exit();
   }
 }
 else {

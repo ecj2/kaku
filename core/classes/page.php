@@ -62,6 +62,8 @@ class Page {
 
       // Query returned zero rows. Redirect to 404 page.
       header("Location: {$root_address}/error?code=404");
+      
+      exit();
     }
     else {
 
