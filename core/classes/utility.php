@@ -24,7 +24,7 @@ class Utility {
 
     $host = $_SERVER["HTTP_HOST"];
 
-    $protocol;
+    $protocol = "";
 
     if (!empty($_SERVER["HTTP_X_FORWARDED_PROTO"])) {
 
@@ -32,7 +32,7 @@ class Utility {
     }
     else {
 
-      if (!empty($_SERVER["HTTPS"])) {
+      if (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] !== "off") {
 
         $protocol = "https://";
       }
