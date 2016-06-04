@@ -28,7 +28,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.+)$ index.php?path=$1 [QSA,B]
 ```
 
-You should also redirect 404 errors to `error.php?code=404` on both Nginx and Apache.
+You should also redirect 404 errors to `/error?code=404` on both Nginx and Apache.
 
 ## Requirements
 PHP >= 5.5
