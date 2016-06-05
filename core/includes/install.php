@@ -280,6 +280,27 @@ if (!$Database->checkTableExistence("tags")) {
     $errors[] = "failed to insert template_directory into " . DB_PREF . "tags";
   }
 
+  // Insert admin_template_directory into the tags table.
+  if (!$Database->performQuery(
+
+    "INSERT INTO " . DB_PREF . "tags (
+
+      title,
+
+      body
+    )
+    VALUES (
+
+      'admin_template_directory',
+
+      '{%blog_url%}/admin/templates'
+    )"
+  )) {
+
+    // Failed to insert admin_template_directory.
+    $errors[] = "failed to insert admin_template_directory into " . DB_PREF . "tags";
+  }
+
   // Insert 404_url into the tags table.
   if (!$Database->performQuery(
 
