@@ -142,6 +142,10 @@ else {
 
     $body = htmlentities($body);
 
+    // Undo HTML entities on {% and %}.
+    $body = str_replace("&amp;#123;%", "{%", $body);
+    $body = str_replace("%&amp;#125;", "%}", $body);
+
     $page_body .= "
 
       <form method=\"post\" class=\"edit_tag\">
