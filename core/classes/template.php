@@ -8,16 +8,30 @@ if (!defined("KAKU_ACCESS")) {
 
 class Template {
 
-  public function getFileContents($file_name, $echo_contents = false) {
+  public function getFileContents($file_name, $echo_contents = false, $view = 0) {
 
-    // Select the template name.
-    $statement = "
+    if ($view == 0) {
 
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'template_name'
-      ORDER BY id DESC
-    ";
+      // Select the template name for the front end.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'template_name'
+        ORDER BY id DESC
+      ";
+    }
+    else if ($view == 1) {
+
+      // Select the template name for the back end.
+      $statement = "
+
+        SELECT body
+        FROM " . DB_PREF . "tags
+        WHERE title = 'admin_template_name'
+        ORDER BY id DESC
+      ";
+    }
 
     $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
@@ -29,8 +43,16 @@ class Template {
 
     if ($Query->rowCount() == 0) {
 
-      // The template_name tag does not exist.
-      $GLOBALS["Utility"]->displayError("template_name tag does not exist");
+      if ($view == 0) {
+
+        // The template_name tag does not exist.
+        $GLOBALS["Utility"]->displayError("template_name tag does not exist");
+      }
+      else if ($view == 1) {
+
+        // The admin_template_name tag does not exist.
+        $GLOBALS["Utility"]->displayError("admin_template_name tag does not exist");
+      }
     }
 
     // Fetch the result as an object.
@@ -42,7 +64,14 @@ class Template {
     // Replace nested tags in the template name.
     $template_name = $GLOBALS["Utility"]->replaceNestedTags($template_name);
 
-    $template_directory = KAKU_ROOT . "/templates/{$template_name}";
+    if ($view == 0) {
+
+      $template_directory = KAKU_ROOT . "/templates/{$template_name}";
+    }
+    else if ($view == 1) {
+
+      $template_directory = KAKU_ROOT . "/admin/templates/{$template_name}";
+    }
 
     // Get files from the template directory.
     $template_files = scandir($template_directory);
