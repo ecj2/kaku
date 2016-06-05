@@ -177,6 +177,8 @@ else {
     $description = $post->description;
     $allow_comments = $post->allow_comments;
 
+    $body = htmlentities($body);
+
     // Encode { and } to prevent it from being replaced by the output buffer.
     $url = str_replace(["{", "}"], ["&#123;", "&#125;"], $url);
     $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
@@ -184,12 +186,6 @@ else {
     $epoch = str_replace(["{", "}"], ["&#123;", "&#125;"], $epoch);
     $keywords = str_replace(["{", "}"], ["&#123;", "&#125;"], $keywords);
     $description = str_replace(["{", "}"], ["&#123;", "&#125;"], $description);
-
-    $body = htmlentities($body);
-
-    // Undo HTML entities on {% and %}.
-    $body = str_replace("&amp;#123;%", "{%", $body);
-    $body = str_replace("%&amp;#125;", "%}", $body);
 
     $page_body .= "
 

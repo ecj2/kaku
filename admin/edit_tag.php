@@ -136,15 +136,11 @@ else {
     $body = $tag->body;
     $title = $tag->title;
 
+    $body = htmlentities($body);
+
     // Encode { and } to prevent it from being replaced by the output buffer.
     $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
     $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $title);
-
-    $body = htmlentities($body);
-
-    // Undo HTML entities on {% and %}.
-    $body = str_replace("&amp;#123;%", "{%", $body);
-    $body = str_replace("%&amp;#125;", "%}", $body);
 
     $page_body .= "
 

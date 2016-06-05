@@ -166,18 +166,14 @@ else {
     $description = $page->description;
     $show_on_search = $page->show_on_search;
 
+    $body = htmlentities($body);
+
     // Encode { and } to prevent it from being replaced by the output buffer.
     $url = str_replace(["{", "}"], ["&#123;", "&#125;"], $url);
     $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
     $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $title);
     $keywords = str_replace(["{", "}"], ["&#123;", "&#125;"], $keywords);
     $description = str_replace(["{", "}"], ["&#123;", "&#125;"], $description);
-
-    $body = htmlentities($body);
-
-    // Undo HTML entities on {% and %}.
-    $body = str_replace("&amp;#123;%", "{%", $body);
-    $body = str_replace("%&amp;#125;", "%}", $body);
 
     $page_body .= "
 
