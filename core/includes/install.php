@@ -385,9 +385,9 @@ if (!$Database->checkTableExistence("pages")) {
 
       body MEDIUMTEXT NOT NULL,
 
-      keywords TEXT NOT NULL,
+      keywords TEXT,
 
-      description VARCHAR(160) NOT NULL,
+      description VARCHAR(160),
 
       show_on_search BOOL NOT NULL
     )"
@@ -491,11 +491,11 @@ if (!$Database->checkTableExistence("posts")) {
 
       title VARCHAR(99) NOT NULL,
 
-      keywords TEXT NOT NULL,
+      keywords TEXT,
 
       author_id INT NOT NULL,
 
-      description VARCHAR(160) NOT NULL,
+      description VARCHAR(160),
 
       allow_comments BOOL NOT NULL
     )"
