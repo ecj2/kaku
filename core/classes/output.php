@@ -15,6 +15,9 @@ class Output {
 
     $this->search = [];
     $this->replace = [];
+  }
+
+  public function startBuffer() {
 
     // Start the output buffer.
     ob_start(
@@ -27,7 +30,7 @@ class Output {
     );
   }
 
-  public function __destruct() {
+  public function flushBuffer() {
 
     // Flush the contents of the buffer to the page.
     ob_get_flush();

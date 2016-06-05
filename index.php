@@ -8,6 +8,8 @@ if (file_exists("core/includes/install.php")) {
   require "core/includes/install.php";
 }
 
+$Output->startBuffer();
+
 $Output->loadExtensions();
 
 if (isset($_GET["post"])) {
@@ -145,5 +147,7 @@ $Hook->addAction("head_content", "");
 $Hook->addAction("body_content", "");
 
 $Output->replaceTags();
+
+$Output->flushBuffer();
 
 ?>
