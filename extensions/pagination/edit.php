@@ -15,15 +15,15 @@ if (isset($_POST["next_page_text"]) && isset($_POST["previous_page_text"])) {
     WHERE 1 = 1
   ";
 
-  $query = $Database->getHandle()->prepare($statement);
+  $Query = $Database->getHandle()->prepare($statement);
 
   // Prevent SQL injections.
-  $query->bindParam(1, $_POST["next_page_text"]);
-  $query->bindParam(2, $_POST["previous_page_text"]);
+  $Query->bindParam(1, $_POST["next_page_text"]);
+  $Query->bindParam(2, $_POST["previous_page_text"]);
 
-  $query->execute();
+  $Query->execute();
 
-  if (!$query) {
+  if (!$Query) {
 
     // Failed to update.
     header("Location: ./edit_extension.php?title=" . $_GET["title"] . "&result=failure");
@@ -63,9 +63,9 @@ else {
       LIMIT 1
     ";
 
-    $query = $Database->getHandle()->query($statement);
+    $Query = $Database->getHandle()->query($statement);
 
-    if (!$query || $query->rowCount() == 0) {
+    if (!$Query || $Query->rowCount() == 0) {
 
       // Query failed or is empty.
 
@@ -76,11 +76,19 @@ else {
     else {
 
       // Fetch the result as an object.
-      $result = $query->fetch(PDO::FETCH_OBJ);
+      $result = $Query->fetch(PDO::FETCH_OBJ);
 
       // Get texts.
       $next_page_text = $result->next_page_text;
       $previous_page_text = $result->previous_page_text;
+
+      // Preserve HTML entities.
+      $next_page_text = htmlentities($next_page_text);
+      $previous_page_text = htmlentities($previous_page_text);
+
+      // Encode { and } to prevent them from being replaced by the output buffer.
+      $next_page_text = str_replace(["{", "}"], ["&#123;", "&#125;"], $next_page_text);
+      $previous_page_text = str_replace(["{", "}"], ["&#123;", "&#125;"], $previous_page_text);
 
       echo "
 

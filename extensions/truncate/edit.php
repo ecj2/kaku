@@ -16,14 +16,14 @@ if (isset($_POST["lure"])) {
     LIMIT 1
   ";
 
-  $query = $Database->getHandle()->prepare($statement);
+  $Query = $Database->getHandle()->prepare($statement);
 
   // Prevent SQL injections.
-  $query->bindParam(1, $_POST["lure"]);
+  $Query->bindParam(1, $_POST["lure"]);
 
-  $query->execute();
+  $Query->execute();
 
-  if (!$query) {
+  if (!$Query) {
 
     // Failed to update lure text.
     header("Location: ./edit_extension.php?title=" . $_GET["title"] . "&result=failure");
@@ -63,9 +63,9 @@ else {
       LIMIT 1
     ";
 
-    $query = $Database->getHandle()->query($statement);
+    $Query = $Database->getHandle()->query($statement);
 
-    if (!$query || $query->rowCount() == 0) {
+    if (!$Query || $Query->rowCount() == 0) {
 
       // Query failed or is empty.
 
@@ -76,10 +76,16 @@ else {
     else {
 
       // Fetch the result as an object.
-      $result = $query->fetch(PDO::FETCH_OBJ);
+      $result = $Query->fetch(PDO::FETCH_OBJ);
 
       // Get lure text.
       $lure = $result->lure;
+
+      // Preserve HTML entities.
+      $lure = htmlentities($lure);
+
+      // Encode { and } to prevent them from being replaced by the output buffer.
+      $lure = str_replace(["{", "}"], ["&#123;", "&#125;"], $lure);
 
       echo "
 
