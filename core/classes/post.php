@@ -230,14 +230,34 @@ class Post {
 
     $this->getData("description");
 
-    if (strlen(trim($GLOBALS["Hook"]->doAction("post_description"))) == 0) {
+    if (is_array($GLOBALS["Hook"]->doAction("post_description"))) {
 
-      // The post lacks a description.
-      $description = "No description.";
+      $descriptions = [];
+
+      foreach ($GLOBALS["Hook"]->doAction("post_description") as $description) {
+
+        if (strlen(trim($description)) == 0) {
+
+          // The post lacks a description.
+          $descriptions[] = "No description.";
+        }
+      }
 
       $GLOBALS["Hook"]->removeAction("post_description");
 
-      $GLOBALS["Hook"]->addAction("post_description", $description);
+      $GLOBALS["Hook"]->addAction("post_description", $descriptions);
+    }
+    else {
+
+      if (strlen(trim($GLOBALS["Hook"]->doAction("post_description"))) == 0) {
+
+        // The post lacks a description.
+        $description = "No description.";
+
+        $GLOBALS["Hook"]->removeAction("post_description");
+
+        $GLOBALS["Hook"]->addAction("post_description", $description);
+      }
     }
   }
 
