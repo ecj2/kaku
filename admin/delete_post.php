@@ -88,7 +88,7 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
       }
 
       // Failed to delete post.
-      header("Location: ./papostsges.php?code=0&message={$message}");
+      header("Location: ./posts.php?code=0&message={$message}");
 
       exit();
     }
@@ -149,8 +149,8 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
       Are you sure you want to delete the \"{$post_name}\" post?<br>
 
-      <a href=\"./delete_post.php?id=" . $_GET["id"] . "&delete=true\" class=\"button\">Yes</a>
-      <a href=\"./posts.php\" class=\"button\">No</a>
+      <a href=\"{%blog_url%}/admin/delete_post.php?id=" . $_GET["id"] . "&delete=true\" class=\"button\">Yes</a>
+      <a href=\"{%blog_url%}/admin/posts.php\" class=\"button\">No</a>
     ";
   }
 }
@@ -161,7 +161,7 @@ else {
 
     No ID supplied.
 
-    <a href=\"./posts.php\" class=\"button_return\">Return</a>
+    <a href=\"{%blog_url%}/admin/posts.php\" class=\"button_return\">Return</a>
   ";
 }
 

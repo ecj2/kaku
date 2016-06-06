@@ -149,8 +149,8 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
       Are you sure you want to delete the \"{$tag_name}\" tag?<br>
 
-      <a href=\"./delete_tag.php?id=" . $_GET["id"] . "&delete=true\" class=\"button\">Yes</a>
-      <a href=\"./tags.php\" class=\"button\">No</a>
+      <a href=\"{%blog_url%}/admin/delete_tag.php?id=" . $_GET["id"] . "&delete=true\" class=\"button\">Yes</a>
+      <a href=\"{%blog_url%}/admin/tags.php\" class=\"button\">No</a>
     ";
   }
 }
@@ -161,7 +161,7 @@ else {
 
     No ID supplied.
 
-    <a href=\"./tags.php\" class=\"button_return\">Return</a>
+    <a href=\"{%blog_url%}/admin/tags.php\" class=\"button_return\">Return</a>
   ";
 }
 

@@ -108,9 +108,8 @@ if (count($directories) > 0) {
 
       if (file_exists("{$directory}/edit.php")) {
 
-        $message = "
-
-          <a href=\"./edit_extension.php?title=" . str_replace("../extensions/", "", $directory) . "\">Edit</a> -
+        $message = "<a href=\"{%blog_url%}/admin/edit_extension.php?title=";
+        $message .= str_replace("../extensions/", "", $directory) . "\">Edit</a> -
         ";
       }
 
@@ -118,14 +117,14 @@ if (count($directories) > 0) {
 
         $message .= "
 
-          <a href=\"./toggle_extension.php?code=1&title={$class_name}\">Dectivate</a>
+          <a href=\"{%blog_url%}/admin/toggle_extension.php?code=1&title={$class_name}\">Dectivate</a>
         ";
       }
       else {
 
         $message .= "
 
-          <a href=\"./toggle_extension.php?code=0&title={$class_name}\">Activate</a>
+          <a href=\"{%blog_url%}/admin/toggle_extension.php?code=0&title={$class_name}\">Activate</a>
         ";
       }
 

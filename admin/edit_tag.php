@@ -131,7 +131,7 @@ else {
 
     No ID supplied.
 
-    <a href=\"./tags.php\" class=\"button_return\">Return</a>
+    <a href=\"{%blog_url%}/admin/tags.php\" class=\"button_return\">Return</a>
   ";
 }
 

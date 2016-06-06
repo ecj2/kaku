@@ -152,7 +152,7 @@ if (isset($_GET["code"]) && isset($_GET["title"])) {
 
       {$message}
 
-      <a href=\"./extensions.php\" class=\"button_return\">Return</a>
+      <a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>
     ";
   }
 }
@@ -162,7 +162,7 @@ else {
 
     No extension title and/or code specified.
 
-    <a href=\"./extensions.php\" class=\"button_return\">Return</a>
+    <a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>
   ";
 }
 

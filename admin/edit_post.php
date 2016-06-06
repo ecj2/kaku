@@ -204,7 +204,7 @@ else {
 
     No ID supplied.
 
-    <a href=\"./posts.php\" class=\"button_return\">Return</a>
+    <a href=\"{%blog_url%}/admin/posts.php\" class=\"button_return\">Return</a>
   ";
 }
 

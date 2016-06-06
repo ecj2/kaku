@@ -33,7 +33,7 @@ if (!isset($_GET["title"]) || empty($_GET["title"])) {
 
     No extension specified.
 
-    <a href=\"./extensions.php\" class=\"button_return\">Return</a>
+    <a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>
   ";
 }
 else if (!file_exists("../extensions/" . $_GET["title"] . "/edit.php")) {
@@ -42,7 +42,7 @@ else if (!file_exists("../extensions/" . $_GET["title"] . "/edit.php")) {
 
     This extension lacks an edit page.
 
-    <a href=\"./extensions.php\" class=\"button_return\">Return</a>
+    <a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>
   ";
 }
 else {
