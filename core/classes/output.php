@@ -216,7 +216,7 @@ class Output {
     static $passes = 0;
 
     // Replace tags in buffer.
-    $buffer_contents = str_replace(
+    $buffer_contents = str_ireplace(
 
       $this->search,
 
