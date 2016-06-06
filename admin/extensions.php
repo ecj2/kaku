@@ -4,80 +4,47 @@ session_start();
 
 if (!isset($_SESSION["username"])) {
 
+  // User is not logged in.
   header("Location: ./login.php");
+
+  exit();
 }
 
-require "../includes/configuration.php";
-
-require "../includes/classes/utility.php";
-require "../includes/classes/database.php";
-
-require "../includes/classes/hook.php";
-require "../includes/classes/output.php";
-require "../includes/classes/extension.php";
-
-global $Hook;
-
-$Hook = new Hook;
-
-$Output = new Output;
-$Utility = new Utility;
-$Database = new Database;
-
-$Database->connect();
-
-$Output->setDatabaseHandle($Database->getHandle());
+require "../core/includes/common.php";
 
 $Output->startBuffer();
 
-$statement = "
+// Get template markup.
+$template = $Template->getFileContents("template", 0, 1);
 
-  SELECT body
-  FROM " . DB_PREF . "tags
-  WHERE title = 'admin_theme_name'
-  ORDER BY id DESC
-";
+$search = [];
+$replace = [];
 
-$query = $Database->getHandle()->query($statement);
+$search[] = "{%page_title%}";
+$search[] = "{%page_body%}";
 
-if (!$query || $query->rowCount() == 0) {
-
-  // Query failed or returned zero rows.
-  $Utility->displayError("failed to get admin theme name");
-}
-
-// Get the admin theme name.
-$theme_name = $query->fetch(PDO::FETCH_OBJ)->body;
-
-if (!file_exists("content/themes/{$theme_name}/template.html")) {
-
-  // Theme template does not exist.
-  $Utility->displayError("theme template file does not exist");
-}
-
-// Display the theme contents.
-echo file_get_contents("content/themes/{$theme_name}/template.html");
-
-$page_body = "";
-
-$page_title = "Extensions";
+$body = "";
 
 // Get extension directories.
-$directories = glob("../content/extensions/*", GLOB_ONLYDIR);
+$directories = glob("../extensions/*", GLOB_ONLYDIR);
 
-if (count($directories > 0)) {
+if (count($directories) > 0) {
 
-  $page_body .= "<table class=\"extensions\">";
+  $body .= "
 
-  $page_body .= "<tr>";
-  $page_body .= "<th>Title</th>";
-  $page_body .= "<th>Action</th>";
-  $page_body .= "</tr>";
+    Extensions are displayed below.<br><br>
+
+    <table class=\"extensions\">
+      <tr>
+        <th>Title</th>
+        <th>Action</th>
+      </tr>
+  ";
 
   foreach ($directories as $directory) {
 
     // Get directory name without path.
-    $directory_name = str_replace("../content/extensions/", "", $directory);
+    $directory_name = str_replace("../extensions/", "", $directory);
 
     $extension_full_path = "{$directory}/{$directory_name}.php";
 
@@ -87,120 +54,104 @@ if (count($directories > 0)) {
       $classes = get_declared_classes();
 
       // Require extension source file.
-      require_once $extension_full_path;
+      require $extension_full_path;
 
       $classes = array_diff(get_declared_classes(), $classes);
 
       // Get name of newly required class.
       $class_name = reset($classes);
+    }
 
-      if (strlen($class_name) == 0) {
-
-        continue;
-      }
-
-      $statement = "
+    $statement = "
 
         SELECT activate
         FROM " . DB_PREF . "extensions
         WHERE title = '{$class_name}'
+        ORDER BY id DESC
+        LIMIT 1
       ";
 
-      $query = $Database->getHandle()->query($statement);
+      $Query = $Database->getHandle()->query($statement);
 
       $activation_status = false;
 
-      if (!$query) {
+      if (!$Query) {
 
-        // Query failed.
+        // Failed to get activation status
+        $Utility->displayError("failed to select extension activation status");
       }
-      else if ($query->rowCount() == 0) {
 
-        // Extension does not exist in database.
-      }
-      else {
-
-        // Fetch result as object.
-        $result = $query->fetch(PDO::FETCH_OBJ);
+      if ($Query->rowCount() > 0) {
 
         // Get activation status.
-        $activation_status = $result->activate;
+        $activation_status = $Query->fetch(PDO::FETCH_OBJ)->activate;
       }
 
-      $page_body .= "<tr>";
+      $body .= "<tr>";
 
       $Extension = new $class_name;
 
       $name = $Extension->getName();
 
-      if (isset($name)) {
+      if (strlen(trim($name)) == 0) {
 
-        if (file_exists("{$directory}/edit.php")) {
-
-          $page_body .= "<td><a href=\"edit_extension.php?title=" . str_replace("../content/extensions/", "", $directory) . "\">{$name}</a></td>";
-        }
-        else {
-
-          $page_body .= "<td>{$name}</td>";
-        }
-
-        unset($name);
+        // Use class name.
+        $body .= "<td>{$class_name}</td>";
       }
       else {
 
-        $page_body .= "<td>{$class_name}</td>";
+        // Use given name.
+        $body .= "<td>{$name}</td>";
+      }
+
+      $message = "";
+
+      if (file_exists("{$directory}/edit.php")) {
+
+        $message = "
+
+          <a href=\"./edit_extension.php?title=" . str_replace("../extensions/", "", $directory) . "\">Edit</a> -
+        ";
       }
 
       if ($activation_status) {
 
-        $page_body .= "
-          <td>
-            <a href=\"deactivate_extension.php?title={$class_name}\">
-              Deactivate
-            </a>
-          </td>
+        $message .= "
+
+          <a href=\"./toggle_extension.php?code=1&title={$class_name}\">Dectivate</a>
         ";
       }
       else {
 
-        $page_body .= "
-          <td>
-            <a href=\"activate_extension.php?title={$class_name}\">
-              Activate
-            </a>
-          </td>
+        $message .= "
+
+          <a href=\"./toggle_extension.php?code=0&title={$class_name}\">Activate</a>
         ";
       }
 
-      $page_body .= "</tr>";
-    }
+      $body .= "<td>{$message}</td>";
+
+      $body .= "</tr>";
   }
 
-  $page_body .= "</table>";
+  $body .= "</table>";
 }
 else {
 
-  $page_body = "There aren't any extensions.";
+  $body .= "There are no extensions to display.";
 }
 
-$Output->addTagReplacement(
+$replace[] = "Extensions";
+$replace[] = $body;
 
-  "page_body",
+echo str_replace($search, $replace, $template);
 
-  $page_body
-);
-
-$Output->addTagReplacement(
-
-  "page_title",
-
-  $page_title
-);
+// Clear the admin_head_content and admin_body_content tags if they go unused.
+$Hook->addAction("admin_head_content", "");
+$Hook->addAction("admin_body_content", "");
 
 $Output->replaceTags();
 
 $Output->flushBuffer();
-
-$Database->disconnect();
 
 ?>

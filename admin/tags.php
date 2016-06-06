@@ -4,86 +4,28 @@ session_start();
 
 if (!isset($_SESSION["username"])) {
 
+  // User is not logged in.
   header("Location: ./login.php");
+
+  exit();
 }
 
-require "../includes/configuration.php";
-
-require "../includes/classes/utility.php";
-require "../includes/classes/database.php";
-
-require "../includes/classes/hook.php";
-require "../includes/classes/output.php";
-
-global $Hook;
-
-$Hook = new Hook;
-
-$Output = new Output;
-$Utility = new Utility;
-$Database = new Database;
-
-$Database->connect();
-
-$Output->setDatabaseHandle($Database->getHandle());
+require "../core/includes/common.php";
 
 $Output->startBuffer();
 
-$statement = "
+$Output->loadExtensions();
 
-  SELECT body
-  FROM " . DB_PREF . "tags
-  WHERE title = 'admin_theme_name'
-  ORDER BY id DESC
-";
+// Get template markup.
+$template = $Template->getFileContents("template", 0, 1);
 
-$query = $Database->getHandle()->query($statement);
+$search = [];
+$replace = [];
 
-if (!$query || $query->rowCount() == 0) {
+$search[] = "{%page_title%}";
+$search[] = "{%page_body%}";
 
-  // Query failed or returned zero rows.
-  $Utility->displayError("failed to get admin theme name");
-}
-
-// Get the admin theme name.
-$theme_name = $query->fetch(PDO::FETCH_OBJ)->body;
-
-if (!file_exists("content/themes/{$theme_name}/template.html")) {
-
-  // Theme template does not exist.
-  $Utility->displayError("theme template file does not exist");
-}
-
-// Display the theme contents.
-echo file_get_contents("content/themes/{$theme_name}/template.html");
-
-$page_body = "";
-
-$page_title = "Tags";
-
-if (isset($_GET["result"])) {
-
-  if ($_GET["result"] == "success") {
-
-    $page_body .= "
-
-      <span class=\"success\">
-        The tag has been added.
-      </span>
-    ";
-  }
-  else {
-
-    $page_body .= "
-
-      <span class=\"failure\">
-        Failed to add tag.
-      </span>
-    ";
-  }
-}
-
-if (isset($_POST["body"]) && isset($_POST["title"])) {
+if (isset($_POST["title"]) && isset($_POST["body"])) {
 
   $statement = "
 
@@ -101,97 +43,122 @@ if (isset($_POST["body"]) && isset($_POST["title"])) {
     )
   ";
 
-  $query = $Database->getHandle()->prepare($statement);
+  $Query = $Database->getHandle()->prepare($statement);
 
   // Prevent SQL injections.
-  $query->bindParam(1, $_POST["body"]);
-  $query->bindParam(2, $_POST["title"]);
+  $Query->bindParam(1, $_POST["body"]);
+  $Query->bindParam(2, $_POST["title"]);
 
-  $query->execute();
+  $Query->execute();
 
-  if (!$query) {
+  if (!$Query) {
 
-    // Failed to add tag.
-    header("Location: ./tags.php?result=failure");
+    // Failed to create tag.
+    header("Location: ./tags.php?code=0&message=failed to create tag");
+
+    exit();
   }
 
   // Successfully added tag.
-  header("Location: ./tags.php?result=success");
-}
-else {
+  header("Location: ./tags.php?code=1&message=tag created successfully");
 
-  $page_body .= "
-
-    <form method=\"post\" class=\"add_tag\">
-      <label for=\"title\">Title</label>
-      <input type=\"text\" id=\"title\" name=\"title\" required>
-      <label for=\"body\">Body</label>
-      <textarea id=\"body\" name=\"body\" required></textarea>
-      <input type=\"submit\" value=\"Add Tag\">
-    </form>
-  ";
-
-  $statement = "
-
-    SELECT id, title
-    FROM " . DB_PREF . "tags
-    ORDER BY id DESC
-  ";
-
-  $query = $Database->getHandle()->query($statement);
-
-  if (!$query || $query->rowCount() == 0) {
-
-    // Query failed or returned zero rows.
-    $page_body .= "";
-  }
-  else {
-
-    $page_body .= "<table class=\"tags\">";
-
-    $page_body .= "<tr>";
-    $page_body .= "<th>Title</th>";
-    $page_body .= "<th>Edit</th>";
-    $page_body .= "<th>Delete</th>";
-    $page_body .= "</tr>";
-
-    while ($tag = $query->fetch(PDO::FETCH_OBJ)) {
-
-      // Encode { and } to prevent it from being replaced by the output buffer.
-      $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $tag->title);
-
-      $page_body .= "
-
-        <tr>
-          <td>{$title}</td>
-          <td><a href=\"edit_tag.php?id={$tag->id}\">Edit</a></td>
-          <td><a href=\"delete_tag.php?id={$tag->id}\">Delete</a></td>
-        </tr>
-      ";
-    }
-
-    $page_body .= "</table>";
-  }
+  exit();
 }
 
-$Output->addTagReplacement(
+$body = "";
 
-  "page_body",
+if (isset($_GET["code"]) && isset($_GET["message"])) {
 
-  $page_body
-);
+  if ($_GET["code"] == 0) {
 
-$Output->addTagReplacement(
+    // Failure notice.
+    $body .= "<span class=\"failure\">Notice: ";
+  }
+  else if ($_GET["code"] == 1) {
 
-  "page_title",
+    // Success notice.
+    $body .= "<span class=\"success\">Notice: ";
+  }
 
-  $page_title
-);
+  // Encode { and } to prevent them from being replaced by the output buffer.
+  $body .= str_replace(["{", "}"], ["&#123;", "&#125;"], $_GET["message"]) . ".</span>";
+}
+
+$body .= "
+
+  Use the form below to create a new tag.<br><br>
+
+  <form method=\"post\" class=\"add_tag\">
+
+    <label for=\"title\">Title</label>
+    <input type=\"text\" id=\"title\" name=\"title\" required>
+
+    <label for=\"body\">Body</label>
+    <textarea id=\"body\" name=\"body\" required></textarea>
+
+    <input type=\"submit\" value=\"Create Tag\">
+  </form>
+";
+
+$statement = "
+
+  SELECT id, title
+  FROM " . DB_PREF . "tags
+  ORDER BY id DESC
+";
+
+$Query = $Database->getHandle()->query($statement);
+
+if (!$Query) {
+
+  // Something went wrong.
+  $Utility->displayError("failed to select tags");
+}
+
+if ($Query->rowCount() > 0) {
+
+  $body .= "
+
+    Existing tags are displayed below.<br><br>
+
+    <table class=\"two-column\">
+      <tr>
+        <th>Title</th>
+        <th>Action</th>
+      </tr>
+  ";
+
+  while ($Tag = $Query->fetch(PDO::FETCH_OBJ)) {
+
+    $edit_link = "{%blog_url%}/admin/edit_tag.php?id={$Tag->id}";
+    $delete_link = "{%blog_url%}/admin/delete_tag.php?id={$Tag->id}";
+
+    // Encode { and } to prevent them from being replaced by the output buffer.
+    $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $Tag->title);
+
+    $body .= "
+
+      <tr>
+        <td>{$title}</td>
+        <td><a href=\"{$edit_link}\">Edit</a> - <a href=\"{$delete_link}\">Delete</a></td>
+      </tr>
+    ";
+  }
+
+  $body .= "</table>";
+}
+
+$replace[] = "Tags";
+$replace[] = $body;
+
+echo str_replace($search, $replace, $template);
+
+// Clear the admin_head_content and admin_body_content tags if they go unused.
+$Hook->addAction("admin_head_content", "");
+$Hook->addAction("admin_body_content", "");
 
 $Output->replaceTags();
 
 $Output->flushBuffer();
-
-$Database->disconnect();
 
 ?>

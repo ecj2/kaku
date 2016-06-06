@@ -205,14 +205,14 @@ form #body {
 
   color: green;
   display: block;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
 }
 
 .failure {
 
   color: red;
   display: block;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
 }
 
 table {
@@ -311,4 +311,15 @@ a.button_return:hover {
 input[type="checkbox"] {
 
   margin-bottom: 32px;
+}
+
+table.two-column {
+
+  border: 1px solid #ddd;
+  padding: 20px;
+}
+
+table.two-column th:nth-of-type(2), table.two-column td:nth-of-type(2) {
+
+  text-align: right;
 }

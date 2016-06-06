@@ -4,107 +4,43 @@ session_start();
 
 if (!isset($_SESSION["username"])) {
 
+  // User is not logged in.
   header("Location: ./login.php");
+
+  exit();
 }
 
-require "../includes/configuration.php";
-
-require "../includes/classes/utility.php";
-require "../includes/classes/database.php";
-
-require "../includes/classes/hook.php";
-require "../includes/classes/output.php";
-
-global $Hook;
-
-$Hook = new Hook;
-
-$Output = new Output;
-$Utility = new Utility;
-$Database = new Database;
-
-$Database->connect();
-
-$Output->setDatabaseHandle($Database->getHandle());
+require "../core/includes/common.php";
 
 $Output->startBuffer();
 
-$statement = "
+$Output->loadExtensions();
 
-  SELECT body
-  FROM " . DB_PREF . "tags
-  WHERE title = 'admin_theme_name'
-  ORDER BY id DESC
-";
+// Get template markup.
+$template = $Template->getFileContents("template", 0, 1);
 
-$query = $Database->getHandle()->query($statement);
+$search = [];
+$replace = [];
 
-if (!$query || $query->rowCount() == 0) {
+$search[] = "{%page_title%}";
+$search[] = "{%page_body%}";
 
-  // Query failed or returned zero rows.
-  $Utility->displayError("failed to get admin theme name");
-}
-
-// Get the admin theme name.
-$theme_name = $query->fetch(PDO::FETCH_OBJ)->body;
-
-if (!file_exists("content/themes/{$theme_name}/template.html")) {
-
-  // Theme template does not exist.
-  $Utility->displayError("theme template file does not exist");
-}
-
-// Display the theme contents.
-echo file_get_contents("content/themes/{$theme_name}/template.html");
-
-$page_body = "";
-
-$page_title = "Edit Post";
-
-if (isset($_GET["result"])) {
-
-  if ($_GET["result"] == "success") {
-
-    $page_body .= "The post has been saved.";
-  }
-  else {
-
-    $page_body .= "Failed to save post.";
-  }
-
-  $page_body .= "<a href=\"posts.php\" class=\"button_return\">Return</a>";
-}
-else if (isset($_POST["url"]) && isset($_POST["body"]) && isset($_POST["title"]) && isset($_POST["epoch"])) {
+if (isset($_GET["id"]) && isset($_POST["title"]) && isset($_POST["body"])) {
 
   $statement = "
 
     UPDATE " . DB_PREF . "posts
-    SET url = ?, body = ?, keywords = ?, draft = ?, title = ?, description = ?,
-    allow_comments = ?, epoch = ?
+    SET url = ?, body = ?, draft = ?, epoch = ?, title = ?, keywords = ?, description = ?, allow_comments = ?
     WHERE id = ?
   ";
 
-  $query = $Database->getHandle()->prepare($statement);
+  $Query = $Database->getHandle()->prepare($statement);
 
-  $keywords = "";
-
-  if (isset($_POST["keywords"])) {
-
-    $keywords = $_POST["keywords"];
-  }
-
-  $description = "";
-
-  if (isset($_POST["description"])) {
-
-    $description = $_POST["description"];
-  }
-
-  $draft = "1";
+  $draft = "0";
 
   if (isset($_POST["draft"])) {
 
-    $draft = "0";
+    $draft = "1";
   }
 
   $allow_comments = "0";
@@ -115,141 +51,174 @@ else if (isset($_POST["url"]) && isset($_POST["body"]) && isset($_POST["title"])
   }
 
   // Prevent SQL injections.
-  $query->bindParam(1, $_POST["url"]);
-  $query->bindParam(2, $_POST["body"]);
-  $query->bindParam(3, $keywords);
-  $query->bindParam(4, $draft);
-  $query->bindParam(5, $_POST["title"]);
-  $query->bindParam(6, $description);
-  $query->bindParam(7, $allow_comments);
-  $query->bindParam(8, $_POST["epoch"]);
-  $query->bindParam(9, $_GET["id"]);
+  $Query->bindParam(1, $_POST["url"]);
+  $Query->bindParam(2, $_POST["body"]);
+  $Query->bindParam(3, $draft);
+  $Query->bindParam(4, $_POST["epoch"]);
+  $Query->bindParam(5, $_POST["title"]);
+  $Query->bindParam(6, $_POST["keywords"]);
+  $Query->bindParam(7, $_POST["description"]);
+  $Query->bindParam(8, $allow_comments);
+  $Query->bindParam(9, $_GET["id"]);
 
-  $query->execute();
+  $Query->execute();
 
-  if (!$query) {
+  if (!$Query) {
 
     // Failed to update post.
-    header("Location: ./edit_post.php?id=" . $_GET["id"] . "&result=failure");
+    header("Location: ./posts.php?code=0&message=failed to update post");
+
+    exit();
   }
 
   // Successfully updated post.
-  header("Location: ./edit_post.php?id=" . $_GET["id"] . "&result=success");
+  header("Location: ./posts.php?code=1&message=post updated successfully");
+
+  exit();
 }
-else {
+
+$body = "";
+
+if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
   $statement = "
 
-    SELECT url, body, keywords, epoch, title, draft, description, allow_comments
+    SELECT url, body, title, epoch, keywords, description, draft, allow_comments
     FROM " . DB_PREF . "posts
     WHERE id = ?
+    ORDER BY id DESC
+    LIMIT 1
   ";
 
-  $query = $Database->getHandle()->prepare($statement);
+  $Query = $Database->getHandle()->prepare($statement);
 
   // Prevent SQL injections.
-  $query->bindParam(1, $_GET["id"]);
+  $Query->bindParam(1, $_GET["id"]);
 
-  $query->execute();
+  $Query->execute();
 
-  if (!$query) {
+  if (!$Query) {
 
-    // Query failed.
-    $page_body .= "Failed to select post data.";
-    $page_body .= "<a href=\"posts.php\" class=\"button_return\">Return</a>";
+    // Failed to get post data.
+    $Utility->displayError("failed to get post data");
   }
-  else if ($query->rowCount() == 0) {
 
-    // Query returned zero rows.
-    $page_body .= "There exists no post with an ID of " . $_GET["id"] . ".";
-    $page_body .= "<a href=\"posts.php\" class=\"button_return\">Return</a>";
+  if ($Query->rowCount() == 0) {
+
+    // This post does not exist.
+    $body .= "
+
+      There exists no post with an ID of " . $_GET["id"] . ".
+
+      <a href=\"posts.php\" class=\"button_return\">Return</a>
+    ";
   }
   else {
 
-    $post = $query->fetch(PDO::FETCH_OBJ);
+    $Post = $Query->fetch(PDO::FETCH_OBJ);
 
-    $url = $post->url;
-    $body = $post->body;
-    $keywords = $post->keywords;
-    $epoch = $post->epoch;
-    $draft = $post->draft;
-    $title = $post->title;
-    $description = $post->description;
-    $allow_comments = $post->allow_comments;
+    $post_url = $Post->url;
+    $post_body = $Post->body;
+    $post_draft = $Post->draft;
+    $post_epoch = $Post->epoch;
+    $post_title = $Post->title;
+    $post_keywords = $Post->keywords;
+    $post_description = $Post->description;
+    $post_allow_comments = $Post->allow_comments;
 
-    // Encode { and } to prevent it from being replaced by the output buffer.
-    $url = str_replace(["{", "}"], ["&#123;", "&#125;"], $url);
-    $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
-    $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $title);
-    $epoch = str_replace(["{", "}"], ["&#123;", "&#125;"], $epoch);
-    $keywords = str_replace(["{", "}"], ["&#123;", "&#125;"], $keywords);
-    $description = str_replace(["{", "}"], ["&#123;", "&#125;"], $description);
+    // Preserve HTML entities.
+    $post_url = htmlentities($post_url);
+    $post_body = htmlentities($post_body);
+    $post_epoch = htmlentities($post_epoch);
+    $post_title = htmlentities($post_title);
+    $post_keywords = htmlentities($post_keywords);
+    $post_description = htmlentities($post_description);
 
-    $page_body .= "
+    // Encode { and } to prevent them from being replaced by the output buffer.
+    $post_url = str_replace(["{", "}"], ["&#123;", "&#125;"], $post_url);
+    $post_body = str_replace(["{", "}"], ["&#123;", "&#125;"], $post_body);
+    $post_epoch = str_replace(["{", "}"], ["&#123;", "&#125;"], $post_epoch);
+    $post_title = str_replace(["{", "}"], ["&#123;", "&#125;"], $post_title);
+    $post_keywords = str_replace(["{", "}"], ["&#123;", "&#125;"], $post_keywords);
+    $post_description = str_replace(["{", "}"], ["&#123;", "&#125;"], $post_description);
+
+    $body .= "
+
+      Use the form below to edit the post.<br><br>
 
       <form method=\"post\" class=\"edit_post\">
+
         <label for=\"url\">URL</label>
-        <input type=\"text\" id=\"url\" name=\"url\"
-         value=\"{$url}\" required>
+        <input type=\"text\" id=\"url\" name=\"url\" value=\"{$post_url}\" required>
+
         <label for=\"title\">Title</label>
-        <input type=\"text\" id=\"title\" name=\"title\"
-         value=\"{$title}\" required>
-        <label for=\"keywords\">Keywords (Optional; comma separated)</label>
-        <input type=\"text\" id=\"keywords\" name=\"keywords\" value=\"{$keywords}\">
+        <input type=\"text\" id=\"title\" name=\"title\" value=\"{$post_title}\" required>
+
+        <label for=\"keywords\">Keywords (optional; comma separated)</label>
+        <input type=\"text\" id=\"keywords\" name=\"keywords\" value=\"{$post_keywords}\">
+
         <label for=\"body\">Body</label>
-        <textarea id=\"body\" name=\"body\" required>{$body}</textarea>
-        <label for=\"description\">Description (Optional)</label>
-        <textarea id=\"description\" name=\"description\">{$description}</textarea>
+        <textarea id=\"body\" name=\"body\" required>{$post_body}</textarea>
+
+        <label for=\"description\">Description (optional)</label>
+        <textarea id=\"description\" name=\"description\">{$post_description}</textarea>
+
         <label for=\"epoch\">Epoch</label>
-        <input type=\"text\" id=\"epoch\" name=\"epoch\"
-         value=\"{$epoch}\" required>
-        <input type=\"checkbox\" id=\"draft\"
-        name=\"draft\"
+        <input type=\"text\" id=\"epoch\" name=\"epoch\" value=\"{$post_epoch}\" required>
     ";
 
-    if (!$draft) {
+    if ($post_draft) {
 
-      $page_body .= "checked";
+      $body .= "<input type=\"checkbox\" id=\"draft\" name=\"draft\" checked> Save as draft";
+    }
+    else {
+
+      $body .= "<input type=\"checkbox\" id=\"draft\" name=\"draft\"> Save as draft";
     }
 
-    $page_body .= "
+    $body .= "
 
-      > Published<br>
-      <input type=\"checkbox\" id=\"allow_comments\" name=\"allow_comments\"
+      <br>
     ";
 
-    if ($allow_comments) {
+    if ($post_allow_comments) {
 
-      $page_body .= "checked";
+      $body .= "<input type=\"checkbox\" id=\"allow_comments\" name=\"allow_comments\" checked> Allow comments";
+    }
+    else {
+
+      $body .= "<input type=\"checkbox\" id=\"allow_comments\" name=\"allow_comments\"> Allow comments";
     }
 
-    $page_body .= "
+    $body .= "
 
-      > Allow Comments
       <input type=\"submit\" value=\"Save\">
       </form>
-  ";
+    ";
   }
 }
+else {
 
-$Output->addTagReplacement(
+  // No ID given.
+  $body .= "
 
-  "page_body",
+    No ID supplied.
 
-  $page_body
-);
+    <a href=\"./posts.php\" class=\"button_return\">Return</a>
+  ";
+}
 
-$Output->addTagReplacement(
+$replace[] = "Edit Post";
+$replace[] = $body;
 
-  "page_title",
+echo str_replace($search, $replace, $template);
 
-  $page_title
-);
+// Clear the admin_head_content and admin_body_content tags if they go unused.
+$Hook->addAction("admin_head_content", "");
+$Hook->addAction("admin_body_content", "");
 
 $Output->replaceTags();
 
 $Output->flushBuffer();
-
-$Database->disconnect();
 
 ?>

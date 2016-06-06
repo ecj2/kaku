@@ -4,174 +4,178 @@ session_start();
 
 if (!isset($_SESSION["username"])) {
 
+  // User is not logged in.
   header("Location: ./login.php");
+
+  exit();
 }
 
-require "../includes/configuration.php";
-
-require "../includes/classes/utility.php";
-require "../includes/classes/database.php";
-
-require "../includes/classes/hook.php";
-require "../includes/classes/output.php";
-
-global $Hook;
-
-$Hook = new Hook;
-
-$Output = new Output;
-$Utility = new Utility;
-$Database = new Database;
-
-$Database->connect();
-
-$Output->setDatabaseHandle($Database->getHandle());
+require "../core/includes/common.php";
 
 $Output->startBuffer();
 
-$statement = "
+$Output->loadExtensions();
 
-  SELECT body
-  FROM " . DB_PREF . "tags
-  WHERE title = 'admin_theme_name'
-  ORDER BY id DESC
-";
+// Get template markup.
+$template = $Template->getFileContents("template", 0, 1);
 
-$query = $Database->getHandle()->query($statement);
+$search = [];
+$replace = [];
 
-if (!$query || $query->rowCount() == 0) {
+$search[] = "{%page_title%}";
+$search[] = "{%page_body%}";
 
-  // Query failed or returned zero rows.
-  $Utility->displayError("failed to get admin theme name");
-}
+$body = "";
 
-// Get the admin theme name.
-$theme_name = $query->fetch(PDO::FETCH_OBJ)->body;
+if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
-if (!file_exists("content/themes/{$theme_name}/template.html")) {
+  if (isset($_GET["delete"])) {
 
-  // Theme template does not exist.
-  $Utility->displayError("theme template file does not exist");
-}
+    $statement = "
 
-// Display the theme contents.
-echo file_get_contents("content/themes/{$theme_name}/template.html");
+      SELECT title
+      FROM " . DB_PREF . "posts
+      WHERE id = ?
+      ORDER BY id DESC
+      LIMIT 1
+    ";
 
-$page_body = "";
+    $Query = $Database->getHandle()->prepare($statement);
 
-$page_title = "Delete Post";
+    // Prevent SQL injections.
+    $Query->bindParam(1, $_GET["id"]);
 
-function postExists($Database) {
+    $Query->execute();
 
-  $statement = "
+    if (!$Query) {
 
-    SELECT id
-    FROM " . DB_PREF . "posts
-    WHERE id = ?
-  ";
+      // Something went wrong.
+      $Utility->displayError("failed to select post title");
+    }
 
-  $query = $Database->getHandle()->prepare($statement);
+    $post_title = "";
 
-  // Prevent SQL injections.
-  $query->bindParam(1, $_GET["id"]);
+    if ($Query->rowCount() > 0) {
 
-  $query->execute();
+      // Get the post title.
+      $post_title = $Query->fetch(PDO::FETCH_OBJ)->title;
+    }
 
-  if (!$query) {
+    $statement = "
 
-    // Query failed.
-    return false;
-  }
-  else if ($query->rowCount() == 0) {
+      DELETE FROM " . DB_PREF . "posts
+      WHERE id = ?
+    ";
 
-    // Post does not exist.
-    return false;
-  }
+    $Query = $Database->getHandle()->prepare($statement);
 
-  // Post exists.
-  return true;
-}
+    // Prevent SQL injections.
+    $Query->bindParam(1, $_GET["id"]);
 
-if (isset($_GET["delete"])) {
+    $Query->execute();
 
-  //
-  $statement = "
+    $message = "";
 
-    DELETE FROM " . DB_PREF . "posts
-    WHERE id = ?
-  ";
+    if (!$Query) {
 
-  $query = $Database->getHandle()->prepare($statement);
+      if ($post_title == "") {
 
-  // Prevent SQL injections.
-  $query->bindParam(1, $_GET["id"]);
+        $message = "failed to delete post";
+      }
+      else {
 
-  $query->execute();
+        $message = "failed to delete \"{$post_title}\" post";
+      }
 
-  $id = $_GET["id"];
+      // Failed to delete post.
+      header("Location: ./papostsges.php?code=0&message={$message}");
 
-  if (!$query) {
+      exit();
+    }
 
-    // Failed to delete post.
-    header("Location: ./delete_post.php?id={$id}&result=failure");
-  }
+    if ($post_title == "") {
 
-  // Successfully deleted post.
-  header("Location: ./delete_post.php?id={$id}&result=success");
-}
-else {
-
-  if (isset($_GET["result"])) {
-
-    if ($_GET["result"] == "success") {
-
-      $page_body .= "The post has been deleted.";
+      $message = "post deleted successfully";
     }
     else {
 
-      $page_body .= "Failed to delete post.";
+      $message = "\"{$post_title}\" post deleted successfully";
     }
 
-    $page_body .= "<a href=\"posts.php\" class=\"button_return\">Return</a>";
+    // Post successfully deleted.
+    header("Location: ./posts.php?code=1&message={$message}");
+
+    exit();
+  }
+
+  $statement = "
+
+    SELECT title
+    FROM " . DB_PREF . "posts
+    WHERE id = ?
+    ORDER BY id DESC
+    LIMIT 1
+  ";
+
+  $Query = $Database->getHandle()->prepare($statement);
+
+  // Prevent SQL injections.
+  $Query->bindParam(1, $_GET["id"]);
+
+  $Query->execute();
+
+  if (!$Query) {
+
+    // Something went wrong.
+    $Utility->displayError("failed to select post title");
+  }
+
+  if ($Query->rowCount() == 0) {
+
+    // This post does not exist.
+    $body .= "
+
+      There exists no post with an ID of " . $_GET["id"] . ".
+
+      <a href=\"posts.php\" class=\"button_return\">Return</a>
+    ";
   }
   else {
 
-    $page_body .= "Are you sure you want to delete this post?<br>";
+    // Get the post's name, and encode { and } to prevent them from being replaced by the output buffer.
+    $post_name = str_replace(["{", "}"], ["&#123;", "&#125;"], $Query->fetch(PDO::FETCH_OBJ)->title);
 
-    $id = $_GET["id"];
+    $body .= "
 
-    $page_body .= "
+      Are you sure you want to delete the \"{$post_name}\" post?<br>
 
-      <a href=\"delete_post.php?id={$id}&delete=true\" class=\"button\">Yes</a>
-      <a href=\"posts.php\" class=\"button\">No</a>
+      <a href=\"./delete_post.php?id=" . $_GET["id"] . "&delete=true\" class=\"button\">Yes</a>
+      <a href=\"./posts.php\" class=\"button\">No</a>
     ";
-
-    if (!postExists($Database)) {
-
-      $page_body = "There exists no post with an ID of " . $_GET["id"] . ".";
-      $page_body .= "<a href=\"posts.php\" class=\"button_return\">Return</a>";
-    }
   }
 }
+else {
 
-$Output->addTagReplacement(
+  // No ID given.
+  $body .= "
 
-  "page_body",
+    No ID supplied.
 
-  $page_body
-);
+    <a href=\"./posts.php\" class=\"button_return\">Return</a>
+  ";
+}
 
-$Output->addTagReplacement(
+$replace[] = "Delete Post";
+$replace[] = $body;
 
-  "page_title",
+echo str_replace($search, $replace, $template);
 
-  $page_title
-);
+// Clear the admin_head_content and admin_body_content tags if they go unused.
+$Hook->addAction("admin_head_content", "");
+$Hook->addAction("admin_body_content", "");
 
 $Output->replaceTags();
 
 $Output->flushBuffer();
-
-$Database->disconnect();
 
 ?>

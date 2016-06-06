@@ -4,121 +4,80 @@ session_start();
 
 if (!isset($_SESSION["username"])) {
 
+  // User is not logged in.
   header("Location: ./login.php");
+
+  exit();
 }
 
-require "../includes/configuration.php";
-
-require "../includes/classes/utility.php";
-require "../includes/classes/database.php";
-
-require "../includes/classes/hook.php";
-require "../includes/classes/output.php";
-
-global $Hook;
-
-$Hook = new Hook;
-
-$Output = new Output;
-$Utility = new Utility;
-$Database = new Database;
-
-$Database->connect();
-
-$Output->setDatabaseHandle($Database->getHandle());
+require "../core/includes/common.php";
 
 $Output->startBuffer();
 
-$statement = "
+$Output->loadExtensions();
 
-  SELECT body
-  FROM " . DB_PREF . "tags
-  WHERE title = 'admin_theme_name'
-  ORDER BY id DESC
-";
+// Get template markup.
+$template = $Template->getFileContents("template", 0, 1);
 
-$query = $Database->getHandle()->query($statement);
+$search = [];
+$replace = [];
 
-if (!$query || $query->rowCount() == 0) {
+$search[] = "{%page_title%}";
+$search[] = "{%page_body%}";
 
-  // Query failed or returned zero rows.
-  $Utility->displayError("failed to get admin theme name");
-}
-
-// Get the admin theme name.
-$theme_name = $query->fetch(PDO::FETCH_OBJ)->body;
-
-if (!file_exists("content/themes/{$theme_name}/template.html")) {
-
-  // Theme template does not exist.
-  $Utility->displayError("theme template file does not exist");
-}
-
-// Display the theme contents.
-echo file_get_contents("content/themes/{$theme_name}/template.html");
-
-$page_body = "";
-
-$page_title = "Edit Extension";
+$body = "";
 
 if (!isset($_GET["title"]) || empty($_GET["title"])) {
 
-  $page_body .= "No extension specified.";
+  $body .= "
 
-  $page_body .= "<a href=\"extensions.php\" class=\"button_return\">Return</a>";
+    No extension specified.
+
+    <a href=\"./extensions.php\" class=\"button_return\">Return</a>
+  ";
 }
-else if (!file_exists("../content/extensions/" . $_GET["title"] . "/edit.php")) {
+else if (!file_exists("../extensions/" . $_GET["title"] . "/edit.php")) {
 
-  $page_body .= "This extension lacks an edit page.";
+  $body .= "
 
-  $page_body .= "<a href=\"extensions.php\" class=\"button_return\">Return</a>";
+    This extension lacks an edit page.
+
+    <a href=\"./extensions.php\" class=\"button_return\">Return</a>
+  ";
 }
 else {
 
   // Start a new buffer for the extension's edit.php file.
   ob_start();
 
-  $extension_directory = "../content/extensions/" . $_GET["title"];
+  $extension_directory = "../extensions/" . $_GET["title"];
 
   if (file_exists("{$extension_directory}/install.php")) {
 
-    // Run the extension's install script.
-
-    // Allow access to install file.
-    define("KAKU_INCLUDE", true);
-
-    require "../install.php";
-
+    // Install the extension.
     require "{$extension_directory}/install.php";
   }
 
   require "{$extension_directory}/edit.php";
 
   // The extensions file's contents will be thrown to the buffer.
-  $page_body .= ob_get_contents();
+  $body .= ob_get_contents();
 
   // End the extension buffer.
   ob_end_clean();
 }
 
-$Output->addTagReplacement(
+$replace[] = "Edit Extension";
+$replace[] = $body;
 
-  "page_body",
+echo str_replace($search, $replace, $template);
 
-  $page_body
-);
-
-$Output->addTagReplacement(
-
-  "page_title",
-
-  $page_title
-);
+// Clear the admin_head_content and admin_body_content tags if they go unused.
+$Hook->addAction("admin_head_content", "");
+$Hook->addAction("admin_body_content", "");
 
 $Output->replaceTags();
 
 $Output->flushBuffer();
-
-$Database->disconnect();
 
 ?>
