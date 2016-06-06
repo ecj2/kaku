@@ -105,6 +105,8 @@ $body .= "
 
     <input type=\"submit\" value=\"Login\">
   </form>
+
+  <a href=\"./reset_password.php\">Forgot password?</a>
 ";
 
 $replace[] = "Login";

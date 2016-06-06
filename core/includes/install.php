@@ -574,9 +574,13 @@ if (!$Database->checkTableExistence("users")) {
 
       nickname VARCHAR(99) NOT NULL,
 
-      email VARCHAR(99) NOT NULL,
+      email VARCHAR(99),
 
-      password VARCHAR(255) NOT NULL
+      password VARCHAR(255) NOT NULL,
+
+      reset_password BOOL NOT NULL,
+
+      reset_hash VARCHAR(255)
     )"
   )) {
 
@@ -595,7 +599,9 @@ if (!$Database->checkTableExistence("users")) {
 
       email,
 
-      password
+      password,
+
+      reset_password
     )
     VALUES (
 
@@ -605,7 +611,9 @@ if (!$Database->checkTableExistence("users")) {
 
       '',
 
-      '" . password_hash("password", PASSWORD_BCRYPT) . "'
+      '" . password_hash("password", PASSWORD_BCRYPT) . "',
+
+      '0'
     )"
   )) {
 
