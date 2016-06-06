@@ -51,7 +51,7 @@ else {
       echo "Pagination text has been updated.";
     }
 
-    echo "<a href=\"extensions.php\" class=\"button_return\">Return</a>";
+    echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
   }
   else {
 
@@ -60,6 +60,7 @@ else {
       SELECT *
       FROM " . DB_PREF . "extension_pagination
       WHERE 1 = 1
+      LIMIT 1
     ";
 
     $query = $Database->getHandle()->query($statement);
@@ -70,7 +71,7 @@ else {
 
       echo "Error: failed to get pagination text!";
 
-      echo "<a href=\"extensions.php\" class=\"button_return\">Return</a>";
+      echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
     }
     else {
 
@@ -83,10 +84,12 @@ else {
 
       echo "
 
+        Use the form below to edit the extension.<br><br>
+
         <form method=\"post\" class=\"edit_pagination_text\">
-          <label for=\"next_page_text\">Next Page Text</label>
+          <label for=\"next_page_text\">Next page text</label>
           <input type=\"text\" id=\"next_page_text\" name=\"next_page_text\" value=\"{$next_page_text}\">
-          <label for=\"previous_page_text\">Previous Page Text</label>
+          <label for=\"previous_page_text\">Previous page text</label>
           <input type=\"text\" id=\"previous_page_text\" name=\"previous_page_text\" value=\"{$previous_page_text}\">
           <input type=\"submit\" value=\"Save\">
         </form>

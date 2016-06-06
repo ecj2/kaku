@@ -50,7 +50,7 @@ else {
       echo "Forum name has been updated.";
     }
 
-    echo "<a href=\"extensions.php\" class=\"button_return\">Return</a>";
+    echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
   }
   else {
 
@@ -59,6 +59,7 @@ else {
       SELECT forum_name
       FROM " . DB_PREF . "extension_disqus
       WHERE 1 = 1
+      LIMIT 1
     ";
 
     $query = $Database->getHandle()->query($statement);
@@ -69,7 +70,7 @@ else {
 
       echo "Error: failed to get forum name!";
 
-      echo "<a href=\"extensions.php\" class=\"button_return\">Return</a>";
+      echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
     }
     else {
 
@@ -80,6 +81,8 @@ else {
       $forum_name = $result->forum_name;
 
       echo "
+
+        Use the form below to edit the extension.<br><br>
 
         <form method=\"post\" class=\"edit_forum_name\">
           <label for=\"forum_name\">Forum Name</label>

@@ -13,6 +13,7 @@ if (isset($_POST["lure"])) {
     UPDATE " . DB_PREF . "extension_truncate
     SET lure = ?
     WHERE 1 = 1
+    LIMIT 1
   ";
 
   $query = $Database->getHandle()->prepare($statement);
@@ -50,7 +51,7 @@ else {
       echo "Lure text has been updated.";
     }
 
-    echo "<a href=\"extensions.php\" class=\"button_return\">Return</a>";
+    echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
   }
   else {
 
@@ -59,6 +60,7 @@ else {
       SELECT lure
       FROM " . DB_PREF . "extension_truncate
       WHERE 1 = 1
+      LIMIT 1
     ";
 
     $query = $Database->getHandle()->query($statement);
@@ -69,7 +71,7 @@ else {
 
       echo "Error: failed to get lure text!";
 
-      echo "<a href=\"extensions.php\" class=\"button_return\">Return</a>";
+      echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
     }
     else {
 
@@ -81,8 +83,10 @@ else {
 
       echo "
 
+        Use the form below to edit the extension.<br><br>
+
         <form method=\"post\" class=\"edit_lure\">
-          <label for=\"lure\">Lure Text</label>
+          <label for=\"lure\">Lure text</label>
           <input type=\"text\" id=\"lure\" name=\"lure\" value=\"{$lure}\">
           <input type=\"submit\" value=\"Save\">
         </form>
