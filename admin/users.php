@@ -37,7 +37,9 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 
       email,
 
-      password
+      password,
+
+      reset_password
     )
     VALUES (
 
@@ -47,7 +49,9 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
 
       ?,
 
-      ?
+      ?,
+
+      '0'
     )
   ";
 
