@@ -26,6 +26,40 @@ class DisqusForum extends Extension {
 
   public function getDisqusForum() {
 
+    $url = "";
+    $identifier = "";
+
+    $statement = "
+
+      SELECT id, url
+      FROM " . DB_PREF . "posts
+      WHERE url = ?
+      ORDER BY id DESC
+      LIMIT 1
+    ";
+
+    $Query = $GLOBALS["Database"]->getHandle()->prepare($statement);
+
+    // Prevent SQL injections.
+    $Query->bindParam(1, $_GET["post"]);
+
+    $Query->execute();
+
+    if (!$Query) {
+
+      // Something went wrong.
+      $GLOBALS["Utility"]->displayError("failed to get post ID and URL");
+    }
+
+    if ($Query->rowCount() > 0) {
+
+      // Fetch the result as an object.
+      $Result = $Query->fetch(PDO::FETCH_OBJ);
+
+      $url = $Result->url;
+      $identifier = $Result->id;
+    }
+
     $disqus_markup_file = dirname(__FILE__) . "/content/markup.php";
 
     if (file_exists($disqus_markup_file)) {

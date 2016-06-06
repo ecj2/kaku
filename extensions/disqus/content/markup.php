@@ -6,37 +6,38 @@ if (!defined("KAKU_ACCESS")) {
   exit();
 }
 
-$markup = '
+$markup = "
 
-  <div id="disqus_thread"></div>
+  <div id=\"disqus_thread\"></div>
+
   <script>
-  var disqus_shortname = "{%disqus_forum_name%}";
 
-  (
+    var disqus_shortname = \"{%disqus_forum_name%}\";
 
-    function() {
+    var disqus_config = function () {
 
-      var dsq = document.createElement("script");
+      this.page.identifier = \"{$identifier}\";
+    };
 
-      dsq.type = "text/javascript";
+    (
 
-      dsq.async = true;
+      function() {
 
-      dsq.src= "//" + disqus_shortname + ".disqus.com/embed.js";
+        var d = document, s = d.createElement(\"script\");
 
-      (
+        s.src = \"//\" + disqus_shortname + \".disqus.com/embed.js\";
 
-        document.getElementsByTagName("head")[0]
-        ||
-        document.getElementsByTagName("body")[0]
-      ).appendChild(dsq);
-    }
-  )();
+        s.setAttribute(\"data-timestamp\", +new Date());
+        (d.head || d.body).appendChild(s);
+      }
+    )();
   </script>
+
   <noscript>
+
     Please enable JavaScript to view the
-    <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+    <a href=\"https://disqus.com/?ref_noscript\" rel=\"nofollow\">comments powered by Disqus.</a>
   </noscript>
-';
+";
 
 ?>
