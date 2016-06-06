@@ -20,15 +20,17 @@ class Page {
 
   public function getDescription() {
 
-    $description = $this->getData("description");
+    $this->getData("description");
 
-    if (strlen($description) == 0) {
+    if (strlen(trim($GLOBALS["Hook"]->doAction("page_description"))) == 0) {
 
       // The page lacks a description.
       $description = "No description.";
-    }
 
-    return $description;
+      $GLOBALS["Hook"]->removeAction("page_description");
+
+      $GLOBALS["Hook"]->addAction("page_description", $description);
+    }
   }
 
   private function getData($column) {
@@ -62,7 +64,7 @@ class Page {
 
       // Query returned zero rows. Redirect to 404 page.
       header("Location: {$root_address}/error?code=404");
-      
+
       exit();
     }
     else {

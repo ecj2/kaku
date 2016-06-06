@@ -97,6 +97,14 @@ class Hook {
 
     $this->filter_methods[$action][] = $method;
   }
+
+  public function removeAction($action) {
+
+    if (in_array($action, $this->actions)) {
+
+      unset($this->actions[$action]);
+    }
+  }
 }
 
 ?>

@@ -229,6 +229,16 @@ class Post {
   public function getDescription() {
 
     $this->getData("description");
+
+    if (strlen(trim($GLOBALS["Hook"]->doAction("post_description"))) == 0) {
+
+      // The post lacks a description.
+      $description = "No description.";
+
+      $GLOBALS["Hook"]->removeAction("post_description");
+
+      $GLOBALS["Hook"]->addAction("post_description", $description);
+    }
   }
 
   public function getAbsoluteEpoch() {
