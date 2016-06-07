@@ -95,7 +95,7 @@ class Pagination extends Extension {
 
     if (isset($_GET["range"])) {
 
-      if ($_GET["range"] == 0 || $_GET["range"] == 1 || $_GET["range"] < 0) {
+      if ($_GET["range"] < 2) {
 
         // Redirect to the index.
         header("Location: " . $GLOBALS["Utility"]->getRootAddress());
@@ -118,7 +118,17 @@ class Pagination extends Extension {
 
     $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
+    if (isset($_GET["range"]) && $_GET["range"] > 1 && $Query->rowCount() == 0) {
+
+      // No posts within this range. Redirect to index.
+      header("Location: " . $GLOBALS["Utility"]->getRootAddress());
+
+      exit();
+    }
+
     if ($Query->rowCount() > $posts_per_page) {
+
+      $url = "";
 
       if (isset($_GET["range"])) {
 
@@ -133,18 +143,8 @@ class Pagination extends Extension {
 
       return $message;
     }
-    else {
 
-      if (isset($_GET["range"])) {
-
-        // Redirect to the index.
-        header("Location: " . $GLOBALS["Utility"]->getRootAddress());
-
-        exit();
-      }
-
-      return "";
-    }
+    return "";
   }
 
   public function getPreviousPage() {
