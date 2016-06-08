@@ -343,6 +343,9 @@ if (!$Database->checkTableExistence("tags")) {
     $errors[] = "failed to insert keyword_prefix into " . DB_PREF . "tags";
   }
 
+  $navigation = "<ul>\n<li><a href=\"{%blog_url%}\">Home</a></li>\n";
+  $navigation .= "<li><a href=\"{%blog_url%}/page/search\">Search</a></li>\n</ul>";
+
   // Insert navigation_items into the tags table.
   if (!$Database->performQuery(
 
@@ -356,12 +359,7 @@ if (!$Database->checkTableExistence("tags")) {
 
       'navigation_items',
 
-      '
-      <ul>
-        <li><a href=\"{%blog_url%}\">Home</a></li>
-        <li><a href=\"{%blog_url%}/page/search\">Search</a></li>
-      </ul>
-      '
+      '{$navigation}'
     )"
   )) {
 
