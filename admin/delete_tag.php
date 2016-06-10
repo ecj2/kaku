@@ -4,174 +4,178 @@ session_start();
 
 if (!isset($_SESSION["username"])) {
 
+  // User is not logged in.
   header("Location: ./login.php");
+
+  exit();
 }
 
-require "../includes/configuration.php";
-
-require "../includes/classes/utility.php";
-require "../includes/classes/database.php";
-
-require "../includes/classes/hook.php";
-require "../includes/classes/output.php";
-
-global $Hook;
-
-$Hook = new Hook;
-
-$Output = new Output;
-$Utility = new Utility;
-$Database = new Database;
-
-$Database->connect();
-
-$Output->setDatabaseHandle($Database->getHandle());
+require "../core/includes/common.php";
 
 $Output->startBuffer();
 
-$statement = "
+$Output->loadExtensions();
 
-  SELECT body
-  FROM " . DB_PREF . "tags
-  WHERE title = 'admin_theme_name'
-  ORDER BY id DESC
-";
+// Get template markup.
+$template = $Template->getFileContents("template", 0, 1);
 
-$query = $Database->getHandle()->query($statement);
+$search = [];
+$replace = [];
 
-if (!$query || $query->rowCount() == 0) {
+$search[] = "{%page_title%}";
+$search[] = "{%page_body%}";
 
-  // Query failed or returned zero rows.
-  $Utility->displayError("failed to get admin theme name");
-}
+$body = "";
 
-// Get the admin theme name.
-$theme_name = $query->fetch(PDO::FETCH_OBJ)->body;
+if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
-if (!file_exists("content/themes/{$theme_name}/template.html")) {
+  if (isset($_GET["delete"])) {
 
-  // Theme template does not exist.
-  $Utility->displayError("theme template file does not exist");
-}
+    $statement = "
 
-// Display the theme contents.
-echo file_get_contents("content/themes/{$theme_name}/template.html");
+      SELECT title
+      FROM " . DB_PREF . "tags
+      WHERE id = ?
+      ORDER BY id DESC
+      LIMIT 1
+    ";
 
-$page_body = "";
+    $Query = $Database->getHandle()->prepare($statement);
 
-$page_title = "Delete Tag";
+    // Prevent SQL injections.
+    $Query->bindParam(1, $_GET["id"]);
 
-function tagExists($Database) {
+    $Query->execute();
 
-  $statement = "
+    if (!$Query) {
 
-    SELECT id
-    FROM " . DB_PREF . "tags
-    WHERE id = ?
-  ";
+      // Something went wrong.
+      $Utility->displayError("failed to select tag title");
+    }
 
-  $query = $Database->getHandle()->prepare($statement);
+    $tag_title = "";
 
-  // Prevent SQL injections.
-  $query->bindParam(1, $_GET["id"]);
+    if ($Query->rowCount() > 0) {
 
-  $query->execute();
+      // Get the tag title.
+      $tag_title = $Query->fetch(PDO::FETCH_OBJ)->title;
+    }
 
-  if (!$query) {
+    $statement = "
 
-    // Query failed.
-    return false;
-  }
-  else if ($query->rowCount() == 0) {
+      DELETE FROM " . DB_PREF . "tags
+      WHERE id = ?
+    ";
 
-    // Tag does not exist.
-    return false;
-  }
+    $Query = $Database->getHandle()->prepare($statement);
 
-  // Tag exists.
-  return true;
-}
+    // Prevent SQL injections.
+    $Query->bindParam(1, $_GET["id"]);
 
-if (isset($_GET["delete"])) {
+    $Query->execute();
 
-  //
-  $statement = "
+    $message = "";
 
-    DELETE FROM " . DB_PREF . "tags
-    WHERE id = ?
-  ";
+    if (!$Query) {
 
-  $query = $Database->getHandle()->prepare($statement);
+      if ($tag_title == "") {
 
-  // Prevent SQL injections.
-  $query->bindParam(1, $_GET["id"]);
+        $message = "failed to delete tag";
+      }
+      else {
 
-  $query->execute();
+        $message = "failed to delete \"{$tag_title}\" tag";
+      }
 
-  $id = $_GET["id"];
+      // Failed to delete tag.
+      header("Location: ./tags.php?code=0&message={$message}");
 
-  if (!$query) {
+      exit();
+    }
 
-    // Failed to delete tag.
-    header("Location: ./delete_tag.php?id={$id}&result=failure");
-  }
+    if ($tag_title == "") {
 
-  // Successfully deleted tag.
-  header("Location: ./delete_tag.php?id={$id}&result=success");
-}
-else {
-
-  if (isset($_GET["result"])) {
-
-    if ($_GET["result"] == "success") {
-
-      $page_body .= "The tag has been deleted.";
+      $message = "tag deleted successfully";
     }
     else {
 
-      $page_body .= "Failed to delete tag.";
+      $message = "\"{$tag_title}\" tag deleted successfully";
     }
 
-    $page_body .= "<a href=\"tags.php\" class=\"button_return\">Return</a>";
+    // Tag successfully deleted.
+    header("Location: ./tags.php?code=1&message={$message}");
+
+    exit();
+  }
+
+  $statement = "
+
+    SELECT title
+    FROM " . DB_PREF . "tags
+    WHERE id = ?
+    ORDER BY id DESC
+    LIMIT 1
+  ";
+
+  $Query = $Database->getHandle()->prepare($statement);
+
+  // Prevent SQL injections.
+  $Query->bindParam(1, $_GET["id"]);
+
+  $Query->execute();
+
+  if (!$Query) {
+
+    // Something went wrong.
+    $Utility->displayError("failed to select tag title");
+  }
+
+  if ($Query->rowCount() == 0) {
+
+    // This tag does not exist.
+    $body .= "
+
+      There exists no tag with an ID of " . $_GET["id"] . ".
+
+      <a href=\"tags.php\" class=\"button_return\">Return</a>
+    ";
   }
   else {
 
-    $page_body .= "Are you sure you want to delete this tag?<br>";
+    // Get the tag's name, and encode { and } to prevent them from being replaced by the output buffer.
+    $tag_name = str_replace(["{", "}"], ["&#123;", "&#125;"], $Query->fetch(PDO::FETCH_OBJ)->title);
 
-    $id = $_GET["id"];
+    $body .= "
 
-    $page_body .= "
+      Are you sure you want to delete the \"{$tag_name}\" tag?<br>
 
-      <a href=\"delete_tag.php?id={$id}&delete=true\" class=\"button\">Yes</a>
-      <a href=\"tags.php\" class=\"button\">No</a>
+      <a href=\"{%blog_url%}/admin/delete_tag.php?id=" . $_GET["id"] . "&delete=true\" class=\"button\">Yes</a>
+      <a href=\"{%blog_url%}/admin/tags.php\" class=\"button\">No</a>
     ";
-
-    if (!tagExists($Database)) {
-
-      $page_body = "There exists no tag with an ID of " . $_GET["id"] . ".";
-      $page_body .= "<a href=\"tags.php\" class=\"button_return\">Return</a>";
-    }
   }
 }
+else {
 
-$Output->addTagReplacement(
+  // No ID given.
+  $body .= "
 
-  "page_body",
+    No ID supplied.
 
-  $page_body
-);
+    <a href=\"{%blog_url%}/admin/tags.php\" class=\"button_return\">Return</a>
+  ";
+}
 
-$Output->addTagReplacement(
+$replace[] = "Delete Tag";
+$replace[] = $body;
 
-  "page_title",
+echo str_replace($search, $replace, $template);
 
-  $page_title
-);
+// Clear the admin_head_content and admin_body_content tags if they go unused.
+$Hook->addAction("admin_head_content", "");
+$Hook->addAction("admin_body_content", "");
 
 $Output->replaceTags();
 
 $Output->flushBuffer();
-
-$Database->disconnect();
 
 ?>

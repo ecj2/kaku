@@ -4,62 +4,28 @@ session_start();
 
 if (isset($_SESSION["username"])) {
 
-  header("Location: ./index.php");
+  // User is already logged in.
+  header("Location: ./dashboard.php");
+
+  exit();
 }
 
-require "../includes/configuration.php";
-
-require "../includes/classes/utility.php";
-require "../includes/classes/database.php";
-
-require "../includes/classes/hook.php";
-require "../includes/classes/output.php";
-
-global $Hook;
-
-$Hook = new Hook;
-
-$Output = new Output;
-$Utility = new Utility;
-$Database = new Database;
-
-$Database->connect();
-
-$Output->setDatabaseHandle($Database->getHandle());
+require "../core/includes/common.php";
 
 $Output->startBuffer();
 
-$statement = "
+$Output->loadExtensions();
 
-  SELECT body
-  FROM " . DB_PREF . "tags
-  WHERE title = 'admin_theme_name'
-  ORDER BY id DESC
-";
+// Get login markup.
+$template = $Template->getFileContents("login", 0, 1);
 
-$query = $Database->getHandle()->query($statement);
+$search = [];
+$replace = [];
 
-if (!$query || $query->rowCount() == 0) {
+$search[] = "{%page_title%}";
+$search[] = "{%page_body%}";
 
-  // Query failed or returned zero rows.
-  $Utility->displayError("failed to get admin theme name");
-}
-
-// Get the admin theme name.
-$theme_name = $query->fetch(PDO::FETCH_OBJ)->body;
-
-if (!file_exists("content/themes/{$theme_name}/login.html")) {
-
-  // Theme template does not exist.
-  $Utility->displayError("theme template file does not exist");
-}
-
-// Display the theme contents.
-echo file_get_contents("content/themes/{$theme_name}/login.html");
-
-$page_body = "";
-
-$page_title = "Login";
+$body = "";
 
 if (isset($_POST["username"]) && isset($_POST["password"])) {
 
@@ -68,82 +34,92 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
     SELECT id, password
     FROM " . DB_PREF . "users
     WHERE username = ?
+    ORDER BY id DESC
+    LIMIT 1
   ";
 
-  $query = $Database->getHandle()->prepare($statement);
+  $Query = $Database->getHandle()->prepare($statement);
 
   // Prevent SQL injections.
-  $query->bindParam(1, $_POST["username"]);
+  $Query->bindParam(1, $_POST["username"]);
 
-  $query->execute();
+  $Query->execute();
 
-  if (!$query) {
+  if (!$Query) {
 
-    // Query failed.
-    header("Location: ./login.php?error=An error occurred!");
+    // Something went wrong.
+    header("Location: ./login.php?error=an unknown error occurred");
+
+    exit();
   }
-  else if ($query->rowCount() == 0) {
+  else if ($Query->rowCount() == 0) {
 
     // Username doesn't exist.
-    header("Location: ./login.php?error=That username doesn't exist!");
+    header("Location: ./login.php?error=incorrect username and/or password");
+
+    exit();
   }
   else {
 
     // Fetch result as an object.
-    $result = $query->fetch(PDO::FETCH_OBJ);
+    $Result = $Query->fetch(PDO::FETCH_OBJ);
 
-    if (password_verify($_POST["password"], $result->password)) {
+    if (password_verify($_POST["password"], $Result->password)) {
 
       // Correct password.
 
-      $_SESSION["user_id"] = $result->id;
+      $_SESSION["user_id"] = $Result->id;
       $_SESSION["username"] = $_POST["username"];
 
       // Redirect to dashboard.
-      header("Location: ./index.php");
+      header("Location: ./dashboard.php");
+
+      exit();
     }
     else {
 
       // Incorrect password.
-      header("Location: ./login.php?error=Incorrect password!");
+      header("Location: ./login.php?error=incorrect username and/or password");
+
+      exit();
     }
   }
 }
 
 if (isset($_GET["error"])) {
 
-  $page_body .= "<span class=\"failure\">" . $_GET["error"] . "</span>";
+  $body .= "<span class=\"failure\">Notice: " . $_GET["error"] . ".</span>";
 }
 
-$page_body .= "
+$body .= "
+
+  Use the form below to log in.<br><br>
 
   <form method=\"post\">
+
     <label for=\"username\">Username</label>
     <input type=\"text\" id=\"username\" name=\"username\" required>
+
     <label for=\"password\">Password</label>
     <input type=\"password\" id=\"password\" name=\"password\" required>
+
     <input type=\"submit\" value=\"Login\">
   </form>
+
+  <a href=\"{%blog_url%}/admin/reset_password.php\">Forgot password?</a>
 ";
 
-$Output->addTagReplacement(
+$replace[] = "Login";
+$replace[] = $body;
 
-  "page_body",
+echo str_replace($search, $replace, $template);
 
-  $page_body
-);
-
-$Output->addTagReplacement(
-
-  "page_title",
-
-  $page_title
-);
+// Clear the admin_head_content and admin_body_content tags if they go unused.
+$Hook->addAction("admin_head_content", "");
+$Hook->addAction("admin_body_content", "");
 
 $Output->replaceTags();
 
 $Output->flushBuffer();
-
-$Database->disconnect();
 
 ?>

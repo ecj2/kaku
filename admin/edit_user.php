@@ -4,77 +4,28 @@ session_start();
 
 if (!isset($_SESSION["username"])) {
 
+  // User is not logged in.
   header("Location: ./login.php");
+
+  exit();
 }
 
-require "../includes/configuration.php";
-
-require "../includes/classes/utility.php";
-require "../includes/classes/database.php";
-
-require "../includes/classes/hook.php";
-require "../includes/classes/output.php";
-
-global $Hook;
-
-$Hook = new Hook;
-
-$Output = new Output;
-$Utility = new Utility;
-$Database = new Database;
-
-$Database->connect();
-
-$Output->setDatabaseHandle($Database->getHandle());
+require "../core/includes/common.php";
 
 $Output->startBuffer();
 
-$statement = "
+$Output->loadExtensions();
 
-  SELECT body
-  FROM " . DB_PREF . "tags
-  WHERE title = 'admin_theme_name'
-  ORDER BY id DESC
-";
+// Get template markup.
+$template = $Template->getFileContents("template", 0, 1);
 
-$query = $Database->getHandle()->query($statement);
+$search = [];
+$replace = [];
 
-if (!$query || $query->rowCount() == 0) {
+$search[] = "{%page_title%}";
+$search[] = "{%page_body%}";
 
-  // Query failed or returned zero rows.
-  $Utility->displayError("failed to get admin theme name");
-}
-
-// Get the admin theme name.
-$theme_name = $query->fetch(PDO::FETCH_OBJ)->body;
-
-if (!file_exists("content/themes/{$theme_name}/template.html")) {
-
-  // Theme template does not exist.
-  $Utility->displayError("theme template file does not exist");
-}
-
-// Display the theme contents.
-echo file_get_contents("content/themes/{$theme_name}/template.html");
-
-$page_body = "";
-
-$page_title = "Edit User";
-
-if (isset($_GET["result"])) {
-
-  if ($_GET["result"] == "success") {
-
-    $page_body .= "The user has been saved.";
-  }
-  else {
-
-    $page_body .= "Failed to save user.";
-  }
-
-  $page_body .= "<a href=\"users.php\" class=\"button_return\">Return</a>";
-}
-else if (isset($_POST["username"]) && isset($_POST["nickname"]) && isset($_POST["email"]) && isset($_POST["password"])) {
+if (isset($_GET["id"]) && isset($_POST["username"]) && isset($_POST["password"])) {
 
   $statement = "
 
@@ -83,102 +34,132 @@ else if (isset($_POST["username"]) && isset($_POST["nickname"]) && isset($_POST[
     WHERE id = ?
   ";
 
-  $query = $Database->getHandle()->prepare($statement);
+  $Query = $Database->getHandle()->prepare($statement);
 
   $password = password_hash($_POST["password"], PASSWORD_BCRYPT);
 
   // Prevent SQL injections.
-  $query->bindParam(1, $_POST["username"]);
-  $query->bindParam(2, $_POST["nickname"]);
-  $query->bindParam(3, $_POST["email"]);
-  $query->bindParam(4, $password);
-  $query->bindParam(5, $_GET["id"]);
+  $Query->bindParam(1, $_POST["username"]);
+  $Query->bindParam(2, $_POST["nickname"]);
+  $Query->bindParam(3, $_POST["email"]);
+  $Query->bindParam(4, $password);
+  $Query->bindParam(5, $_GET["id"]);
 
-  $query->execute();
+  $Query->execute();
 
-  if (!$query) {
+  if (!$Query) {
 
     // Failed to update user.
-    header("Location: ./edit_user.php?id=" . $_GET["id"] . "&result=failure");
+    header("Location: ./users.php?code=0&message=failed to update user");
+
+    exit();
   }
 
   // Successfully updated user.
-  header("Location: ./edit_user.php?id=" . $_GET["id"] . "&result=success");
+  header("Location: ./users.php?code=1&message=user updated successfully");
+
+  exit();
 }
-else {
+
+$body = "";
+
+if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
   $statement = "
 
     SELECT username, nickname, email
     FROM " . DB_PREF . "users
     WHERE id = ?
+    ORDER BY id DESC
+    LIMIT 1
   ";
 
-  $query = $Database->getHandle()->prepare($statement);
+  $Query = $Database->getHandle()->prepare($statement);
 
   // Prevent SQL injections.
-  $query->bindParam(1, $_GET["id"]);
+  $Query->bindParam(1, $_GET["id"]);
 
-  $query->execute();
+  $Query->execute();
 
-  if (!$query) {
+  if (!$Query) {
 
-    // Query failed.
-    $page_body .= "Failed to select user data.";
-    $page_body .= "<a href=\"users.php\" class=\"button_return\">Return</a>";
+    // Failed to get user data.
+    $Utility->displayError("failed to get user data");
   }
-  else if ($query->rowCount() == 0) {
 
-    // Query returned zero rows.
-    $page_body .= "There exists no user with an ID of " . $_GET["id"] . ".";
-    $page_body .= "<a href=\"users.php\" class=\"button_return\">Return</a>";
+  if ($Query->rowCount() == 0) {
+
+    // This user does not exist.
+    $body .= "
+
+      There exists no user with an ID of " . $_GET["id"] . ".
+
+      <a href=\"users.php\" class=\"button_return\">Return</a>
+    ";
   }
   else {
 
-    $user = $query->fetch(PDO::FETCH_OBJ);
+    $User = $Query->fetch(PDO::FETCH_OBJ);
 
-    $username = $user->username;
-    $nickname = $user->nickname;
-    $email = $user->email;
+    $user_username = $User->username;
+    $user_nickname = $User->nickname;
+    $user_email = $User->email;
 
-    $page_body .= "
+    // Preserve HTML entities.
+    $user_username = htmlentities($user_username);
+    $user_nickname = htmlentities($user_nickname);
+    $user_email = htmlentities($user_email);
+
+    // Encode { and } to prevent them from being replaced by the output buffer.
+    $user_username = str_replace(["{", "}"], ["&#123;", "&#125;"], $user_username);
+    $user_nickname = str_replace(["{", "}"], ["&#123;", "&#125;"], $user_nickname);
+    $user_email = str_replace(["{", "}"], ["&#123;", "&#125;"], $user_email);
+
+    $body .= "
+
+      Use the form below to edit the user.<br><br>
 
       <form method=\"post\" class=\"edit_user\">
+
         <label for=\"username\">Username</label>
-        <input type=\"text\" id=\"username\" name=\"username\"
-        value=\"{$username}\" required>
+        <input type=\"text\" id=\"username\" name=\"username\" value=\"{$user_username}\" required>
+
         <label for=\"nickname\">Nickname</label>
-        <input type=\"text\" id=\"nickname\" name=\"nickname\"
-        value=\"{$nickname}\" required>
+        <input type=\"text\" id=\"nickname\" name=\"nickname\" value=\"{$user_nickname}\" required>
+
         <label for=\"email\">Email</label>
-        <input type=\"email\" id=\"email\" name=\"email\"
-        value=\"{$email}\" required>
+        <input type=\"email\" id=\"email\" name=\"email\" value=\"{$user_email}\" required>
+
         <label for=\"password\">Password</label>
         <input type=\"password\" id=\"password\" name=\"password\" required>
+
         <input type=\"submit\" value=\"Save\">
       </form>
     ";
   }
 }
+else {
 
-$Output->addTagReplacement(
+  // No ID given.
+  $body .= "
 
-  "page_body",
+    No ID supplied.
 
-  $page_body
-);
+    <a href=\"{%blog_url%}/admin/users.php\" class=\"button_return\">Return</a>
+  ";
+}
 
-$Output->addTagReplacement(
+$replace[] = "Edit User";
+$replace[] = $body;
 
-  "page_title",
+echo str_replace($search, $replace, $template);
 
-  $page_title
-);
+// Clear the admin_head_content and admin_body_content tags if they go unused.
+$Hook->addAction("admin_head_content", "");
+$Hook->addAction("admin_body_content", "");
 
 $Output->replaceTags();
 
 $Output->flushBuffer();
-
-$Database->disconnect();
 
 ?>

@@ -4,101 +4,37 @@ session_start();
 
 if (!isset($_SESSION["username"])) {
 
+  // User is not logged in.
   header("Location: ./login.php");
+
+  exit();
 }
 
-require "../includes/configuration.php";
-
-require "../includes/classes/utility.php";
-require "../includes/classes/database.php";
-
-require "../includes/classes/hook.php";
-require "../includes/classes/output.php";
-
-global $Hook;
-
-$Hook = new Hook;
-
-$Output = new Output;
-$Utility = new Utility;
-$Database = new Database;
-
-$Database->connect();
-
-$Output->setDatabaseHandle($Database->getHandle());
+require "../core/includes/common.php";
 
 $Output->startBuffer();
 
-$statement = "
+$Output->loadExtensions();
 
-  SELECT body
-  FROM " . DB_PREF . "tags
-  WHERE title = 'admin_theme_name'
-  ORDER BY id DESC
-";
+// Get template markup.
+$template = $Template->getFileContents("template", 0, 1);
 
-$query = $Database->getHandle()->query($statement);
+$search = [];
+$replace = [];
 
-if (!$query || $query->rowCount() == 0) {
+$search[] = "{%page_title%}";
+$search[] = "{%page_body%}";
 
-  // Query failed or returned zero rows.
-  $Utility->displayError("failed to get admin theme name");
-}
-
-// Get the admin theme name.
-$theme_name = $query->fetch(PDO::FETCH_OBJ)->body;
-
-if (!file_exists("content/themes/{$theme_name}/template.html")) {
-
-  // Theme template does not exist.
-  $Utility->displayError("theme template file does not exist");
-}
-
-// Display the theme contents.
-echo file_get_contents("content/themes/{$theme_name}/template.html");
-
-$page_body = "";
-
-$page_title = "Edit Page";
-
-if (isset($_GET["result"])) {
-
-  if ($_GET["result"] == "success") {
-
-    $page_body .= "The page has been saved.";
-  }
-  else {
-
-    $page_body .= "Failed to save page.";
-  }
-
-  $page_body .= "<a href=\"pages.php\" class=\"button_return\">Return</a>";
-}
-else if (isset($_POST["url"]) && isset($_POST["body"]) && isset($_POST["title"])) {
+if (isset($_GET["id"]) && isset($_POST["title"]) && isset($_POST["body"])) {
 
   $statement = "
 
     UPDATE " . DB_PREF . "pages
-    SET url = ?, body = ?, keywords = ?, title = ?, description = ?,
-    show_on_search = ?
+    SET url = ?, body = ?, title = ?, keywords = ?, description = ?, show_on_search = ?
     WHERE id = ?
   ";
 
-  $query = $Database->getHandle()->prepare($statement);
-
-  $keywords = "";
-
-  if (isset($_POST["keywords"])) {
-
-    $keywords = $_POST["keywords"];
-  }
-
-  $description = "";
-
-  if (isset($_POST["description"])) {
-
-    $description = $_POST["description"];
-  }
+  $Query = $Database->getHandle()->prepare($statement);
 
   $show_on_search = "0";
 
@@ -108,124 +44,151 @@ else if (isset($_POST["url"]) && isset($_POST["body"]) && isset($_POST["title"])
   }
 
   // Prevent SQL injections.
-  $query->bindParam(1, $_POST["url"]);
-  $query->bindParam(2, $_POST["body"]);
-  $query->bindParam(3, $keywords);
-  $query->bindParam(4, $_POST["title"]);
-  $query->bindParam(5, $description);
-  $query->bindParam(6, $show_on_search);
-  $query->bindParam(7, $_GET["id"]);
+  $Query->bindParam(1, $_POST["url"]);
+  $Query->bindParam(2, $_POST["body"]);
+  $Query->bindParam(3, $_POST["title"]);
+  $Query->bindParam(4, $_POST["keywords"]);
+  $Query->bindParam(5, $_POST["description"]);
+  $Query->bindParam(6, $show_on_search);
+  $Query->bindParam(7, $_GET["id"]);
 
-  $query->execute();
+  $Query->execute();
 
-  if (!$query) {
+  if (!$Query) {
 
     // Failed to update page.
-    header("Location: ./edit_page.php?id=" . $_GET["id"] . "&result=failure");
+    header("Location: ./pages.php?code=0&message=failed to update page");
+
+    exit();
   }
 
   // Successfully updated page.
-  header("Location: ./edit_page.php?id=" . $_GET["id"] . "&result=success");
+  header("Location: ./pages.php?code=1&message=page updated successfully");
+
+  exit();
 }
-else {
+
+$body = "";
+
+if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
   $statement = "
 
-    SELECT url, body, keywords, title, description, show_on_search
+    SELECT url, body, title, keywords, description, show_on_search
     FROM " . DB_PREF . "pages
     WHERE id = ?
+    ORDER BY id DESC
+    LIMIT 1
   ";
 
-  $query = $Database->getHandle()->prepare($statement);
+  $Query = $Database->getHandle()->prepare($statement);
 
   // Prevent SQL injections.
-  $query->bindParam(1, $_GET["id"]);
+  $Query->bindParam(1, $_GET["id"]);
 
-  $query->execute();
+  $Query->execute();
 
-  if (!$query) {
+  if (!$Query) {
 
-    // Query failed.
-    $page_body .= "Failed to select page data.";
-    $page_body .= "<a href=\"pages.php\" class=\"button_return\">Return</a>";
+    // Failed to get page data.
+    $Utility->displayError("failed to get page data");
   }
-  else if ($query->rowCount() == 0) {
 
-    // Query returned zero rows.
-    $page_body .= "There exists no page with an ID of " . $_GET["id"] . ".";
-    $page_body .= "<a href=\"pages.php\" class=\"button_return\">Return</a>";
+  if ($Query->rowCount() == 0) {
+
+    // This page does not exist.
+    $body .= "
+
+      There exists no page with an ID of " . $_GET["id"] . ".
+
+      <a href=\"pages.php\" class=\"button_return\">Return</a>
+    ";
   }
   else {
 
-    $page = $query->fetch(PDO::FETCH_OBJ);
+    $Page = $Query->fetch(PDO::FETCH_OBJ);
 
-    $url = $page->url;
-    $body = $page->body;
-    $keywords = $page->keywords;
-    $title = $page->title;
-    $description = $page->description;
-    $show_on_search = $page->show_on_search;
+    $page_url = $Page->url;
+    $page_body = $Page->body;
+    $page_title = $Page->title;
+    $page_keywords = $Page->keywords;
+    $page_description = $Page->description;
+    $page_show_on_search = $Page->show_on_search;
 
-    $body = htmlentities($body);
+    // Preserve HTML entities.
+    $page_url = htmlentities($page_url);
+    $page_body = htmlentities($page_body);
+    $page_title = htmlentities($page_title);
+    $page_keywords = htmlentities($page_keywords);
+    $page_description = htmlentities($page_description);
 
-    // Encode { and } to prevent it from being replaced by the output buffer.
-    $url = str_replace(["{", "}"], ["&#123;", "&#125;"], $url);
-    $body = str_replace(["{", "}"], ["&#123;", "&#125;"], $body);
-    $title = str_replace(["{", "}"], ["&#123;", "&#125;"], $title);
-    $keywords = str_replace(["{", "}"], ["&#123;", "&#125;"], $keywords);
-    $description = str_replace(["{", "}"], ["&#123;", "&#125;"], $description);
+    // Encode { and } to prevent them from being replaced by the output buffer.
+    $page_url = str_replace(["{", "}"], ["&#123;", "&#125;"], $page_url);
+    $page_body = str_replace(["{", "}"], ["&#123;", "&#125;"], $page_body);
+    $page_title = str_replace(["{", "}"], ["&#123;", "&#125;"], $page_title);
+    $page_keywords = str_replace(["{", "}"], ["&#123;", "&#125;"], $page_keywords);
+    $page_description = str_replace(["{", "}"], ["&#123;", "&#125;"], $page_description);
 
-    $page_body .= "
+    $body .= "
+
+      Use the form below to edit the page.<br><br>
 
       <form method=\"post\" class=\"edit_page\">
+
         <label for=\"url\">URL</label>
-        <input type=\"text\" id=\"url\" name=\"url\"
-         value=\"{$url}\" required>
+        <input type=\"text\" id=\"url\" name=\"url\" value=\"{$page_url}\" required>
+
         <label for=\"title\">Title</label>
-        <input type=\"text\" id=\"title\" name=\"title\"
-         value=\"{$title}\" required>
-        <label for=\"keywords\">Keywords (Optional; comma separated)</label>
-        <input type=\"text\" id=\"keywords\" name=\"keywords\" value=\"{$keywords}\">
+        <input type=\"text\" id=\"title\" name=\"title\" value=\"{$page_title}\" required>
+
+        <label for=\"keywords\">Keywords (optional; comma separated)</label>
+        <input type=\"text\" id=\"keywords\" name=\"keywords\" value=\"{$page_keywords}\">
+
         <label for=\"body\">Body</label>
-        <textarea id=\"body\" name=\"body\" required>{$body}</textarea>
-        <label for=\"description\">Description (Optional)</label>
-        <textarea id=\"description\" name=\"description\">{$description}</textarea>
-        <input type=\"checkbox\" id=\"show_on_search\"
-        name=\"show_on_search\"
+        <textarea id=\"body\" name=\"body\" required>{$page_body}</textarea>
+
+        <label for=\"description\">Description (optional)</label>
+        <textarea id=\"description\" name=\"description\">{$page_description}</textarea>
     ";
 
-    if ($show_on_search) {
+    if ($page_show_on_search) {
 
-      $page_body .= "checked";
+      $body .= "<input type=\"checkbox\" id=\"show_on_search\" name=\"show_on_search\" checked> Show on search";
+    }
+    else {
+
+      $body .= "<input type=\"checkbox\" id=\"show_on_search\" name=\"show_on_search\"> Show on search";
     }
 
-    $page_body .= "
+    $body .= "
 
-      > Show on Search
       <input type=\"submit\" value=\"Save\">
       </form>
-  ";
+    ";
   }
 }
+else {
 
-$Output->addTagReplacement(
+  // No ID given.
+  $body .= "
 
-  "page_body",
+    No ID supplied.
 
-  $page_body
-);
+    <a href=\"{%blog_url%}/admin/pages.php\" class=\"button_return\">Return</a>
+  ";
+}
 
-$Output->addTagReplacement(
+$replace[] = "Edit Page";
+$replace[] = $body;
 
-  "page_title",
+echo str_replace($search, $replace, $template);
 
-  $page_title
-);
+// Clear the admin_head_content and admin_body_content tags if they go unused.
+$Hook->addAction("admin_head_content", "");
+$Hook->addAction("admin_body_content", "");
 
 $Output->replaceTags();
 
 $Output->flushBuffer();
-
-$Database->disconnect();
 
 ?>

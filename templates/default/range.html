@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="{%blog_language%}">
+  <head>
+    <meta charset="utf-8">
+    <title>{%blog_title%}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans%7CMerriweather:300">
+    <link rel="stylesheet" href="{%template_directory%}/{%template_name%}/css/main.css">
+    <meta name="description" content="{%blog_description%}">
+    {%head_content%}
+  </head>
+  <body>
+    <div id="wrap">
+      <header class="top">
+        <h1><a href="{%blog_url%}">{%blog_title%}</a></h1>
+        <nav>
+          {%navigation_items%}
+        </nav>
+      </header>
+      {%post_range%}
+      <footer>
+        <span class="text">{%footer%}</span>
+        <span class="previous_page">{%previous_page%}</span>
+        <span class="next_page">{%next_page%}</span>
+      </footer>
+    </div>
+    {%body_content%}
+  </body>
+</html>
