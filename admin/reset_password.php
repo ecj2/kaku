@@ -146,7 +146,7 @@ if (isset($_POST["email"])) {
 
     $Query = $Database->getHandle()->prepare($statement);
 
-    $reset_hash = (time() . sha1($email));
+    $reset_hash = (sha1(time() . $email));
 
     // Prevent SQL injections.
     $Query->bindParam(1, $reset_hash);
