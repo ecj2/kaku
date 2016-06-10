@@ -4,7 +4,7 @@
 define("KAKU_ACCESS", true);
 
 // Directory definitions.
-define("KAKU_ROOT", dirname(__DIR__, 2));
+define("KAKU_ROOT", dirname(dirname(__DIR__)));
 define("KAKU_CORE", KAKU_ROOT . "/core");
 
 // Database definitions.
