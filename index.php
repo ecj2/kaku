@@ -2,12 +2,6 @@
 
 require "core/includes/common.php";
 
-if (file_exists("core/includes/install.php")) {
-
-  // Install Kaku.
-  require "core/includes/install.php";
-}
-
 $Output->startBuffer();
 
 $Output->loadExtensions();

@@ -50,14 +50,6 @@ else {
   // Start a new buffer for the extension's edit.php file.
   ob_start();
 
-  $extension_directory = "../extensions/" . $_GET["title"];
-
-  if (file_exists("{$extension_directory}/install.php")) {
-
-    // Install the extension.
-    require "{$extension_directory}/install.php";
-  }
-
   require "{$extension_directory}/edit.php";
 
   // The extensions file's contents will be thrown to the buffer.

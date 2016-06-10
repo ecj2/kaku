@@ -47,4 +47,10 @@ if (isset($_GET["path"])) {
 // Replace the protocol with the appropriate value.
 $Hook->addAction("protocol", $Utility->getProtocol());
 
+if (file_exists("core/includes/install.php")) {
+
+  // Install Kaku.
+  require "core/includes/install.php";
+}
+
 ?>
