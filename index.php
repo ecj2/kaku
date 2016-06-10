@@ -108,6 +108,15 @@ else if (in_array("error", $_GET)) {
 }
 else {
 
+  if (!empty($_GET["path"])) {
+
+    // Redirect stray paths to 404 page.
+
+    $_GET["code"] = 404;
+
+    require "core/includes/error.php";
+  }
+
   // Load the template file for viewing the latest posts.
   $Template->getFileContents("latest", true);
 
