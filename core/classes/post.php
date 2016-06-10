@@ -224,6 +224,104 @@ class Post {
   public function getKeywords() {
 
     $this->getData("keywords");
+
+    $keywords = $GLOBALS["Hook"]->doAction("post_keywords");
+
+    $prefix = "#";
+
+    $statement = "
+
+      SELECT body
+      FROM " . DB_PREF . "tags
+      WHERE title = 'keyword_prefix'
+      ORDER BY id DESC
+      LIMIT 1
+    ";
+
+    $Query = $GLOBALS["Database"]->getHandle()->query($statement);
+
+    if (!$Query) {
+
+      // Something went wrong.
+      $GLOBALS["Utility"]->displayError("failed to select keyword prefix tag");
+    }
+
+    if ($Query->rowCount() > 0) {
+
+      // Get the keyword prefix.
+      $prefix = $Query->fetch(PDO::FETCH_OBJ)->body;
+    }
+
+    if (is_array($keywords)) {
+
+      if (!empty($keywords)) {
+
+        // Join array elements with a string.
+        $keywords = implode(";", $keywords);
+
+        foreach (explode(";", $keywords) as $index => $value) {
+
+          // Begin unordered list.
+          $keywords_markup = "<ul>";
+
+          foreach (explode(",", $value) as $item) {
+
+            // Remove whitespace from beginning and end of keyword.
+            $item = trim($item);
+
+            // Encode spaces.
+            $keyword_url = str_replace(" ", "+", $item);
+
+            // Create a list item for each keyword.
+            $keywords_markup .= "
+
+              <li>
+                <a href=\"{%blog_url%}/page/search?keywords={$keyword_url}\">{$prefix}{$item}</a>
+              </li>
+            ";
+          }
+
+          // End unordered list.
+          $keywords_markup .= "</ul>";
+
+          $GLOBALS["Hook"]->removeAction("post_keywords_{$index}");
+
+          $GLOBALS["Hook"]->addAction("post_keywords_{$index}", $keywords_markup);
+        }
+      }
+    }
+    else {
+
+      $keywords_markup = "";
+
+      if (!empty($keywords)) {
+
+        $keywords_markup .= "<ul>";
+
+        foreach (explode(",", $keywords) as $keyword) {
+
+          // Remove whitespace from beginning and end of keyword.
+          $keyword = trim($keyword);
+
+          // Encode spaces.
+          $keyword_url = str_replace(" ", "+", $keyword);
+
+          // Create a list item for each keyword.
+          $keywords_markup .= "
+
+            <li>
+              <a href=\"{%blog_url%}/page/search?keywords={$keyword_url}\">{$prefix}{$keyword}</a>
+            </li>
+          ";
+        }
+
+        $keywords_markup .= "</ul>";
+      }
+
+      $GLOBALS["Hook"]->removeAction("post_keywords");
+
+      $GLOBALS["Hook"]->addAction("post_keywords", $keywords_markup);
+    }
   }
 
   public function getDescription() {
