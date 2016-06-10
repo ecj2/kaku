@@ -57,9 +57,6 @@ switch ($_GET["code"]) {
       // Replace nested tags in 404 page URL.
       $error_destination = $GLOBALS["Utility"]->replaceNestedTags($error_destination);
 
-      // Replace the protocol in the 404 URL.
-      $error_destination = str_replace("{%protocol%}", $Utility->getProtocol(), $error_destination);
-
       // Redirect to the 404 page.
       header("Location: {$error_destination}");
 

@@ -143,7 +143,8 @@ class Utility {
       $content = str_replace($search, $replace, $content);
     }
 
-    return $content;
+    // Replace the protocol tag, assuming it is present.
+    return str_replace("{%protocol%}", $this->getProtocol(), $content);
   }
 }
 
