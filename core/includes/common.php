@@ -44,4 +44,7 @@ if (isset($_GET["path"])) {
   $_GET += $path;
 }
 
+// Replace the protocol with the appropriate value.
+$Hook->addAction("protocol", $Utility->getProtocol());
+
 ?>

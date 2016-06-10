@@ -9,6 +9,9 @@ if (!defined("KAKU_ACCESS")) {
 // Get the absolute URL of where Kaku is installed.
 $root_address = $Utility->getRootAddress();
 
+// Replace the protocol in the root address.
+$root_address = str_replace("{%protocol%}", $Utility->getProtocol(), $root_address);
+
 if (!isset($_GET["code"])) {
 
   // No error code was given. Redirect to index.
@@ -53,6 +56,9 @@ switch ($_GET["code"]) {
 
       // Replace nested tags in 404 page URL.
       $error_destination = $GLOBALS["Utility"]->replaceNestedTags($error_destination);
+
+      // Replace the protocol in the 404 URL.
+      $error_destination = str_replace("{%protocol%}", $Utility->getProtocol(), $error_destination);
 
       // Redirect to the 404 page.
       header("Location: {$error_destination}");

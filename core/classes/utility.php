@@ -20,27 +20,30 @@ class Utility {
     exit("Error: {$message}.");
   }
 
-  public static function getRootAddress() {
-
-    $host = $_SERVER["HTTP_HOST"];
-
-    $protocol = "";
+  public function getProtocol() {
 
     if (!empty($_SERVER["HTTP_X_FORWARDED_PROTO"])) {
 
-      $protocol = $_SERVER["HTTP_X_FORWARDED_PROTO"] . "://";
+      return $_SERVER["HTTP_X_FORWARDED_PROTO"] . "://";
     }
     else {
 
       if (!empty($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] !== "off") {
 
-        $protocol = "https://";
+        return "https://";
       }
       else {
 
-        $protocol = "http://";
+        return "http://";
       }
     }
+  }
+
+  public function getRootAddress() {
+
+    $host = $_SERVER["HTTP_HOST"];
+
+    $protocol = $this->getProtocol();
 
     $sub_directory = substr(
 

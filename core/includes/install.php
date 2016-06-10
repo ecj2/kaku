@@ -238,6 +238,12 @@ if (!$Database->checkTableExistence("tags")) {
     $errors[] = "failed to insert comment_disabled_text into " . DB_PREF . "tags";
   }
 
+  // Get the current full URL.
+  $blog_url = $GLOBALS["Utility"]->getRootAddress();
+
+  // Replace the protocol with the protocol tag.
+  $blog_url = str_replace(["http://", "https://"], "{%protocol%}", $blog_url);
+
   // Insert blog_url into the tags table.
   if (!$Database->performQuery(
 
@@ -251,7 +257,7 @@ if (!$Database->checkTableExistence("tags")) {
 
       'blog_url',
 
-      '" . $GLOBALS["Utility"]->getRootAddress() . "'
+      '{$blog_url}'
     )"
   )) {
 
