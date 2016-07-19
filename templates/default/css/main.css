@@ -88,6 +88,16 @@ article {
   border-bottom: 1px solid #eee;
 }
 
+article code {
+
+  background: #eee;
+  display: block;
+  padding: 10px;
+  line-height: 24px;
+  font-family: "Source Code Pro", monospace;
+  font-size: 15px;
+}
+
 article img, article iframe, article video {
 
   max-width: 100%;
