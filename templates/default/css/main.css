@@ -98,6 +98,24 @@ article code {
   font-size: 15px;
 }
 
+article ul {
+
+  list-style-type: none;
+  margin: 32px 0 0 0;
+  padding: 0;
+  text-align: left;
+}
+
+article ul li {
+
+  display: inline-block;
+}
+
+article li a {
+
+  color: #555;
+}
+
 article img, article iframe, article video {
 
   max-width: 100%;
