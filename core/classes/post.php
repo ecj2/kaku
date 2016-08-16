@@ -262,7 +262,7 @@ class Post {
         foreach (explode(";", $keywords) as $index => $value) {
 
           // Begin unordered list.
-          $keywords_markup = "<ul>";
+          $keywords_markup = "<ul class=\"keywords\">";
 
           foreach (explode(",", $value) as $item) {
 
@@ -296,7 +296,7 @@ class Post {
 
       if (!empty($keywords)) {
 
-        $keywords_markup .= "<ul>";
+        $keywords_markup .= "<ul class=\"keywords\">";
 
         foreach (explode(",", $keywords) as $keyword) {
 

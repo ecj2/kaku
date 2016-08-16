@@ -100,20 +100,27 @@ article code {
 
 article ul {
 
-  list-style-type: none;
-  margin: 32px 0 0 0;
-  padding: 0;
-  text-align: left;
+  list-style-type: square;
+  margin: 0;
+  padding: 0 0 0 16px;
 }
 
-article ul li {
+article ul.keywords {
 
-  display: inline-block;
+  list-style-type: none !important;
+  margin: 32px 0 0 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
 }
 
-article li a {
+article ul.keywords li {
 
-  color: #555;
+  display: inline-block !important;
+}
+
+article ul.keywords li a {
+
+  color: #555 !important;
 }
 
 article img, article iframe, article video {
