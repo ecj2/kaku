@@ -33,36 +33,6 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
     $statement = "
 
-      SELECT title
-      FROM " . DB_PREF . "tags
-      WHERE id = ?
-      ORDER BY id DESC
-      LIMIT 1
-    ";
-
-    $Query = $Database->getHandle()->prepare($statement);
-
-    // Prevent SQL injections.
-    $Query->bindParam(1, $_GET["id"]);
-
-    $Query->execute();
-
-    if (!$Query) {
-
-      // Something went wrong.
-      $Utility->displayError("failed to select tag title");
-    }
-
-    $tag_title = "";
-
-    if ($Query->rowCount() > 0) {
-
-      // Get the tag title.
-      $tag_title = $Query->fetch(PDO::FETCH_OBJ)->title;
-    }
-
-    $statement = "
-
       DELETE FROM " . DB_PREF . "tags
       WHERE id = ?
     ";
@@ -74,18 +44,9 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
     $Query->execute();
 
-    $message = "";
-
     if (!$Query) {
 
-      if ($tag_title == "") {
-
-        $message = "failed to delete tag";
-      }
-      else {
-
-        $message = "failed to delete \"{$tag_title}\" tag";
-      }
+      $message = "failed to delete tag";
 
       // Failed to delete tag.
       header("Location: ./tags.php?code=0&message={$message}");
@@ -93,14 +54,7 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
       exit();
     }
 
-    if ($tag_title == "") {
-
-      $message = "tag deleted successfully";
-    }
-    else {
-
-      $message = "\"{$tag_title}\" tag deleted successfully";
-    }
+    $message = "tag deleted successfully";
 
     // Tag successfully deleted.
     header("Location: ./tags.php?code=1&message={$message}");

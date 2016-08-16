@@ -33,36 +33,6 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
     $statement = "
 
-      SELECT title
-      FROM " . DB_PREF . "pages
-      WHERE id = ?
-      ORDER BY id DESC
-      LIMIT 1
-    ";
-
-    $Query = $Database->getHandle()->prepare($statement);
-
-    // Prevent SQL injections.
-    $Query->bindParam(1, $_GET["id"]);
-
-    $Query->execute();
-
-    if (!$Query) {
-
-      // Something went wrong.
-      $Utility->displayError("failed to select page title");
-    }
-
-    $page_title = "";
-
-    if ($Query->rowCount() > 0) {
-
-      // Get the page title.
-      $page_title = $Query->fetch(PDO::FETCH_OBJ)->title;
-    }
-
-    $statement = "
-
       DELETE FROM " . DB_PREF . "pages
       WHERE id = ?
     ";
@@ -74,18 +44,9 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
     $Query->execute();
 
-    $message = "";
-
     if (!$Query) {
 
-      if ($page_title == "") {
-
-        $message = "failed to delete page";
-      }
-      else {
-
-        $message = "failed to delete \"{$page_title}\" page";
-      }
+      $message = "failed to delete page";
 
       // Failed to delete page.
       header("Location: ./pages.php?code=0&message={$message}");
@@ -93,14 +54,7 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
       exit();
     }
 
-    if ($page_title == "") {
-
-      $message = "page deleted successfully";
-    }
-    else {
-
-      $message = "\"{$page_title}\" page deleted successfully";
-    }
+    $message = "page deleted successfully";
 
     // Page successfully deleted.
     header("Location: ./pages.php?code=1&message={$message}");

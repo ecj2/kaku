@@ -33,36 +33,6 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
     $statement = "
 
-      SELECT username
-      FROM " . DB_PREF . "users
-      WHERE id = ?
-      ORDER BY id DESC
-      LIMIT 1
-    ";
-
-    $Query = $Database->getHandle()->prepare($statement);
-
-    // Prevent SQL injections.
-    $Query->bindParam(1, $_GET["id"]);
-
-    $Query->execute();
-
-    if (!$Query) {
-
-      // Something went wrong.
-      $Utility->displayError("failed to select user name");
-    }
-
-    $user_name = "";
-
-    if ($Query->rowCount() > 0) {
-
-      // Get the user name.
-      $user_name = $Query->fetch(PDO::FETCH_OBJ)->username;
-    }
-
-    $statement = "
-
       DELETE FROM " . DB_PREF . "users
       WHERE id = ?
     ";
@@ -74,18 +44,9 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
     $Query->execute();
 
-    $message = "";
-
     if (!$Query) {
 
-      if ($user_name == "") {
-
-        $message = "failed to delete user";
-      }
-      else {
-
-        $message = "failed to delete \"{$user_name}\" user";
-      }
+      $message = "failed to delete user";
 
       // Failed to delete user.
       header("Location: ./users.php?code=0&message={$message}");
@@ -93,14 +54,7 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
       exit();
     }
 
-    if ($user_name == "") {
-
-      $message = "user deleted successfully";
-    }
-    else {
-
-      $message = "\"{$user_name}\" user deleted successfully";
-    }
+    $message = "user deleted successfully";
 
     // User successfully deleted.
     header("Location: ./users.php?code=1&message={$message}");

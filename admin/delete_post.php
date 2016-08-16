@@ -33,36 +33,6 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
     $statement = "
 
-      SELECT title
-      FROM " . DB_PREF . "posts
-      WHERE id = ?
-      ORDER BY id DESC
-      LIMIT 1
-    ";
-
-    $Query = $Database->getHandle()->prepare($statement);
-
-    // Prevent SQL injections.
-    $Query->bindParam(1, $_GET["id"]);
-
-    $Query->execute();
-
-    if (!$Query) {
-
-      // Something went wrong.
-      $Utility->displayError("failed to select post title");
-    }
-
-    $post_title = "";
-
-    if ($Query->rowCount() > 0) {
-
-      // Get the post title.
-      $post_title = $Query->fetch(PDO::FETCH_OBJ)->title;
-    }
-
-    $statement = "
-
       DELETE FROM " . DB_PREF . "posts
       WHERE id = ?
     ";
@@ -74,18 +44,9 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
     $Query->execute();
 
-    $message = "";
-
     if (!$Query) {
 
-      if ($post_title == "") {
-
-        $message = "failed to delete post";
-      }
-      else {
-
-        $message = "failed to delete \"{$post_title}\" post";
-      }
+      $message = "failed to delete post";
 
       // Failed to delete post.
       header("Location: ./posts.php?code=0&message={$message}");
@@ -93,14 +54,7 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
       exit();
     }
 
-    if ($post_title == "") {
-
-      $message = "post deleted successfully";
-    }
-    else {
-
-      $message = "\"{$post_title}\" post deleted successfully";
-    }
+    $message = "post deleted successfully";
 
     // Post successfully deleted.
     header("Location: ./posts.php?code=1&message={$message}");
