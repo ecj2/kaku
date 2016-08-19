@@ -280,4 +280,25 @@ article figure figcaption {
     width: 90%;
     margin: auto;
   }
+
+  header.top h1 {
+
+    text-align: center;
+    width: 100%;
+  }
+
+  header.top nav {
+
+    float: none;
+    margin: 32px 0 0 0;
+    text-align: center;
+    width: 100%;
+    border-top: 1px solid #eee;
+    padding-top: 32px;
+  }
+
+  code {
+
+    overflow: auto;
+  }
 }
