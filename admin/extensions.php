@@ -34,7 +34,7 @@ if (count($directories) > 0) {
 
     Extensions are displayed below.<br><br>
 
-    <table class=\"extensions\">
+    <table class=\"extensions two-column\">
       <tr>
         <th>Title</th>
         <th>Action</th>
