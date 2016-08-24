@@ -50,7 +50,7 @@ else {
   // Start a new buffer for the extension's edit.php file.
   ob_start();
 
-  require "{$extension_directory}/edit.php";
+  require "../extensions/" . $_GET["title"] . "/edit.php";
 
   // The extensions file's contents will be thrown to the buffer.
   $body .= ob_get_contents();
