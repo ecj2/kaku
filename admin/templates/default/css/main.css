@@ -11,7 +11,7 @@ body {
 
 #bar {
 
-  background: #474747;
+  background: #3ca9e7;
   height: 55px;
 }
 
@@ -105,7 +105,7 @@ footer {
 
 footer a {
 
-  color: blue;
+  color: #3ca9e7;
   text-decoration: none;
 }
 
@@ -116,8 +116,8 @@ footer a:hover {
 
 a {
 
-  color: blue;
-  text-decoration: underline;
+  color: #3ca9e7;
+  text-decoration: none;
 }
 
 a:hover {
@@ -150,7 +150,7 @@ form input[type="text"], form input[type="password"], form input[type="email"] {
   font-size: 18px;
   color: #333;
   line-height: 35px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   outline: 0;
   padding: 5px;
   box-sizing: border-box;
@@ -162,7 +162,7 @@ input[type="submit"] {
 
   background: #fff;
   outline: 0;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   padding: 5px;
   font-family: "Open Sans", sans-serif;
   font-size: 18px;
@@ -187,7 +187,7 @@ form textarea {
   font-size: 18px;
   color: #333;
   line-height: 35px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   outline: 0;
   padding: 5px;
   box-sizing: border-box;
@@ -218,6 +218,7 @@ form #body {
 table {
 
   width: 100%;
+  background: #fff;
 }
 
 td {
@@ -263,7 +264,7 @@ a.button {
   font-size: 18px;
   color: #333;
   line-height: 35px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   outline: 0;
   padding: 5px;
   width: 45%;
@@ -285,7 +286,7 @@ a.button_return {
   font-size: 18px;
   color: #333;
   line-height: 35px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   outline: 0;
   padding: 5px;
   width: 100%;
@@ -314,7 +315,7 @@ input[type="checkbox"] {
 
 table.two-column {
 
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   padding: 20px;
 }
 
