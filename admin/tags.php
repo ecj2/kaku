@@ -104,7 +104,7 @@ $statement = "
 
   SELECT id, title
   FROM " . DB_PREF . "tags
-  ORDER BY id DESC
+  ORDER BY title ASC
 ";
 
 $Query = $Database->getHandle()->query($statement);
