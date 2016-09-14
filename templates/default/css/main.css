@@ -301,4 +301,18 @@ article figure figcaption {
 
     overflow: auto;
   }
+
+  footer .previous_page {
+
+    text-align: left;
+    display: block;
+    margin: auto;
+  }
+
+  footer .next_page {
+
+    text-align: right;
+    display: block;
+    margin: auto;
+  }
 }
