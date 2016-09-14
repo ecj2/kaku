@@ -66,11 +66,11 @@ class Template {
 
     if ($view == 0) {
 
-      $template_directory = KAKU_ROOT . "/templates/{$template_name}";
+      $template_directory = "./templates/{$template_name}";
     }
     else if ($view == 1) {
 
-      $template_directory = KAKU_ROOT . "/admin/templates/{$template_name}";
+      $template_directory = "./templates/{$template_name}";
     }
 
     // Get files from the template directory.

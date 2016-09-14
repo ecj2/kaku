@@ -148,12 +148,12 @@ class Output {
   public function loadExtensions() {
 
     // Get a list of the extension directories.
-    $directories = glob(KAKU_ROOT . "/extensions/*", GLOB_ONLYDIR);
+    $directories = glob("./extensions/*", GLOB_ONLYDIR);
 
     foreach ($directories as $directory) {
 
       // Get the directory name without the path.
-      $directory_name = str_replace(KAKU_ROOT . "/extensions/", "", $directory);
+      $directory_name = str_replace("./extensions/", "", $directory);
 
       $extension_full_path = "{$directory}/{$directory_name}.php";
 
