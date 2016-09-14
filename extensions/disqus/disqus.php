@@ -59,46 +59,70 @@ class DisqusForum extends Extension {
 
     $disqus_markup_file = dirname(__FILE__) . "/content/markup.php";
 
-    if (file_exists($disqus_markup_file)) {
+    $statement = "
 
-      $statement = "
+      SELECT forum_name
+      FROM " . DB_PREF . "extension_disqus
+      WHERE 1 = 1
+      LIMIT 1
+    ";
 
-        SELECT forum_name
-        FROM " . DB_PREF . "extension_disqus
-        WHERE 1 = 1
-        LIMIT 1
-      ";
+    $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-      $Query = $GLOBALS["Database"]->getHandle()->query($statement);
+    if (!$Query || $Query->rowCount() == 0) {
 
-      if (!$Query || $Query->rowCount() == 0) {
-
-        // Query failed or returned zero rows.
-        return "Comments have not been configured.";
-      }
-      else {
-
-        // Fetch the result as an object.
-        $Result = $Query->fetch(PDO::FETCH_OBJ);
-
-        // Get the forum name.
-        $forum_name = $Result->forum_name;
-
-        if ($forum_name == "") {
-
-          return "Comments have not been configured.";
-        }
-
-        require $disqus_markup_file;
-
-        // Display the Disqus forum.
-        return str_replace("{%disqus_forum_name%}", $forum_name, $markup);
-      }
+      // Query failed or returned zero rows.
+      return "Comments have not been configured.";
     }
     else {
 
-      // Disqus markup file does not exist.
-      return "Failed to load Disqus forum.";
+      // Fetch the result as an object.
+      $Result = $Query->fetch(PDO::FETCH_OBJ);
+
+      // Get the forum name.
+      $forum_name = $Result->forum_name;
+
+      if ($forum_name == "") {
+
+        return "Comments have not been configured.";
+      }
+
+      $markup = "
+
+        <div id=\"disqus_thread\"></div>
+
+        <script>
+
+          var disqus_shortname = \"{%disqus_forum_name%}\";
+
+          var disqus_config = function () {
+
+            this.page.identifier = \"{$identifier}\";
+          };
+
+          (
+
+            function() {
+
+              var d = document, s = d.createElement(\"script\");
+
+              s.src = \"//\" + disqus_shortname + \".disqus.com/embed.js\";
+
+              s.setAttribute(\"data-timestamp\", +new Date());
+              (d.head || d.body).appendChild(s);
+            }
+          )();
+        </script>
+
+        <noscript>
+
+          Please enable JavaScript to view the
+          <a href=\"https://disqus.com/?ref_noscript\" rel=\"nofollow\">comments powered by Disqus.</a>
+        </noscript>
+      ";
+
+      // Display the Disqus forum.
+      return str_replace("{%disqus_forum_name%}", $forum_name, $markup);
     }
   }
 }
