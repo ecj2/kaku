@@ -1,10 +1,7 @@
 <?php
 
-if (!defined("KAKU_ACCESS")) {
-
-  // Deny direct access to this file.
-  exit();
-}
+// Deny direct access to this file.
+if (!defined("KAKU_ACCESS")) exit();
 
 class Utility {
 
