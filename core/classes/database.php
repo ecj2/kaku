@@ -10,27 +10,27 @@ class Database {
 
   private $Handle;
 
+  public function __construct() {
+
+    try {
+
+      // Connect using MySQL.
+      $data_source_name = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME;
+
+      // Attempt to connect.
+      $this->Handle = new PDO($data_source_name, DB_USER, DB_PASS);
+    }
+    catch (PDOException $Exception) {
+
+      // Failed to connect.
+      $GLOBALS["Utility"]->displayError("failed to connect to the database");
+    }
+  }
+
   public function __destruct() {
 
     // Disconnect from the database.
     $this->Handle = null;
-  }
-
-  public function connect() {
-
-    try {
-
-      // MySQL will be used for the connection.
-      $data_source_name = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME;
-
-      // Attempt to connect to the database.
-      $this->Handle = new PDO($data_source_name, DB_USER, DB_PASS);
-    }
-    catch (PDOException $exception) {
-
-      // Connection attempt failed.
-      $GLOBALS["Utility"]->displayError("failed to connect to the database");
-    }
   }
 
   public function getHandle() {

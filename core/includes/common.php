@@ -18,9 +18,6 @@ foreach (glob(dirname(dirname(__DIR__)) . "/core/classes/*.php") as $class) {
   $$class_name = new $class_name;
 }
 
-// Connect to the database.
-$Database->connect();
-
 if (isset($_GET["path"])) {
 
   // Break the path components up into an array.
