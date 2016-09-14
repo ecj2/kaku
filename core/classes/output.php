@@ -35,6 +35,8 @@ class Output {
 
   public function replaceTags() {
 
+    if (!array_key_exists("Database", $GLOBALS)) return;
+
     // Select the recursion depth tag.
     $statement = "
 
