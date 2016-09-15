@@ -203,14 +203,14 @@ form #body {
 
 .success {
 
-  color: green;
+  color: #3ca9e7;
   display: block;
   margin-bottom: 16px;
 }
 
 .failure {
 
-  color: red;
+  color: #e73c3c;
   display: block;
   margin-bottom: 16px;
 }
