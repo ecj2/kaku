@@ -209,7 +209,7 @@ else {
       <input type=\"submit\" value=\"Reset Password\">
     </form>
 
-    Click <a href=\"{%blog_url%}/admin/index.php\">here</a> to return to the login page.
+    <a href=\"{%blog_url%}/admin/index.php\">Return to login</a>
   ";
 }
 
