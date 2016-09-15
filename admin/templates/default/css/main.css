@@ -41,7 +41,7 @@ header.top h1 {
   color: white;
   font-weight: normal;
   margin: 0;
-  width: 14%;
+  width: 39%;
 }
 
 header.top h1 a {
@@ -63,7 +63,7 @@ header.top nav {
   float: right;
   margin: -34px 0 0 0;
   text-align: right;
-  width: 85%;
+  width: 60%;
   position: relative;
   top: -42px;
 }
