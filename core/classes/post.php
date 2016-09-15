@@ -258,6 +258,12 @@ class Post {
 
         foreach (explode(";", $keywords) as $index => $value) {
 
+          if (empty($value)) {
+
+            // This post does not have any keywords.
+            continue;
+          }
+
           // Begin unordered list.
           $keywords_markup = "<ul class=\"keywords\">";
 
