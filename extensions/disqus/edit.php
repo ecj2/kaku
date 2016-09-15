@@ -3,32 +3,32 @@
 // Deny direct access to this file.
 if (!defined("KAKU_ACCESS")) exit();
 
-if (isset($_POST["forum_name"])) {
+if (isset($_POST["shortname"])) {
 
   $statement = "
 
     UPDATE " . DB_PREF . "extension_disqus
-    SET forum_name = ?
+    SET shortname = ?
     WHERE 1 = 1
   ";
 
   $Query = $Database->getHandle()->prepare($statement);
 
   // Prevent SQL injections.
-  $Query->bindParam(1, $_POST["forum_name"]);
+  $Query->bindParam(1, $_POST["shortname"]);
 
   $Query->execute();
 
   if (!$Query) {
 
-    // Failed to update forum_name.
+    // Failed to update shortname.
     header("Location: ./edit_extension.php?title=" . $_GET["title"] . "&result=failure");
 
     exit();
   }
   else {
 
-    // Successfully updated forum_name.
+    // Successfully updated shortname.
     header("Location: ./edit_extension.php?title=" . $_GET["title"] . "&result=success");
 
     exit();
@@ -40,11 +40,11 @@ else {
 
     if ($_GET["result"] == "failure") {
 
-      echo "Failed to update forum name.";
+      echo "Failed to update Disqus shortname.";
     }
     else {
 
-      echo "Forum name has been updated.";
+      echo "Disqus shortname has been updated.";
     }
 
     echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
@@ -53,7 +53,7 @@ else {
 
     $statement = "
 
-      SELECT forum_name
+      SELECT shortname
       FROM " . DB_PREF . "extension_disqus
       WHERE 1 = 1
       LIMIT 1
@@ -65,7 +65,7 @@ else {
 
       // Query failed or is empty.
 
-      echo "Error: failed to get forum name!";
+      echo "Error: failed to get Disqus shortname!";
 
       echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
     }
@@ -74,22 +74,22 @@ else {
       // Fetch the result as an object.
       $result = $Query->fetch(PDO::FETCH_OBJ);
 
-      // Get forum name.
-      $forum_name = $result->forum_name;
+      // Get shortname.
+      $shortname = $result->shortname;
 
       // Preserve HTML entities.
-      $forum_name = htmlentities($forum_name);
+      $shortname = htmlentities($shortname);
 
       // Encode { and } to prevent them from being replaced by the output buffer.
-      $forum_name = str_replace(["{", "}"], ["&#123;", "&#125;"], $forum_name);
+      $shortname = str_replace(["{", "}"], ["&#123;", "&#125;"], $shortname);
 
       echo "
 
         Use the form below to edit the extension.<br><br>
 
-        <form method=\"post\" class=\"edit_forum_name\">
-          <label for=\"forum_name\">Forum Name</label>
-          <input type=\"text\" id=\"forum_name\" name=\"forum_name\" value=\"{$forum_name}\">
+        <form method=\"post\" class=\"edit_shortname\">
+          <label for=\"shortname\">Disqus Shortname</label>
+          <input type=\"text\" id=\"shortname\" name=\"shortname\" value=\"{$shortname}\">
           <input type=\"submit\" value=\"Save\">
         </form>
       ";

@@ -10,7 +10,7 @@ if (!$Database->checkTableExistence("extension_disqus")) {
 
     "CREATE TABLE " . DB_PREF . "extension_disqus (
 
-      forum_name TEXT NOT NULL
+      shortname TEXT NOT NULL
     )"
   )) {
 
@@ -23,7 +23,7 @@ if (!$Database->checkTableExistence("extension_disqus")) {
 
     "INSERT INTO " . DB_PREF . "extension_disqus (
 
-      forum_name
+      shortname
     )
     VALUES (
 

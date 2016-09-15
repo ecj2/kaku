@@ -61,7 +61,7 @@ class DisqusForum extends Extension {
 
     $statement = "
 
-      SELECT forum_name
+      SELECT shortname
       FROM " . DB_PREF . "extension_disqus
       WHERE 1 = 1
       LIMIT 1
@@ -80,9 +80,9 @@ class DisqusForum extends Extension {
       $Result = $Query->fetch(PDO::FETCH_OBJ);
 
       // Get the forum name.
-      $forum_name = $Result->forum_name;
+      $shortname = $Result->shortname;
 
-      if ($forum_name == "") {
+      if ($shortname == "") {
 
         return "Comments have not been configured.";
       }
@@ -93,7 +93,7 @@ class DisqusForum extends Extension {
 
         <script>
 
-          var disqus_shortname = \"{%disqus_forum_name%}\";
+          var disqus_shortname = \"{%disqus_shortname%}\";
 
           var disqus_config = function () {
 
@@ -122,7 +122,7 @@ class DisqusForum extends Extension {
       ";
 
       // Display the Disqus forum.
-      return str_replace("{%disqus_forum_name%}", $forum_name, $markup);
+      return str_replace("{%disqus_shortname%}", $shortname, $markup);
     }
   }
 }
