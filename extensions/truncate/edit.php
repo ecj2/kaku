@@ -48,7 +48,7 @@ else {
       echo "Lure text has been updated.";
     }
 
-    echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
+    echo "<a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>";
   }
   else {
 
@@ -68,7 +68,7 @@ else {
 
       echo "Error: failed to get lure text!";
 
-      echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
+      echo "<a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>";
     }
     else {
 

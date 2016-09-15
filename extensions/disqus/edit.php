@@ -47,7 +47,7 @@ else {
       echo "Disqus shortname has been updated.";
     }
 
-    echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
+    echo "<a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>";
   }
   else {
 
@@ -67,7 +67,7 @@ else {
 
       echo "Error: failed to get Disqus shortname!";
 
-      echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
+      echo "<a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>";
     }
     else {
 
