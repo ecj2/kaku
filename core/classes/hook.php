@@ -7,99 +7,81 @@ class Hook {
 
   private $actions;
   private $filters;
-  private $filter_objects;
-  private $filter_methods;
-  private $action_contents;
 
   public function __construct() {
 
     $this->actions = [];
     $this->filters = [];
-    $this->filter_objects = [];
-    $this->filter_methods = [];
-    $this->action_contents = [];
   }
 
-  public function doAction($action) {
+  public function doAction($action_title) {
 
-    if (in_array($action, $this->actions)) {
+    if (isset($this->actions[$action_title])) {
 
-      if (array_key_exists($action, $this->filters)) {
+      if (isset($this->filters[$action_title])) {
 
-        // Get the contents of the original action.
-        $callback = $this->action_contents[$action];
+        // Get the original contents of the action.
+        $action_contents = $this->actions[$action_title];
 
-        for ($i = 0; $i < count($this->filters[$action]); ++$i) {
+        for ($i = 0; $i < count($this->filters[$action_title]); ++$i) {
 
-          // Pass the callback to filter methods to be manipulated.
-          $callback = call_user_func(
+          // Pass the action contents to filter methods to be manipulated.
+          $action_contents = call_user_func(
 
             [
 
-              $this->filter_objects[$action][$i],
+              $this->filters[$action_title][$i]["object"],
 
-              $this->filter_methods[$action][$i]
+              $this->filters[$action_title][$i]["method"]
             ],
 
-            $callback
+            $action_contents
           );
         }
 
         // Return the modified contents of the action.
-        return $callback;
+        return $action_contents;
       }
       else {
 
         // Return the original contents of the action.
-        return $this->action_contents[$action];
+        return $this->actions[$action_title];
       }
     }
   }
 
-  public function addAction($action, $contents) {
+  public function addAction($action_title, $action_contents) {
 
-    if (!in_array($action, $this->actions)) {
+    if (!isset($this->actions[$action_title])) {
 
-      $this->actions[$action] = $action;
-
-      $this->action_contents[$action] = $contents;
+      // Add the action only if it does not already exist.
+      $this->actions[$action_title] = $action_contents;
     }
   }
 
-  public function addFilter($action, $object, $method) {
+  public function addFilter($action_title, $filter_object, $filter_method) {
 
-    if (!isset($this->filters[$action])) {
+    $this->filters[$action_title][] = [
 
-      $this->filters[$action] = [];
-    }
+      "object" => $filter_object,
 
-    if (!isset($this->filter_objects[$action])) {
-
-      $this->filter_objects[$action] = [];
-    }
-
-    if (!isset($this->filter_objects[$action])) {
-
-      $this->filter_objects[$action] = [];
-    }
-
-    if (!isset($this->filter_methods[$action])) {
-
-      $this->filter_methods[$action] = [];
-    }
-
-    $this->filters[$action][] = $action;
-
-    $this->filter_objects[$action][] = $object;
-
-    $this->filter_methods[$action][] = $method;
+      "method" => $filter_method
+    ];
   }
 
-  public function removeAction($action) {
+  public function removeAction($action_title) {
 
-    if (in_array($action, $this->actions)) {
+    if (isset($this->actions[$action_title])) {
 
-      unset($this->actions[$action]);
+      unset($this->actions[$action_title]);
+    }
+  }
+
+  public function removeFilter($action_title) {
+
+    if (isset($this->filters[$action_title])) {
+
+      unset($this->filters[$action_title]);
     }
   }
 }
