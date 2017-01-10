@@ -5,6 +5,9 @@ if (!defined("KAKU_ACCESS")) exit();
 
 class Theme {
 
+  // @TODO: Add code for retrieving back-end themes.
+  // @TODO: Maybe pass a $path variable?
+
   public function getFileContents($file_name) {
 
     // Get the front-end theme name.
@@ -33,7 +36,7 @@ class Theme {
     if (!in_array($file_name, $theme_files_without_extension)) {
 
       // The theme file does not exist.
-      $GLOBALS["Utility"]->displayError("{$theme_name}/{$file_name} does not exist");
+      $GLOBALS["Utility"]->displayError("theme file '{$theme_name}/{$file_name}' does not exist");
     }
 
     // Get the key of the file to match with the theme_files array.
