@@ -1,6 +1,6 @@
 <?php
 
-require "configuration.php";
+require "config.php";
 
 $classes = glob(KAKU_ROOT . "/core/classes/*.php");
 
