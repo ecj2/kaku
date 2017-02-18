@@ -2,155 +2,57 @@
 
 require "core/includes/common.php";
 
-$Output->startBuffer();
+// Get unique content data.
+$Content->getAuthor();
+$Content->getKeywords();
+$Content->getEpochCreated();
 
-$Output->loadExtensions();
+// Get additional content data.
+$Content->getColumn("id");
+$Content->getColumn("url");
+$Content->getColumn("body");
+$Content->getColumn("type");
+$Content->getColumn("draft");
+$Content->getColumn("title");
+$Content->getColumn("keywords");
+$Content->getColumn("author_id");
+$Content->getColumn("description");
+$Content->getColumn("epoch_edited");
+$Content->getColumn("epoch_created");
+$Content->getColumn("allow_comments");
+$Content->getColumn("show_on_search");
 
-if (isset($_GET["post"])) {
+if (!empty($_GET["path"])) {
 
-  // Load the template file for viewing posts.
-  $Template->getFileContents("post", true);
+  if (substr($_GET["path"], 0, 4) == "page") {
 
-  // Get the post's title.
-  $Post->getTitle();
+    // Populate the pagination range with its associated posts.
+    $Content->getPostBlocks();
 
-  // Get the post's body.
-  $Post->getBody();
+    // View posts by a pagination range.
+    echo $Theme->getFileContents("range", true);
+  }
+  else {
 
-  // Get the post's author.
-  $Post->getAuthor();
+    if ($Hook->doAction("content_type") == 0) {
 
-  // Get the post's keywords.
-  $Post->getKeywords();
+      // Viewing a post.
+      echo $Theme->getFileContents("post", true);
+    }
+    else {
 
-  // Get the post's description.
-  $Post->getDescription();
-
-  // Get the post's absolute epoch.
-  $Post->getAbsoluteEpoch();
-
-  // Get the post's relative epoch.
-  $Post->getRelativeEpoch();
-
-  // Get the post's date time epoch.
-  $Post->getDateTimeEpoch();
-
-  // Get the post's uniform resource locator.
-  $Post->getUniformResourceLocator();
-
-  // Get the source for comments.
-  $Comment->getSource();
-}
-else if (isset($_GET["range"])) {
-
-  // Load the template file for viewing posts by ranges.
-  $Template->getFileContents("range", true);
-
-  // Get the range posts' blocks.
-  $Post->getBlocks();
-
-  // Get the posts' title.
-  $Post->getTitle();
-
-  // Get the posts' body.
-  $Post->getBody();
-
-  // Get the posts' author.
-  $Post->getAuthor();
-
-  // Get the posts' keywords.
-  $Post->getKeywords();
-
-  // Get the posts' description.
-  $Post->getDescription();
-
-  // Get the posts' absolute epoch.
-  $Post->getAbsoluteEpoch();
-
-  // Get the posts' relative epoch.
-  $Post->getRelativeEpoch();
-
-  // Get the posts' date time epoch.
-  $Post->getDateTimeEpoch();
-
-  // Get the posts' uniform resource locator.
-  $Post->getUniformResourceLocator();
-}
-else if (isset($_GET["page"])) {
-
-  // Load the template file for viewing pages.
-  $Template->getFileContents("page", true);
-
-  // Get the page's title.
-  $Page->getTitle();
-
-  // Get the page's body.
-  $Page->getBody();
-
-  // Get the page's description.
-  $Page->getDescription();
-}
-else if (in_array("feed", $_GET)) {
-
-  // View the feed.
-  require "core/includes/feed.php";
-}
-else if (in_array("error", $_GET)) {
-
-  // Redirect error codes.
-  require "core/includes/error.php";
+      // Viewing a page.
+      echo $Theme->getFileContents("page", true);
+    }
+  }
 }
 else {
 
-  if (!empty($_GET["path"])) {
+  // Populate the index with recent posts.
+  $Content->getPostBlocks();
 
-    // Redirect stray paths to 404 page.
-
-    $_GET["code"] = 404;
-
-    require "core/includes/error.php";
-  }
-
-  // Load the template file for viewing the latest posts.
-  $Template->getFileContents("latest", true);
-
-  // Get the latest posts' blocks.
-  $Post->getBlocks();
-
-  // Get the posts' title.
-  $Post->getTitle();
-
-  // Get the posts' body.
-  $Post->getBody();
-
-  // Get the posts' author.
-  $Post->getAuthor();
-
-  // Get the posts' keywords.
-  $Post->getKeywords();
-
-  // Get the posts' description.
-  $Post->getDescription();
-
-  // Get the posts' absolute epoch.
-  $Post->getAbsoluteEpoch();
-
-  // Get the posts' relative epoch.
-  $Post->getRelativeEpoch();
-
-  // Get the posts' date time epoch.
-  $Post->getDateTimeEpoch();
-
-  // Get the posts' uniform resource locator.
-  $Post->getUniformResourceLocator();
+  // Viewing recent posts.
+  echo $Theme->getFileContents("recent", true);
 }
-
-// Clear the head_content and body_content tags if they go unused.
-$Hook->addAction("head_content", "");
-$Hook->addAction("body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
 
 ?>
