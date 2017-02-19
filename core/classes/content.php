@@ -7,8 +7,6 @@ class Content {
 
   // @TODO: Finish epochs (absolute and relative for created and edited).
   // @TODO: Improve documentation.
-  // @TODO: Redirect invalid pagination to 404 page, not index.
-  // @TODO: Should 404 fail, go to index as last resort.
 
   public function getAuthor() {
 
@@ -27,10 +25,11 @@ class Content {
 
       if (strlen($range) < 1 || !is_numeric($range) || $range < 1 || $offset < 1) {
 
-        // Invalid range. Redirect to index.
-        header("Location: " . $GLOBALS["Utility"]->getRootAddress());
+        // No content exists within this range.
 
-        exit();
+        $this->redirectInvalidAddress($column);
+
+        return;
       }
 
       // @TODO: Change to read "content" instead of "posts" maybe?
@@ -57,10 +56,11 @@ class Content {
 
       if ($Query->rowCount() == 0) {
 
-        // No posts exist within this range. Redirect to index.
-        header("Location: " . $GLOBALS["Utility"]->getRootAddress());
+        // No content exists within this range.
 
-        exit();
+        $this->redirectInvalidAddress($column);
+
+        return;
       }
 
       $columns = [];
@@ -121,35 +121,7 @@ class Content {
 
         // This content does not exist.
 
-        static $attempts = 1;
-
-        if ($attempts > 1) {
-
-          // Failed to get the 404 page. Redirect to index instead.
-          header("Location: " . $GLOBALS["Utility"]->getRootAddress());
-
-          exit();
-        }
-
-        ++$attempts;
-
-        // Change the path to the 404 page URL.
-        $_GET["path"] = trim(
-
-          str_replace(
-
-            $GLOBALS["Utility"]->getRootAddress(),
-
-            "",
-
-            $GLOBALS["Utility"]->getTag("404_url")
-          ),
-
-          "/"
-        );
-
-        // Attempt to get the information for the 404 page.
-        $this->getColumn($column);
+        $this->redirectInvalidAddress($column);
 
         return;
       }
@@ -331,14 +303,6 @@ class Content {
 
       $offset = $GLOBALS["Utility"]->getTag("posts_per_page") * ($range - 1);
 
-      if (strlen($range) < 1 || !is_numeric($range) || $range < 1 || $offset < 1) {
-
-        // Invalid range. Redirect to index.
-        header("Location: " . $GLOBALS["Utility"]->getRootAddress());
-
-        exit();
-      }
-
       // Select posts by range.
       $statement = "
 
@@ -357,14 +321,6 @@ class Content {
 
         // Selection failed.
         $GLOBALS["Utility"]->displayError("failed to select posts within this range");
-      }
-
-      if ($Query->rowCount() == 0) {
-
-        // No posts exist within this range. Redirect to index.
-        header("Location: " . $GLOBALS["Utility"]->getRootAddress());
-
-        exit();
       }
     }
     else {
@@ -441,6 +397,39 @@ class Content {
       // Replace action with new epoch value.
       $GLOBALS["Hook"]->addAction("content_epoch_created", date($date_format, $epoch_created));
     }
+  }
+
+  private function redirectInvalidAddress($column) {
+
+    static $attempts = 1;
+
+    if ($attempts > 1) {
+
+      // Failed to get the 404 page. Redirect to index instead.
+      header("Location: " . $GLOBALS["Utility"]->getRootAddress());
+
+      exit();
+    }
+
+    ++$attempts;
+
+    // Change the path to the 404 page URL.
+    $_GET["path"] = trim(
+
+      str_replace(
+
+        $GLOBALS["Utility"]->getRootAddress(),
+
+        "",
+
+        $GLOBALS["Utility"]->getTag("404_url")
+      ),
+
+      "/"
+    );
+
+    // Attempt to get the information for the 404 page.
+    $this->getColumn($column);
   }
 }
 
