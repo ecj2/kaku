@@ -10,7 +10,74 @@ class Content {
 
   public function getAuthor() {
 
-    // @TODO: Finish this.
+    // Create hook action to later get author nicknames.
+    $this->getColumn("author_id");
+
+    $author_id = $GLOBALS["Hook"]->doAction("content_author_id");
+
+    if (is_array($author_id)) {
+
+      for ($i = 0; $i < count($author_id); ++$i) {
+
+        $statement = "
+
+          SELECT nickname
+          FROM " . DB_PREF . "users
+          WHERE id = '" . $author_id[$i] . "'
+          ORDER BY id DESC
+          LIMIT 1
+        ";
+
+        $Query = $GLOBALS["Database"]->getHandle()->query($statement);
+
+        if (!$Query) {
+
+          // Selection failed.
+          $GLOBALS["Utility"]->displayError("failed to select content author nickname");
+        }
+
+        // User nickname defaults to "Unknown" if it doesn't exist.
+        $author_nickname = "Unknown";
+
+        if ($Query->rowCount() > 0) {
+
+          // Get user nickname.
+          $author_nickname = $Query->fetch(PDO::FETCH_OBJ)->nickname;
+        }
+
+        $GLOBALS["Hook"]->addAction("content_author_{$i}", $author_nickname);
+      }
+    }
+    else {
+
+      $statement = "
+
+        SELECT nickname
+        FROM " . DB_PREF . "users
+        WHERE id = '{$author_id}'
+        ORDER BY id DESC
+        LIMIT 1
+      ";
+
+      $Query = $GLOBALS["Database"]->getHandle()->query($statement);
+
+      if (!$Query) {
+
+        // Selection failed.
+        $GLOBALS["Utility"]->displayError("failed to select content author nickname");
+      }
+
+      // User nickname defaults to "Unknown" if it doesn't exist.
+      $author_nickname = "Unknown";
+
+      if ($Query->rowCount() > 0) {
+
+        // Get user nickname.
+        $author_nickname = $Query->fetch(PDO::FETCH_OBJ)->nickname;
+      }
+
+      $GLOBALS["Hook"]->addAction("content_author", $author_nickname);
+    }
   }
 
   public function getColumn($column) {
