@@ -5,8 +5,52 @@ if (!defined("KAKU_ACCESS")) exit();
 
 class Content {
 
-  // @TODO: Finish epochs (absolute and relative for created and edited).
   // @TODO: Improve documentation.
+
+  public function getEpochs() {
+
+    $this->getColumn("epoch_created");
+
+    $date_format = $GLOBALS["Utility"]->getTag("date_format");
+
+    $epoch_created = $GLOBALS["Hook"]->doAction("content_epoch_created");
+
+    if (is_array($epoch_created)) {
+
+      for ($i = 0; $i < count($epoch_created); ++$i) {
+
+        // Remove action to be replaced later.
+        $GLOBALS["Hook"]->removeAction("content_epoch_created_{$i}");
+
+        // @TODO: Is it necessary to replace sub tags in these? Do tests.
+
+        // @TODO: Do this to all other methods and replace exact matches. Move to own method?
+        // Suffix nested content tags with numbers to be replaced later.
+        $item = date($date_format, $epoch_created[$i]);
+        $item = preg_replace("/content_([^%]+)/", "content_$1_{$i}", $item);
+
+        // Replace action with new epoch value.
+        $GLOBALS["Hook"]->addAction("content_epoch_created_{$i}", $item);
+
+        // @TODO: Do this to all other methods and replace exact matches. Move to own method?
+        // Suffix nested content tags with numbers to be replaced later.
+        $epoch_date_time = date("Y-m-d H:i:sP", $epoch_created[$i]);
+        $epoch_date_time = preg_replace("/content_([^%]+)/", "content_$1_{$i}", $epoch_date_time);
+
+        $GLOBALS["Hook"]->addAction("content_epoch_date_time_{$i}", $epoch_date_time);
+      }
+    }
+    else {
+
+      // Remove action to be replaced later.
+      $GLOBALS["Hook"]->removeAction("content_epoch_created");
+
+      // Replace action with new epoch value.
+      $GLOBALS["Hook"]->addAction("content_epoch_created", date($date_format, $epoch_created));
+
+      $GLOBALS["Hook"]->addAction("content_epoch_date_time", date("Y-m-d H:i:sP", $epoch_created));
+    }
+  }
 
   public function getAuthor() {
 
@@ -430,40 +474,6 @@ class Content {
 
     // Let extensions to hook into this.
     $GLOBALS["Hook"]->addAction("content_" . ((!empty($_GET["path"]) ? "range" : "recent")), $markup);
-  }
-
-  public function getEpochCreated() {
-
-    $date_format = $GLOBALS["Utility"]->getTag("date_format");
-
-    // Create hook action to later get created epoch.
-    $this->getColumn("epoch_created");
-
-    if (is_array($GLOBALS["Hook"]->doAction("content_epoch_created"))) {
-
-      for ($i = 0; $i < count($GLOBALS["Hook"]->doAction("content_epoch_created")); ++$i) {
-
-        // Remove action to be replaced later.
-        $GLOBALS["Hook"]->removeAction("content_epoch_created_{$i}");
-
-        // Suffix nested content tags with numbers to be replaced later.
-        $item = date($date_format, $GLOBALS["Hook"]->doAction("content_epoch_created")[$i]);
-        $item = preg_replace("/content_([^%]+)/", "content_$1_{$i}", $item);
-
-        // Replace action with new epoch value.
-        $GLOBALS["Hook"]->addAction("content_epoch_created_{$i}", $item);
-      }
-    }
-    else {
-
-      $epoch_created = $GLOBALS["Hook"]->doAction("content_epoch_created");
-
-      // Remove action to be replaced later.
-      $GLOBALS["Hook"]->removeAction("content_epoch_created");
-
-      // Replace action with new epoch value.
-      $GLOBALS["Hook"]->addAction("content_epoch_created", date($date_format, $epoch_created));
-    }
   }
 
   private function redirectInvalidAddress($column) {

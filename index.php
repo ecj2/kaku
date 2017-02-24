@@ -4,8 +4,8 @@ require "core/includes/common.php";
 
 // Get unique content data.
 $Content->getAuthor();
+$Content->getEpochs();
 $Content->getKeywords();
-$Content->getEpochCreated();
 
 // Get additional content data.
 $Content->getColumn("id");
