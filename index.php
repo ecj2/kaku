@@ -6,6 +6,7 @@ require "core/includes/common.php";
 $Content->getAuthor();
 $Content->getEpochs();
 $Content->getKeywords();
+$Content->getDescriptions();
 
 // Get additional content data.
 $Content->getColumn("id");

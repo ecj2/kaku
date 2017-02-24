@@ -476,6 +476,35 @@ class Content {
     $GLOBALS["Hook"]->addAction("content_" . ((!empty($_GET["path"]) ? "range" : "recent")), $markup);
   }
 
+  public function getDescriptions() {
+
+    $this->getColumn("description");
+
+    $description = $GLOBALS["Hook"]->doAction("content_description");
+
+    if (is_array($description)) {
+
+      $count = count($description);
+
+      for ($i = 0; $i < $count; ++$i) {
+
+        $new_description = empty($description[$i]) ? "No description." : $description[$i];
+
+        $GLOBALS["Hook"]->removeAction("content_description_{$i}");
+
+        $GLOBALS["Hook"]->addAction("content_description_{$i}", $new_description);
+      }
+    }
+    else {
+
+      $description = empty($description) ? "No description." : $description;
+
+      $GLOBALS["Hook"]->removeAction("content_description");
+
+      $GLOBALS["Hook"]->addAction("content_description", $description);
+    }
+  }
+
   private function redirectInvalidAddress($column) {
 
     static $attempts = 1;
