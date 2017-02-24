@@ -22,37 +22,29 @@ $Content->getColumn("epoch_created");
 $Content->getColumn("allow_comments");
 $Content->getColumn("show_on_search");
 
-if (!empty($_GET["path"])) {
+if (!empty($_GET["path"]) && substr($_GET["path"], 0, 4) == "page") {
 
-  if (substr($_GET["path"], 0, 4) == "page") {
+  // Viewing posts by a pagination range.
+  echo $Theme->getFileContents("range");
 
-    // Populate the pagination range with its associated posts.
-    $Content->getPostBlocks();
-
-    // View posts by a pagination range.
-    echo $Theme->getFileContents("range", true);
-  }
-  else {
-
-    if ($Hook->doAction("content_type") == 0) {
-
-      // Viewing a post.
-      echo $Theme->getFileContents("post", true);
-    }
-    else {
-
-      // Viewing a page.
-      echo $Theme->getFileContents("page", true);
-    }
-  }
-}
-else {
-
-  // Populate the index with recent posts.
+  // Populate the pagination range with its associated posts.
   $Content->getPostBlocks();
 
-  // Viewing recent posts.
-  echo $Theme->getFileContents("recent", true);
+  return;
 }
+
+if (!empty($_GET["path"])) {
+
+  // Viewing a single post or page.
+  echo $Theme->getFileContents($Hook->doAction("content_type") == 0 ? "post" : "page");
+
+  return;
+}
+
+// Viewing recent posts.
+echo $Theme->getFileContents("recent");
+
+// Populate the index with recent posts.
+$Content->getPostBlocks();
 
 ?>
