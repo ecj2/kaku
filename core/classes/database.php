@@ -11,11 +11,8 @@ class Database {
 
     try {
 
-      // Connect using MySQL.
-      $data_source_name = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME;
-
-      // Attempt to connect.
-      $this->Handle = new PDO($data_source_name, DB_USER, DB_PASS);
+      // Attempt to connect using MySQL.
+      $this->Handle = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASS);
     }
     catch (PDOException $Exception) {
 
@@ -33,42 +30,6 @@ class Database {
   public function getHandle() {
 
     return $this->Handle;
-  }
-
-  public function performQuery($statement) {
-
-    // Perform the given query statement.
-    $Query = $this->Handle->query($statement);
-
-    if (!$Query) {
-
-      // Query failed.
-      return false;
-    }
-    else {
-
-      // Query was successful.
-      return true;
-    }
-  }
-
-  public function checkTableExistence($table_name) {
-
-    // Check if the given table exists.
-    $statement = "SHOW TABLES LIKE '" . DB_PREF . "{$table_name}'";
-
-    $Query = $this->Handle->query($statement);
-
-    if (!$Query || $Query->rowCount() == 0) {
-
-      // The table doesn't exist.
-      return false;
-    }
-    else {
-
-      // Table exists.
-      return true;
-    }
   }
 }
 
