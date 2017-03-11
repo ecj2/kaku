@@ -7,51 +7,6 @@ class Content {
 
   // @TODO: Improve documentation.
 
-  public function getEpochs() {
-
-    $this->getColumn("epoch_created");
-
-    $date_format = $GLOBALS["Utility"]->getTag("date_format");
-
-    $epoch_created = $GLOBALS["Hook"]->doAction("content_epoch_created");
-
-    if (is_array($epoch_created)) {
-
-      for ($i = 0; $i < count($epoch_created); ++$i) {
-
-        // Remove action to be replaced later.
-        $GLOBALS["Hook"]->removeAction("content_epoch_created_{$i}");
-
-        // @TODO: Is it necessary to replace sub tags in these? Do tests.
-
-        // @TODO: Do this to all other methods and replace exact matches. Move to own method?
-        // Suffix nested content tags with numbers to be replaced later.
-        $item = date($date_format, $epoch_created[$i]);
-        $item = preg_replace("/content_([^%]+)/", "content_$1_{$i}", $item);
-
-        // Replace action with new epoch value.
-        $GLOBALS["Hook"]->addAction("content_epoch_created_{$i}", $item);
-
-        // @TODO: Do this to all other methods and replace exact matches. Move to own method?
-        // Suffix nested content tags with numbers to be replaced later.
-        $epoch_date_time = date("Y-m-d H:i:sP", $epoch_created[$i]);
-        $epoch_date_time = preg_replace("/content_([^%]+)/", "content_$1_{$i}", $epoch_date_time);
-
-        $GLOBALS["Hook"]->addAction("content_epoch_date_time_{$i}", $epoch_date_time);
-      }
-    }
-    else {
-
-      // Remove action to be replaced later.
-      $GLOBALS["Hook"]->removeAction("content_epoch_created");
-
-      // Replace action with new epoch value.
-      $GLOBALS["Hook"]->addAction("content_epoch_created", date($date_format, $epoch_created));
-
-      $GLOBALS["Hook"]->addAction("content_epoch_date_time", date("Y-m-d H:i:sP", $epoch_created));
-    }
-  }
-
   public function getAuthor() {
 
     // Create hook action to later get author nicknames.
@@ -121,6 +76,51 @@ class Content {
       }
 
       $GLOBALS["Hook"]->addAction("content_author", $author_nickname);
+    }
+  }
+
+  public function getEpochs() {
+
+    $this->getColumn("epoch_created");
+
+    $date_format = $GLOBALS["Utility"]->getTag("date_format");
+
+    $epoch_created = $GLOBALS["Hook"]->doAction("content_epoch_created");
+
+    if (is_array($epoch_created)) {
+
+      for ($i = 0; $i < count($epoch_created); ++$i) {
+
+        // Remove action to be replaced later.
+        $GLOBALS["Hook"]->removeAction("content_epoch_created_{$i}");
+
+        // @TODO: Is it necessary to replace sub tags in these? Do tests.
+
+        // @TODO: Do this to all other methods and replace exact matches. Move to own method?
+        // Suffix nested content tags with numbers to be replaced later.
+        $item = date($date_format, $epoch_created[$i]);
+        $item = preg_replace("/content_([^%]+)/", "content_$1_{$i}", $item);
+
+        // Replace action with new epoch value.
+        $GLOBALS["Hook"]->addAction("content_epoch_created_{$i}", $item);
+
+        // @TODO: Do this to all other methods and replace exact matches. Move to own method?
+        // Suffix nested content tags with numbers to be replaced later.
+        $epoch_date_time = date("Y-m-d H:i:sP", $epoch_created[$i]);
+        $epoch_date_time = preg_replace("/content_([^%]+)/", "content_$1_{$i}", $epoch_date_time);
+
+        $GLOBALS["Hook"]->addAction("content_epoch_date_time_{$i}", $epoch_date_time);
+      }
+    }
+    else {
+
+      // Remove action to be replaced later.
+      $GLOBALS["Hook"]->removeAction("content_epoch_created");
+
+      // Replace action with new epoch value.
+      $GLOBALS["Hook"]->addAction("content_epoch_created", date($date_format, $epoch_created));
+
+      $GLOBALS["Hook"]->addAction("content_epoch_date_time", date("Y-m-d H:i:sP", $epoch_created));
     }
   }
 
@@ -502,6 +502,40 @@ class Content {
       $GLOBALS["Hook"]->removeAction("content_description");
 
       $GLOBALS["Hook"]->addAction("content_description", $description);
+    }
+  }
+
+  public function getCommentSource() {
+
+    $this->getColumn("allow_comments");
+
+    // Check if comments are allowed on the current content.
+    $allow_comments = $GLOBALS["Hook"]->doAction("content_allow_comments");
+
+    if (!is_array($allow_comments)) {
+
+      // Get the markup for the comment block.
+      $comment_block_markup = $GLOBALS["Theme"]->getFileContents("comment_block");
+
+      // Display the comment block.
+      $GLOBALS["Hook"]->addAction(
+
+        "comments",
+
+        $comment_block_markup
+      );
+
+      if (!$allow_comments) {
+
+        // Comments are not allowed.
+
+        $GLOBALS["Hook"]->addAction(
+
+          "comment_source",
+
+          "{%comment_disabled_text%}"
+        );
+      }
     }
   }
 

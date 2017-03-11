@@ -7,6 +7,7 @@ $Content->getAuthor();
 $Content->getEpochs();
 $Content->getKeywords();
 $Content->getDescriptions();
+$Content->getCommentSource();
 
 // Get additional content data.
 $Content->getColumn("id");
