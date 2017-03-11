@@ -462,7 +462,7 @@ class Content {
 
       $count = 0;
 
-      while ($Content = $Query->fetch(PDO::FETCH_OBJ)) {
+      while ($Query->fetch(PDO::FETCH_OBJ)) {
 
         // Suffix content tags with numbers to be replaced later.
 
