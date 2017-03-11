@@ -13,11 +13,9 @@ function performQuery($statement) {
     // The query failed.
     return false;
   }
-  else {
 
-    // The query was successful.
-    return true;
-  }
+  // The query was successful.
+  return true;
 }
 
 function checkTableExistence($table_name) {
@@ -30,11 +28,9 @@ function checkTableExistence($table_name) {
     // The table does not exist.
     return false;
   }
-  else {
 
-    // The table exists.
-    return true;
-  }
+  // The table exists.
+  return true;
 }
 
 $errors = [];
@@ -401,7 +397,7 @@ if (!checkTableExistence("content")) {
 
       1,
 
-      1
+      0
     )
   ")) {
 
@@ -665,14 +661,14 @@ if (!checkTableExistence("extensions")) {
 if (!checkTableExistence("extensions")) {
 
   // Get a list of extension directories.
-  $directories = glob("./extensions/*", GLOB_ONLYDIR);
+  $directories = glob("extensions/*", GLOB_ONLYDIR);
 
   if (count($directories) > 0) {
 
     foreach ($directories as $directory) {
 
       // Get the directory name without the path.
-      $directory_name = str_replace("./extensions/", "", $directory);
+      $directory_name = str_replace("extensions/", "", $directory);
 
       $extension_full_path = $directory . "/install.php";
 
