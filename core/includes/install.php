@@ -306,6 +306,63 @@ if (!checkTableExistence("tags")) {
   }
 }
 
+if (!checkTableExistence("users")) {
+
+  if (!performQuery("
+
+    CREATE TABLE " . DB_PREF . "users (
+
+      id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+
+      username VARCHAR(99) NOT NULL,
+
+      nickname VARCHAR(99) NOT NULL,
+
+      email VARCHAR(254),
+
+      password VARCHAR(255) NOT NULL,
+
+      reset_password TINYINT(1) NOT NULL,
+
+      reset_hash VARCHAR(255)
+    )
+  ")) {
+
+    $errors[] = "failed to create \"" . DB_PREF . "users\" table";
+  }
+
+  if (!performQuery("
+
+    INSERT INTO " . DB_PREF . "users (
+
+      username,
+
+      nickname,
+
+      email,
+
+      password,
+
+      reset_password
+    )
+    VALUES (
+
+      'admin',
+
+      'Administrator',
+
+      '',
+
+      '" . password_hash("password", PASSWORD_BCRYPT) . "',
+
+      '0'
+    )
+  ")) {
+
+    $errors[] = "failed to insert \"admin\" into \"" . DB_PREF . "users\" table";
+  }
+}
+
 if (!checkTableExistence("content")) {
 
   if (!performQuery("
@@ -507,63 +564,6 @@ if (!checkTableExistence("content")) {
   }
 }
 
-if (!checkTableExistence("users")) {
-
-  if (!performQuery("
-
-    CREATE TABLE " . DB_PREF . "users (
-
-      id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-
-      username VARCHAR(99) NOT NULL,
-
-      nickname VARCHAR(99) NOT NULL,
-
-      email VARCHAR(254),
-
-      password VARCHAR(255) NOT NULL,
-
-      reset_password TINYINT(1) NOT NULL,
-
-      reset_hash VARCHAR(255)
-    )
-  ")) {
-
-    $errors[] = "failed to create \"" . DB_PREF . "users\" table";
-  }
-
-  if (!performQuery("
-
-    INSERT INTO " . DB_PREF . "users (
-
-      username,
-
-      nickname,
-
-      email,
-
-      password,
-
-      reset_password
-    )
-    VALUES (
-
-      'admin',
-
-      'Administrator',
-
-      '',
-
-      '" . password_hash("password", PASSWORD_BCRYPT) . "',
-
-      '0'
-    )
-  ")) {
-
-    $errors[] = "failed to insert \"admin\" into \"" . DB_PREF . "users\" table";
-  }
-}
-
 if (!checkTableExistence("extensions")) {
 
   if (!performQuery("
@@ -656,9 +656,6 @@ if (!checkTableExistence("extensions")) {
 
     $errors[] = "failed to insert \"Truncate\" into \"" . DB_PREF . "extensions\" table";
   }
-}
-
-if (!checkTableExistence("extensions")) {
 
   // Get a list of extension directories.
   $directories = glob("extensions/*", GLOB_ONLYDIR);
@@ -687,6 +684,38 @@ if (!empty($errors)) {
 
     // Clear the output buffer.
     ob_end_clean();
+  }
+
+  if (checkTableExistence("tags")) {
+
+    if (!performQuery("DROP TABLE " . DB_PREF . "tags")) {
+
+      $errors[] = "failed to drop \"" . DB_PREF . "tags\" table";
+    }
+  }
+
+  if (checkTableExistence("users")) {
+
+    if (!performQuery("DROP TABLE " . DB_PREF . "users")) {
+
+      $errors[] = "failed to drop \"" . DB_PREF . "users\" table";
+    }
+  }
+
+  if (checkTableExistence("content")) {
+
+    if (!performQuery("DROP TABLE " . DB_PREF . "content")) {
+
+      $errors[] = "failed to drop \"" . DB_PREF . "content\" table";
+    }
+  }
+
+  if (checkTableExistence("extensions")) {
+
+    if (!performQuery("DROP TABLE " . DB_PREF . "extensions")) {
+
+      $errors[] = "failed to drop \"" . DB_PREF . "extensions\" table";
+    }
   }
 
   foreach ($errors as $error) {
