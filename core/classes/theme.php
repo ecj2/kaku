@@ -10,7 +10,7 @@ class Theme {
     // Get the appropriate theme name.
     $theme_name = $GLOBALS["Utility"]->getTag(($type ? "back" : "front") . "_theme_name");
 
-    $theme_directory = KAKU_ROOT . "/themes/{$theme_name}";
+    $theme_directory = KAKU_ROOT . ($type ? "/admin" : "") . "/themes/{$theme_name}";
 
     // Get a list of the files from the theme directory.
     $theme_files = scandir($theme_directory);
