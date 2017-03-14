@@ -50,7 +50,7 @@ form input[type="text"], form input[type="password"], form input[type="email"] {
   padding: 5px;
   box-sizing: border-box;
   width: 100%;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
 }
 
 input[type="submit"] {
@@ -67,6 +67,7 @@ input[type="submit"] {
   box-sizing: border-box;
   width: 100%;
   margin-bottom: 32px;
+  margin-top: 16px;
 }
 
 input[type="submit"]:hover {
@@ -94,6 +95,10 @@ a:hover {
 
 .failure {
 
-  color: red;
   display: block;
+  padding: 5px;
+  border: 1px solid #dcdcdc;
+  text-align: center;
+  background: #fbfbfb;
+  margin: 16px 0 16px 0;
 }
