@@ -5,13 +5,10 @@ if (!defined("KAKU_ACCESS")) exit();
 
 class Theme {
 
-  // @TODO: Add code for retrieving back-end themes.
-  // @TODO: Maybe pass a $path variable?
+  public function getFileContents($file_name, $type = 0) {
 
-  public function getFileContents($file_name) {
-
-    // Get the front-end theme name.
-    $theme_name = $GLOBALS["Utility"]->getTag("front_theme_name");
+    // Get the appropriate theme name.
+    $theme_name = $GLOBALS["Utility"]->getTag(($type ? "back" : "front") . "_theme_name");
 
     $theme_directory = KAKU_ROOT . "/themes/{$theme_name}";
 
@@ -54,6 +51,7 @@ class Theme {
     // Require the theme file to automatically parse any PHP code.
     require "{$theme_directory}/{$file_name}";
 
+    // Get the contents of the buffer.
     $theme_file_contents = ob_get_contents();
 
     // End and erase the temporary buffer.
