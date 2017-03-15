@@ -76,6 +76,11 @@ input[type="submit"]:hover {
   cursor: pointer;
 }
 
+input[type="submit"]:active {
+
+  background: #eeeeee;
+}
+
 footer {
 
   text-align: center;

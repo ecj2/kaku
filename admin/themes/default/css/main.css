@@ -83,7 +83,15 @@ header.top nav ul li a {
 
 header.top nav ul li a:hover {
 
-  text-decoration: underline;
+  background: #2488c1;
+  padding: 5px;
+  margin: -5px;
+  border-radius: 3px;
+}
+
+header.top nav ul li a:active {
+
+  background: #1775ab;
 }
 
 @media screen and (max-width: 700px) {
