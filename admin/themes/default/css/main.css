@@ -209,14 +209,14 @@ form #body {
 
   color: #3ca9e7;
   display: block;
-  margin-bottom: 16px;
+  margin: 16px 0 16px 0;
 }
 
 .failure {
 
   color: #e73c3c;
   display: block;
-  margin-bottom: 16px;
+  margin: 16px 0 16px 0;
 }
 
 table {
