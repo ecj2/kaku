@@ -207,7 +207,7 @@ else {
       <input type=\"submit\" value=\"Reset Password\">
     </form>
 
-    <a href=\"{%blog_url%}/admin/index.php\">Return to login</a>
+    <a href=\"{%blog_url%}/admin/index.php\">Return to log in</a>
   ";
 }
 
