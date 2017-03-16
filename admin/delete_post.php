@@ -5,19 +5,17 @@ session_start();
 if (!isset($_SESSION["username"])) {
 
   // User is not logged in.
-  header("Location: ./login.php");
+  header("Location: login.php");
 
   exit();
 }
 
 require "../core/includes/common.php";
 
-$Output->startBuffer();
-
-$Output->loadExtensions();
+// @TODO: Load extensions.
 
 // Get template markup.
-$template = $Template->getFileContents("template", 0, 1);
+$theme = $Theme->getFileContents("template", true);
 
 $search = [];
 $replace = [];
@@ -33,7 +31,7 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
     $statement = "
 
-      DELETE FROM " . DB_PREF . "posts
+      DELETE FROM " . DB_PREF . "content
       WHERE id = ?
     ";
 
@@ -49,7 +47,7 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
       $message = "failed to delete post";
 
       // Failed to delete post.
-      header("Location: ./posts.php?code=0&message={$message}");
+      header("Location: posts.php?code=0&message={$message}");
 
       exit();
     }
@@ -57,7 +55,7 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
     $message = "post deleted successfully";
 
     // Post successfully deleted.
-    header("Location: ./posts.php?code=1&message={$message}");
+    header("Location: posts.php?code=1&message={$message}");
 
     exit();
   }
@@ -65,8 +63,9 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
   $statement = "
 
     SELECT title
-    FROM " . DB_PREF . "posts
+    FROM " . DB_PREF . "content
     WHERE id = ?
+    AND type = 0
     ORDER BY id DESC
     LIMIT 1
   ";
@@ -122,14 +121,10 @@ else {
 $replace[] = "Delete Post";
 $replace[] = $body;
 
-echo str_replace($search, $replace, $template);
+echo str_replace($search, $replace, $theme);
 
 // Clear the admin_head_content and admin_body_content tags if they go unused.
 $Hook->addAction("admin_head_content", "");
 $Hook->addAction("admin_body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
 
 ?>

@@ -5,19 +5,17 @@ session_start();
 if (!isset($_SESSION["username"])) {
 
   // User is not logged in.
-  header("Location: ./login.php");
+  header("Location: login.php");
 
   exit();
 }
 
 require "../core/includes/common.php";
 
-$Output->startBuffer();
-
-$Output->loadExtensions();
+// @TODO: Load extensions.
 
 // Get template markup.
-$template = $Template->getFileContents("template", 0, 1);
+$theme = $Theme->getFileContents("template", true);
 
 $search = [];
 $replace = [];
@@ -29,8 +27,8 @@ if (isset($_GET["id"]) && isset($_POST["title"]) && isset($_POST["body"])) {
 
   $statement = "
 
-    UPDATE " . DB_PREF . "posts
-    SET url = ?, body = ?, draft = ?, epoch = ?, title = ?, keywords = ?, description = ?, allow_comments = ?
+    UPDATE " . DB_PREF . "content
+    SET url = ?, body = ?, draft = ?, epoch_created = ?, title = ?, keywords = ?, description = ?, allow_comments = ?
     WHERE id = ?
   ";
 
@@ -66,13 +64,13 @@ if (isset($_GET["id"]) && isset($_POST["title"]) && isset($_POST["body"])) {
   if (!$Query) {
 
     // Failed to update post.
-    header("Location: ./posts.php?code=0&message=failed to update post");
+    header("Location: posts.php?code=0&message=failed to update post");
 
     exit();
   }
 
   // Successfully updated post.
-  header("Location: ./posts.php?code=1&message=post updated successfully");
+  header("Location: posts.php?code=1&message=post updated successfully");
 
   exit();
 }
@@ -83,9 +81,10 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
   $statement = "
 
-    SELECT url, body, title, epoch, keywords, description, draft, allow_comments
-    FROM " . DB_PREF . "posts
+    SELECT url, body, title, epoch_created, keywords, description, draft, allow_comments
+    FROM " . DB_PREF . "content
     WHERE id = ?
+    AND type = 0
     ORDER BY id DESC
     LIMIT 1
   ";
@@ -120,7 +119,7 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
     $post_url = $Post->url;
     $post_body = $Post->body;
     $post_draft = $Post->draft;
-    $post_epoch = $Post->epoch;
+    $post_epoch = $Post->epoch_created;
     $post_title = $Post->title;
     $post_keywords = $Post->keywords;
     $post_description = $Post->description;
@@ -211,14 +210,10 @@ else {
 $replace[] = "Edit Post";
 $replace[] = $body;
 
-echo str_replace($search, $replace, $template);
+echo str_replace($search, $replace, $theme);
 
 // Clear the admin_head_content and admin_body_content tags if they go unused.
 $Hook->addAction("admin_head_content", "");
 $Hook->addAction("admin_body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
 
 ?>

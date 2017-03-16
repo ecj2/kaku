@@ -5,19 +5,17 @@ session_start();
 if (!isset($_SESSION["username"])) {
 
   // User is not logged in.
-  header("Location: ./login.php");
+  header("Location: login.php");
 
   exit();
 }
 
 require "../core/includes/common.php";
 
-$Output->startBuffer();
-
-$Output->loadExtensions();
+// @TODO: Load extensions.
 
 // Get template markup.
-$template = $Template->getFileContents("template", 0, 1);
+$theme = $Theme->getFileContents("template", true);
 
 $search = [];
 $replace = [];
@@ -50,13 +48,13 @@ if (isset($_GET["id"]) && isset($_POST["username"]) && isset($_POST["password"])
   if (!$Query) {
 
     // Failed to update user.
-    header("Location: ./users.php?code=0&message=failed to update user");
+    header("Location: users.php?code=0&message=failed to update user");
 
     exit();
   }
 
   // Successfully updated user.
-  header("Location: ./users.php?code=1&message=user updated successfully");
+  header("Location: users.php?code=1&message=user updated successfully");
 
   exit();
 }
@@ -152,14 +150,10 @@ else {
 $replace[] = "Edit User";
 $replace[] = $body;
 
-echo str_replace($search, $replace, $template);
+echo str_replace($search, $replace, $theme);
 
 // Clear the admin_head_content and admin_body_content tags if they go unused.
 $Hook->addAction("admin_head_content", "");
 $Hook->addAction("admin_body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
 
 ?>

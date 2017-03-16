@@ -5,19 +5,17 @@ session_start();
 if (!isset($_SESSION["username"])) {
 
   // User is not logged in.
-  header("Location: ./login.php");
+  header("Location: login.php");
 
   exit();
 }
 
 require "../core/includes/common.php";
 
-$Output->startBuffer();
-
-$Output->loadExtensions();
+// @TODO: Load extensions.
 
 // Get template markup.
-$template = $Template->getFileContents("template", 0, 1);
+$theme = $Theme->getFileContents("template", true);
 
 $search = [];
 $replace = [];
@@ -29,15 +27,17 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
 
   $statement = "
 
-    INSERT INTO " . DB_PREF . "posts (
+    INSERT INTO " . DB_PREF . "content (
 
       url,
 
       body,
 
+      type,
+
       draft,
 
-      epoch,
+      epoch_created,
 
       title,
 
@@ -47,13 +47,17 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
 
       description,
 
-      allow_comments
+      allow_comments,
+
+      show_on_search
     )
     VALUES (
 
       ?,
 
       ?,
+
+      0,
 
       ?,
 
@@ -67,7 +71,9 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
 
       ?,
 
-      ?
+      ?,
+
+      1
     )
   ";
 
@@ -102,13 +108,13 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
   if (!$Query) {
 
     // Failed to create post.
-    header("Location: ./posts.php?code=0&message=failed to create post");
+    header("Location: posts.php?code=0&message=failed to create post");
 
     exit();
   }
 
   // Successfully added post.
-  header("Location: ./posts.php?code=1&message=post created successfully");
+  header("Location: posts.php?code=1&message=post created successfully");
 
   exit();
 }
@@ -164,7 +170,8 @@ $body .= "
 $statement = "
 
   SELECT id, title
-  FROM " . DB_PREF . "posts
+  FROM " . DB_PREF . "content
+  WHERE type = 0
   ORDER BY id DESC
 ";
 
@@ -212,14 +219,10 @@ if ($Query->rowCount() > 0) {
 $replace[] = "Posts";
 $replace[] = $body;
 
-echo str_replace($search, $replace, $template);
+echo str_replace($search, $replace, $theme);
 
 // Clear the admin_head_content and admin_body_content tags if they go unused.
 $Hook->addAction("admin_head_content", "");
 $Hook->addAction("admin_body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
 
 ?>

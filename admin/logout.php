@@ -6,7 +6,7 @@ unset($_SESSION["user_id"]);
 unset($_SESSION["username"]);
 
 // Redirect to login.
-header("Location: ./login.php");
+header("Location: login.php");
 
 exit();
 

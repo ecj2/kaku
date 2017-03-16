@@ -5,19 +5,17 @@ session_start();
 if (!isset($_SESSION["username"])) {
 
   // User is not logged in.
-  header("Location: ./login.php");
+  header("Location: login.php");
 
   exit();
 }
 
 require "../core/includes/common.php";
 
-$Output->startBuffer();
-
-$Output->loadExtensions();
+// @TODO: Load extensions.
 
 // Get template markup.
-$template = $Template->getFileContents("template", 0, 1);
+$theme = $Theme->getFileContents("template", true);
 
 $search = [];
 $replace = [];
@@ -33,8 +31,9 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
     $statement = "
 
-      DELETE FROM " . DB_PREF . "pages
+      DELETE FROM " . DB_PREF . "content
       WHERE id = ?
+      AND type = 1
     ";
 
     $Query = $Database->getHandle()->prepare($statement);
@@ -49,7 +48,7 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
       $message = "failed to delete page";
 
       // Failed to delete page.
-      header("Location: ./pages.php?code=0&message={$message}");
+      header("Location: pages.php?code=0&message={$message}");
 
       exit();
     }
@@ -57,7 +56,7 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
     $message = "page deleted successfully";
 
     // Page successfully deleted.
-    header("Location: ./pages.php?code=1&message={$message}");
+    header("Location: pages.php?code=1&message={$message}");
 
     exit();
   }
@@ -65,8 +64,9 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
   $statement = "
 
     SELECT title
-    FROM " . DB_PREF . "pages
+    FROM " . DB_PREF . "content
     WHERE id = ?
+    AND type = 1
     ORDER BY id DESC
     LIMIT 1
   ";
@@ -122,14 +122,10 @@ else {
 $replace[] = "Delete Page";
 $replace[] = $body;
 
-echo str_replace($search, $replace, $template);
+echo str_replace($search, $replace, $theme);
 
 // Clear the admin_head_content and admin_body_content tags if they go unused.
 $Hook->addAction("admin_head_content", "");
 $Hook->addAction("admin_body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
 
 ?>
