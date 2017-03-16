@@ -332,3 +332,8 @@ table.two-column td:nth-of-type(1) {
 
   width: 80%;
 }
+
+a.button:active, a.button_return:active, input[type="submit"]:active {
+
+  background: #f5f5f5;
+}
