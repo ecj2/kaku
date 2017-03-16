@@ -296,7 +296,8 @@ a.button_return:hover {
 
 input[type="checkbox"] {
 
-  margin-bottom: 32px;
+  margin: 0 4px 32px 0;
+  outline: 0;
 }
 
 table.two-column {
@@ -318,4 +319,32 @@ table.two-column td:nth-of-type(1) {
 a.button:active, a.button_return:active, input[type="submit"]:active {
 
   background: #f5f5f5;
+}
+
+input[type="checkbox"]:before {
+
+  position: relative;
+  display: block;
+  width: 11px;
+  height: 11px;
+  border: 1px solid #ccc;
+  content: "";
+  background: #fff;
+}
+
+input[type="checkbox"]:after {
+
+  position: relative;
+  display: block;
+  left: 2px;
+  top: -11px;
+  width: 9px;
+  height: 9px;
+  border: 0;
+  content: "";
+}
+
+input[type="checkbox"]:checked:after {
+
+  background: #bbb;
 }
