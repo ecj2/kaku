@@ -99,25 +99,6 @@ header.top nav ul li a:hover {
   }
 }
 
-footer {
-
-  text-align: center;
-  color: #333;
-  margin-top: 16px;
-  margin-bottom: 32px;
-}
-
-footer a {
-
-  color: #3ca9e7;
-  text-decoration: none;
-}
-
-footer a:hover {
-
-  text-decoration: underline;
-}
-
 a {
 
   color: #3ca9e7;
@@ -223,6 +204,7 @@ table {
 
   width: 100%;
   background: #fff;
+  margin-bottom: 32px;
 }
 
 td {
