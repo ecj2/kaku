@@ -2,20 +2,43 @@
 
 session_start();
 
-if (!isset($_SESSION["username"])) {
+$script_name = basename($_SERVER["SCRIPT_NAME"], ".php");
 
-  // User is not logged in.
-  header("Location: login.php");
+if ($script_name == "login" || $script_name == "reset_password") {
 
-  exit();
+  if (isset($_SESSION["username"])) {
+
+    // User is already logged in.
+    header("Location: dashboard.php");
+
+    exit();
+  }
+}
+else {
+
+  if (!isset($_SESSION["username"])) {
+
+    // User is not logged in.
+    header("Location: login.php");
+
+    exit();
+  }
 }
 
 require "../core/includes/common.php";
 
 // @TODO: Load extensions.
 
-// Get template markup.
-$theme = $Theme->getFileContents("template", true);
+$theme = "";
+
+if ($script_name == "login" || $script_name == "reset_password") {
+
+  $theme = $Theme->getFileContents("login", true);
+}
+else {
+
+  $theme = $Theme->getFileContents("template", true);
+}
 
 $search = [];
 $replace = [];
