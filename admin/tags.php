@@ -1,27 +1,6 @@
 <?php
 
-session_start();
-
-if (!isset($_SESSION["username"])) {
-
-  // User is not logged in.
-  header("Location: login.php");
-
-  exit();
-}
-
-require "../core/includes/common.php";
-
-// @TODO: Load extensions.
-
-// Get template markup.
-$theme = $Theme->getFileContents("template", true);
-
-$search = [];
-$replace = [];
-
-$search[] = "{%page_title%}";
-$search[] = "{%page_body%}";
+require "common.php";
 
 if (isset($_POST["title"]) && isset($_POST["body"])) {
 
@@ -62,8 +41,6 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
 
   exit();
 }
-
-$body = "";
 
 if (isset($_GET["code"]) && isset($_GET["message"])) {
 
@@ -150,9 +127,5 @@ $replace[] = "Tags";
 $replace[] = $body;
 
 echo str_replace($search, $replace, $theme);
-
-// Clear the admin_head_content and admin_body_content tags if they go unused.
-$Hook->addAction("admin_head_content", "");
-$Hook->addAction("admin_body_content", "");
 
 ?>
