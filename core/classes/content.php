@@ -517,6 +517,20 @@ class Content {
       // Get the markup for the comment block.
       $comment_block_markup = $GLOBALS["Theme"]->getFileContents("comment_block");
 
+      if (!$allow_comments) {
+
+        // Comments are not allowed.
+
+        $comment_block_markup = str_replace(
+
+          "{%comment_source%}",
+
+          "{%comment_disabled_text%}",
+
+          $comment_block_markup
+        );
+      }
+
       // Display the comment block.
       $GLOBALS["Hook"]->addAction(
 
@@ -524,18 +538,6 @@ class Content {
 
         $comment_block_markup
       );
-
-      if (!$allow_comments) {
-
-        // Comments are not allowed.
-
-        $GLOBALS["Hook"]->addAction(
-
-          "comment_source",
-
-          "{%comment_disabled_text%}"
-        );
-      }
     }
   }
 
