@@ -263,6 +263,11 @@ input[type="submit"]:hover {
   cursor: pointer;
 }
 
+input[type="submit"]:active {
+
+  background: #f8f8f8;
+}
+
 article figure {
 
   margin: 0 0 32px 0;
