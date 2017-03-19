@@ -2,6 +2,8 @@
 
 require "core/includes/common.php";
 
+$Extension->loadExtensions();
+
 // Get unique content data.
 $Content->getAuthor();
 $Content->getEpochs();

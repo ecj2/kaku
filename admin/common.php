@@ -27,7 +27,10 @@ else {
 
 require "../core/includes/common.php";
 
-// @TODO: Load extensions.
+if ($script_name != "extensions") {
+
+  $Extension->loadExtensions();
+}
 
 $theme = "";
 
@@ -48,7 +51,7 @@ $search[] = "{%page_body%}";
 
 $body = "";
 
-// Clear the admin_head_content and admin_body_content tags if they go unused.
+// Clear these tags if they go unused.
 $Hook->addAction("admin_head_content", "");
 $Hook->addAction("admin_body_content", "");
 

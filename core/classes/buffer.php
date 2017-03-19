@@ -85,8 +85,6 @@ class Buffer {
     }
   }
 
-  // @TODO: load extensions.
-
   private function addTagReplacement($tag_title, $replacement) {
 
     $this->search[$tag_title] = "{%{$tag_title}%}";
