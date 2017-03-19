@@ -3,10 +3,10 @@
 // Deny direct access to this file.
 if (!defined("KAKU_ACCESS")) exit();
 
-if (!$Database->checkTableExistence("extension_truncate")) {
+if (!checkTableExistence("extension_truncate")) {
 
   // Create the extension_truncate table.
-  if (!$Database->performQuery(
+  if (!performQuery(
 
     "CREATE TABLE " . DB_PREF . "extension_truncate (
 
@@ -19,7 +19,7 @@ if (!$Database->checkTableExistence("extension_truncate")) {
   }
 
   // Set a default value for the lure.
-  if (!$Database->performQuery(
+  if (!performQuery(
 
     "INSERT INTO " . DB_PREF . "extension_truncate (
 
