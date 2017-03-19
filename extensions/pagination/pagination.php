@@ -5,27 +5,20 @@ if (!defined("KAKU_ACCESS")) exit();
 
 class Pagination extends Extension {
 
+  private $page_number;
+
   public function __construct() {
 
     Extension::setName("Post Pagination");
 
-    $GLOBALS["Hook"]->addFilter(
+    $GLOBALS["Hook"]->addFilter("next_page", $this, "getNextPage");
+    $GLOBALS["Hook"]->addFilter("previous_page", $this, "getPreviousPage");
 
-      "next_page",
+    if (!empty($_GET["path"]) && substr($_GET["path"], 0, 4) == "page") {
 
-      $this,
-
-      "getNextPage"
-    );
-
-    $GLOBALS["Hook"]->addFilter(
-
-      "previous_page",
-
-      $this,
-
-      "getPreviousPage"
-    );
+      // Extract the page number from the path.
+      $this->page_number = preg_replace("/[^0-9]/", "", $_GET["path"]);
+    }
   }
 
   public function getNextPage() {
@@ -90,50 +83,35 @@ class Pagination extends Extension {
     $offset = 0;
     $row_count = $posts_per_page + 1;
 
-    if (isset($_GET["range"])) {
+    if (!empty($this->page_number)) {
 
-      if ($_GET["range"] < 2) {
-
-        // Redirect to the index.
-        header("Location: " . $GLOBALS["Utility"]->getRootAddress());
-
-        exit();
-      }
-
-      $offset = ($_GET["range"] - 1) * $posts_per_page;
+      $offset = ($this->page_number - 1) * $posts_per_page;
       $row_count = $posts_per_page + 1;
     }
 
     $statement = "
 
       SELECT 1
-      FROM " . DB_PREF . "posts
-      WHERE draft = '0'
+      FROM " . DB_PREF . "content
+      WHERE draft = 0
+      AND type = 0
       ORDER BY id DESC
       LIMIT {$offset}, {$row_count}
     ";
 
     $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-    if (isset($_GET["range"]) && $_GET["range"] > 1 && $Query->rowCount() == 0) {
-
-      // No posts within this range. Redirect to index.
-      header("Location: " . $GLOBALS["Utility"]->getRootAddress());
-
-      exit();
-    }
-
     if ($Query->rowCount() > $posts_per_page) {
 
       $url = "";
 
-      if (isset($_GET["range"])) {
+      if (!empty($this->page_number)) {
 
-        $url = "{%blog_url%}/range/" . ($_GET["range"] + 1);
+        $url = "{%blog_url%}/page/" . ($this->page_number + 1);
       }
       else {
 
-        $url = "{%blog_url%}/range/2";
+        $url = "{%blog_url%}/page/2";
       }
 
       $message = "<a href=\"{$url}\">{$next_page_text}</a>";
@@ -174,16 +152,16 @@ class Pagination extends Extension {
 
     $link = "{$previous_page_text}";
 
-    if (isset($_GET["range"])) {
+    if (!empty($this->page_number)) {
 
-      $previous_page = $_GET["range"] - 1;
+      $previous_page = $this->page_number - 1;
 
       if ($previous_page < 2) {
 
         return "<a href=\"{%blog_url%}\">{$link}</a>";
       }
 
-      return "<a href=\"{%blog_url%}/range/{$previous_page}\">{$link}</a>";
+      return "<a href=\"{%blog_url%}/page/{$previous_page}\">{$link}</a>";
     }
 
     return "";

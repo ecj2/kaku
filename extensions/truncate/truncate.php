@@ -9,28 +9,14 @@ class Truncate extends Extension {
 
     Extension::setName("Truncate Posts");
 
-    $GLOBALS["Hook"]->addFilter(
-
-      "post_body",
-
-      $this,
-
-      "truncatePostBody"
-    );
+    $GLOBALS["Hook"]->addFilter("content_body", $this, "truncatePostBody");
   }
 
   public function truncatePostBody($callback) {
 
-    if (isset($_GET["post"])) {
-
-      // Remove truncate tag when viewing a post.
-      return str_replace("{%truncate%}", "", $callback);
-    }
-    else {
+    if (is_array($callback)) {
 
       $bodies = [];
-
-      $count = 0;
 
       $lure_text = $this->getLureText();
 
@@ -44,16 +30,17 @@ class Truncate extends Extension {
           $body = substr($body, 0, $truncate_position);
 
           // Include a "read more" link to the full post.
-          $body .= "<a href=\"{%blog_url%}/post/{%post_url_{$count}%}\">{$lure_text}</a>";
+          $body .= "<a href=\"{%blog_url%}/{%content_url%}\">{$lure_text}</a>";
         }
 
         $bodies[] = $body;
-
-        ++$count;
       }
 
       return $bodies;
     }
+
+    // Remove truncate tag when viewing a post.
+    return str_replace("{%truncate%}", "", $callback);
   }
 
   private function getLureText() {
@@ -73,14 +60,9 @@ class Truncate extends Extension {
       // Query failed or returned zero rows.
       return "Read more...";
     }
-    else {
 
-      // Fetch the result as an object.
-      $Result = $Query->fetch(PDO::FETCH_OBJ);
-
-      // Get the lure text.
-      return $Result->lure;
-    }
+    // Get the lure text.
+    return $Query->fetch(PDO::FETCH_OBJ)->lure;
   }
 }
 

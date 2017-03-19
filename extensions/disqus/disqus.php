@@ -11,14 +11,7 @@ class DisqusForum extends Extension {
 
     Extension::setName("Disqus Forum");
 
-    $GLOBALS["Hook"]->addFilter(
-
-      "comment_source",
-
-      $this,
-
-      "getDisqusForum"
-    );
+    $GLOBALS["Hook"]->addFilter("comment_source", $this, "getDisqusForum");
   }
 
   public function getDisqusForum() {
@@ -29,7 +22,7 @@ class DisqusForum extends Extension {
     $statement = "
 
       SELECT id, url
-      FROM " . DB_PREF . "posts
+      FROM " . DB_PREF . "content
       WHERE url = ?
       ORDER BY id DESC
       LIMIT 1
@@ -38,14 +31,14 @@ class DisqusForum extends Extension {
     $Query = $GLOBALS["Database"]->getHandle()->prepare($statement);
 
     // Prevent SQL injections.
-    $Query->bindParam(1, $_GET["post"]);
+    $Query->bindParam(1, $_GET["path"]);
 
     $Query->execute();
 
     if (!$Query) {
 
       // Something went wrong.
-      $GLOBALS["Utility"]->displayError("failed to get post ID and URL");
+      $GLOBALS["Utility"]->displayError("failed to get content ID and URL");
     }
 
     if ($Query->rowCount() > 0) {
@@ -56,8 +49,6 @@ class DisqusForum extends Extension {
       $url = $Result->url;
       $identifier = $Result->id;
     }
-
-    $disqus_markup_file = dirname(__FILE__) . "/content/markup.php";
 
     $statement = "
 

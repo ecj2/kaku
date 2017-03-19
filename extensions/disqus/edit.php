@@ -88,7 +88,7 @@ else {
         Use the form below to edit the extension.<br><br>
 
         <form method=\"post\" class=\"edit_shortname\">
-          <label for=\"shortname\">Disqus shortname</label>
+          <label for=\"shortname\">Disqus Shortname</label>
           <input type=\"text\" id=\"shortname\" name=\"shortname\" value=\"{$shortname}\">
           <input type=\"submit\" value=\"Save\">
         </form>

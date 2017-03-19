@@ -89,7 +89,7 @@ else {
         Use the form below to edit the extension.<br><br>
 
         <form method=\"post\" class=\"edit_lure\">
-          <label for=\"lure\">Lure text</label>
+          <label for=\"lure\">Lure Text</label>
           <input type=\"text\" id=\"lure\" name=\"lure\" value=\"{$lure}\">
           <input type=\"submit\" value=\"Save\">
         </form>

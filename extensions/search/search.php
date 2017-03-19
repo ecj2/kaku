@@ -9,14 +9,7 @@ class Search extends Extension {
 
     Extension::setName("Simple Search");
 
-    $GLOBALS["Hook"]->addFilter(
-
-      "search",
-
-      $this,
-
-      "manageSearch"
-    );
+    $GLOBALS["Hook"]->addFilter("search", $this, "manageSearch");
   }
 
   public function manageSearch() {
@@ -26,23 +19,13 @@ class Search extends Extension {
       // Remove whitespace from the beginning and the end of the search keywords.
       $_GET["keywords"] = trim($_GET["keywords"]);
 
-      // Select from posts and pages where something is like the search keywords.
+      // Select posts and pages where something is like the search keywords.
       $statement = "
 
-        (
-          SELECT url, title, description, 'posts' AS table_name
-          FROM " . DB_PREF . "posts
-          WHERE draft = '0' AND (keywords LIKE ? OR title LIKE ?)
-        )
-
-        UNION ALL
-
-        (
-          SELECT url, title, description, 'pages' AS table_name
-          FROM " . DB_PREF . "pages
-          WHERE show_on_search = '1' AND (keywords LIKE ? OR title LIKE ?)
-        )
-
+        SELECT url, title, description
+        FROM " . DB_PREF . "content
+        WHERE show_on_search = 1
+        AND (keywords LIKE ? OR title LIKE ?)
         ORDER BY title ASC
       ";
 
@@ -53,8 +36,6 @@ class Search extends Extension {
       // Prevent SQL injections.
       $Query->bindParam(1, $search_keywords);
       $Query->bindParam(2, $search_keywords);
-      $Query->bindParam(3, $search_keywords);
-      $Query->bindParam(4, $search_keywords);
 
       $Query->execute();
 
@@ -103,18 +84,10 @@ class Search extends Extension {
 
         $markup .= "<br><br><a href=\"{%blog_url%}/";
 
-        if ($Result->table_name == "pages") {
+        $markup .= $Result->url . "\">";
 
-          // Result is a page.
-          $markup .= "page/{$Result->url}\">";
-        }
-        else {
 
-          // Result is a post.
-          $markup .= "post/{$Result->url}\">";
-        }
-
-        $markup .= "{$Result->title}</a><br>";
+        $markup .= $Result->title . "</a><br>";
 
         if (empty(trim($Result->description))) {
 
