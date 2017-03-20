@@ -239,6 +239,25 @@ if (!checkTableExistence("tags")) {
     )
     VALUES (
 
+      'search_url',
+
+      '{%blog_url%}/search'
+    )
+  ")) {
+
+    $errors[] = "failed to insert \"search_url\" into \"" . DB_PREF . "tags\" table";
+  }
+
+  if (!performQuery("
+
+    INSERT INTO " . DB_PREF . "tags (
+
+      title,
+
+      body
+    )
+    VALUES (
+
       'date_format',
 
       'F jS, Y'

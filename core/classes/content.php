@@ -318,6 +318,8 @@ class Content {
 
     $keywords = $GLOBALS["Hook"]->doAction("content_keywords");
 
+    $search_url = $GLOBALS["Utility"]->getTag("search_url");
+
     if (is_array($keywords)) {
 
       if (!empty($keywords)) {
@@ -342,17 +344,17 @@ class Content {
 
           foreach (explode(",", $value) as $item) {
 
-            // Remove whitespace from beginning and end of each keyword.
+            // Remove whitespace from the beginning and end of each keyword.
             $item = trim($item);
 
             // Encode spaces.
-            $keyword_url = str_replace(" ", "-", $item);
+            $keyword_url = str_replace(" ", "%20", $item);
 
             // Create a list item for each keyword.
             $keywords_markup .= "
 
               <li>
-                <a href=\"{%blog_url%}/search?keywords={$keyword_url}\">{$prefix}{$item}</a>
+                <a href=\"{$search_url}?keywords={$keyword_url}\">{$prefix}{$item}</a>
               </li>
             ";
           }
@@ -375,17 +377,17 @@ class Content {
 
         foreach (explode(",", $keywords) as $keyword) {
 
-          // Remove whitespace from beginning and end of each keyword.
+          // Remove whitespace from the beginning and end of each keyword.
           $keyword = trim($keyword);
 
           // Encode spaces.
-          $keyword_url = str_replace(" ", "-", $keyword);
+          $keyword_url = str_replace(" ", "%20", $keyword);
 
           // Create a list item for each keyword.
           $keywords_markup .= "
 
             <li>
-              <a href=\"{%blog_url%}/search?keywords={$keyword_url}\">{$prefix}{$keyword}</a>
+              <a href=\"{$search_url}?keywords={$keyword_url}\">{$prefix}{$keyword}</a>
             </li>
           ";
         }
