@@ -30,7 +30,9 @@ class Buffer {
       $buffer_contents = $this->replaceBufferContents($buffer_contents);
     }
 
-    echo $buffer_contents;
+    $GLOBALS["Hook"]->addAction("buffer_contents", $buffer_contents);
+
+    echo $GLOBALS["Hook"]->doAction("buffer_contents");
   }
 
   public function replaceTags() {
