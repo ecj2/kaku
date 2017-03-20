@@ -337,7 +337,7 @@ if (!checkTableExistence("users")) {
 
       nickname VARCHAR(99) NOT NULL,
 
-      email VARCHAR(254),
+      email VARCHAR(254) NOT NULL,
 
       password VARCHAR(255) NOT NULL,
 
@@ -368,9 +368,9 @@ if (!checkTableExistence("users")) {
 
       'admin',
 
-      'Administrator',
+      'Admin',
 
-      '',
+      'admin@" . $_SERVER["HTTP_HOST"] . "',
 
       '" . password_hash("password", PASSWORD_BCRYPT) . "',
 
@@ -675,24 +675,24 @@ if (!checkTableExistence("extensions")) {
 
     $errors[] = "failed to insert \"Truncate\" into \"" . DB_PREF . "extensions\" table";
   }
+}
 
-  // Get a list of extension directories.
-  $directories = glob("extensions/*", GLOB_ONLYDIR);
+// Get a list of extension directories.
+$directories = glob(KAKU_ROOT . "/extensions/*", GLOB_ONLYDIR);
 
-  if (count($directories) > 0) {
+if (count($directories) > 0) {
 
-    foreach ($directories as $directory) {
+  foreach ($directories as $directory) {
 
-      // Get the directory name without the path.
-      $directory_name = str_replace("extensions/", "", $directory);
+    // Get the directory name without the path.
+    $directory_name = str_replace(KAKU_ROOT . "/extensions/", "", $directory);
 
-      $extension_full_path = $directory . "/install.php";
+    $extension_full_path = $directory . "/install.php";
 
-      if (file_exists($extension_full_path)) {
+    if (file_exists($extension_full_path)) {
 
-        // Run the extension's installation script.
-        require $extension_full_path;
-      }
+      // Run the extension's installation script.
+      require $extension_full_path;
     }
   }
 }
