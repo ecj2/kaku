@@ -91,19 +91,25 @@ article {
 
 article code {
 
-  background: #eee;
+  background: #fdfdfd;
   display: block;
   padding: 10px;
   line-height: 24px;
   font-family: "Source Code Pro", monospace;
   font-size: 15px;
+  border: 1px solid #eee;
 }
 
-article ul {
+article ul, article ol {
 
   list-style-type: square;
   margin: 0;
   padding: 0 0 0 16px;
+}
+
+article ol {
+
+  list-style-type: decimal;
 }
 
 article ul.keywords {
