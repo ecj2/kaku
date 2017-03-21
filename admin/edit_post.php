@@ -27,11 +27,16 @@ if (isset($_GET["id"]) && isset($_POST["title"]) && isset($_POST["body"])) {
     $allow_comments = "1";
   }
 
+  $date_time = $_POST["year"] . "-" . $_POST["month"] . "-" . $_POST["day"];
+  $date_time .= " " . $_POST["hour"] . ":" . $_POST["minute"] . ":" . $_POST["second"];
+
+  $epoch = strtotime($date_time);
+
   // Prevent SQL injections.
   $Query->bindParam(1, $_POST["url"]);
   $Query->bindParam(2, $_POST["body"]);
   $Query->bindParam(3, $draft);
-  $Query->bindParam(4, $_POST["epoch"]);
+  $Query->bindParam(4, $epoch);
   $Query->bindParam(5, $_POST["title"]);
   $Query->bindParam(6, $_POST["keywords"]);
   $Query->bindParam(7, $_POST["description"]);
@@ -138,10 +143,127 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
         <label for=\"description\">Description (optional)</label>
         <textarea id=\"description\" name=\"description\">{$post_description}</textarea>
-
-        <label for=\"epoch\">Epoch</label>
-        <input type=\"text\" id=\"epoch\" name=\"epoch\" value=\"{$post_epoch}\" required>
     ";
+
+    $body .= "
+
+      <label for=\"year\">Year</label>
+      <select id=\"year\" name=\"year\">
+    ";
+
+    for ($i = 1970; $i < 2099; ++$i) {
+
+      if ($i == date("Y", $post_epoch)) {
+
+        $body .= "<option value=\"{$i}\" selected>{$i}</option>";
+      }
+      else {
+
+        $body .= "<option value=\"{$i}\">{$i}</option>";
+      }
+    }
+
+    $body .= "</select>";
+
+    $body .= "
+
+      <label for=\"month\">Month</label>
+      <select id=\"month\" name=\"month\">
+    ";
+
+    for ($i = 1; $i < 13; ++$i) {
+
+      if ($i == date("n", $post_epoch)) {
+
+        $body .= "<option value=\"{$i}\" selected>{$i}</option>";
+      }
+      else {
+
+        $body .= "<option value=\"{$i}\">{$i}</option>";
+      }
+    }
+
+    $body .= "</select>";
+
+    $body .= "
+
+      <label for=\"day\">Day</label>
+      <select id=\"day\" name=\"day\">
+    ";
+
+    for ($i = 1; $i < 32; ++$i) {
+
+      if ($i == date("j", $post_epoch)) {
+
+        $body .= "<option value=\"{$i}\" selected>{$i}</option>";
+      }
+      else {
+
+        $body .= "<option value=\"{$i}\">{$i}</option>";
+      }
+    }
+
+    $body .= "</select>";
+
+    $body .= "
+
+      <label for=\"hour\">Hour</label>
+      <select id=\"hour\" name=\"hour\">
+    ";
+
+    for ($i = 0; $i < 24; ++$i) {
+
+      if ($i == date("H", $post_epoch)) {
+
+        $body .= "<option value=\"{$i}\" selected>{$i}</option>";
+      }
+      else {
+
+        $body .= "<option value=\"{$i}\">{$i}</option>";
+      }
+    }
+
+    $body .= "</select>";
+
+    $body .= "
+
+      <label for=\"minute\">Minute</label>
+      <select id=\"minute\" name=\"minute\">
+    ";
+
+    for ($i = 0; $i < 60; ++$i) {
+
+      if ($i == date("i", $post_epoch)) {
+
+        $body .= "<option value=\"{$i}\" selected>{$i}</option>";
+      }
+      else {
+
+        $body .= "<option value=\"{$i}\">{$i}</option>";
+      }
+    }
+
+    $body .= "</select>";
+
+    $body .= "
+
+      <label for=\"second\">Second</label>
+      <select id=\"second\" name=\"second\">
+    ";
+
+    for ($i = 0; $i < 60; ++$i) {
+
+      if ($i == date("s", $post_epoch)) {
+
+        $body .= "<option value=\"{$i}\" selected>{$i}</option>";
+      }
+      else {
+
+        $body .= "<option value=\"{$i}\">{$i}</option>";
+      }
+    }
+
+    $body .= "</select>";
 
     if ($post_draft) {
 

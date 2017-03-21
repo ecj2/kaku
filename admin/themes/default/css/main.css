@@ -128,7 +128,12 @@ form label {
   display: block;
 }
 
-form input[type="text"], form input[type="password"], form input[type="email"] {
+select {
+
+  height: 47px;
+}
+
+form input[type="text"], form input[type="password"], form input[type="email"], select {
 
   background: #fff;
   font-family: "Open Sans", sans-serif;
