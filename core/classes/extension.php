@@ -50,9 +50,9 @@ class Extension {
         // Determine if the given extension has been activated.
         $statement = "
 
-          SELECT activate
+          SELECT status
           FROM " . DB_PREF . "extensions
-          WHERE title = '" . $class_name . "'
+          WHERE hash = '" . md5($class_name) . "'
           ORDER BY id DESC
           LIMIT 1
         ";
@@ -68,9 +68,9 @@ class Extension {
         // Fetch the result as an object.
         $Result = $Query->fetch(PDO::FETCH_OBJ);
 
-        if (!$Result->activate) {
+        if (!$Result->status) {
 
-          // The extension has not bee activated.
+          // The extension has not been activated.
           continue;
         }
 

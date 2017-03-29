@@ -2,23 +2,23 @@
 
 require "common.php";
 
-$title = "";
-
 if (isset($_GET["code"]) && isset($_GET["title"])) {
 
   $statement = "
 
-    SELECT title
+    SELECT hash
     FROM " . DB_PREF . "extensions
-    WHERE title = ?
+    WHERE hash = ?
     ORDER BY id DESC
     LIMIT 1
   ";
 
   $Query = $Database->getHandle()->prepare($statement);
 
+  $hash = md5($_GET["title"]);
+
   // Prevent SQL injections.
-  $Query->bindParam(1, $_GET["title"]);
+  $Query->bindParam(1, $hash);
 
   $Query->execute();
 
@@ -35,9 +35,9 @@ if (isset($_GET["code"]) && isset($_GET["title"])) {
 
       INSERT INTO " . DB_PREF . "extensions (
 
-        title,
+        hash,
 
-        activate
+        status
       )
       VALUES (
 
@@ -50,101 +50,97 @@ if (isset($_GET["code"]) && isset($_GET["title"])) {
     $Query = $Database->getHandle()->prepare($statement);
 
     // Prevent SQL injections.
-    $Query->bindParam(1, $_GET["title"]);
+    $Query->bindParam(1, $hash);
 
     $Query->execute();
+
+    $code = 1;
+
+    $message = "extension has been activated";
 
     if (!$Query) {
 
       // Something went wrong.
       $Utility->displayError("failed to insert new extension");
+
+      $code = 0;
+
+      $message = "failed to activate extension";
     }
     else {
 
-      $code = $_GET["code"];
-      $title = $_GET["title"];
-
       // Refresh the page to assign new activation status.
-      header("Location: toggle_extension.php?code={$code}&title={$title}");
+      header("Location: extensions.php?code={$code}&message={$message}");
 
       exit();
     }
   }
   else {
 
-    // Get extension's title.
-    $extension_title = $Query->fetch(PDO::FETCH_OBJ)->title;
+    // Get extension's hash.
+    $extension_hash = $Query->fetch(PDO::FETCH_OBJ)->hash;
 
     $message = "";
 
-    if ($_GET["code"] == 0) {
+    $code = 1;
 
-      $title = "Activate Extension";
+    if ($_GET["code"] == 0) {
 
       // Activate extension.
       $statement = "
 
         UPDATE " . DB_PREF . "extensions
-        SET activate = '1'
-        WHERE title = '{$extension_title}'
+        SET status = 1
+        WHERE hash = '{$extension_hash}'
       ";
 
       $Query = $Database->getHandle()->query($statement);
 
       if (!$Query) {
 
-        $message = "Failed to activate extension.";
+        $message = "failed to activate extension";
+
+        $code = 0;
       }
       else {
 
-        $message = "The extension has been activated.";
+        $message = "extension has been activated";
       }
     }
     else {
-
-      $title = "Deactivate Extension";
 
       // Deactivate extension.
       $statement = "
 
         UPDATE " . DB_PREF . "extensions
-        SET activate = '0'
-        WHERE title = '{$extension_title}'
+        SET status = 0
+        WHERE hash = '{$extension_hash}'
       ";
 
       $Query = $Database->getHandle()->query($statement);
 
       if (!$Query) {
 
-        $message = "Failed to deactivate extension.";
+        $message = "failed to deactivate extension";
+
+        $code = 0;
       }
       else {
 
-        $message = "The extension has been deactivated.";
+        $message = "extension has been deactivated";
       }
     }
 
-    $body = "
+    header("Location: extensions.php?code={$code}&message={$message}");
 
-      {$message}
-
-      <a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>
-    ";
+    exit();
   }
 }
 else {
 
-  $body = "
+  header("Location: extensions.php?code=0&message=no extension information specified");
 
-    No extension title and/or code specified.
-
-    <a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>
-  ";
+  exit();
 }
-
-$replace[] = $title;
-$replace[] = $body;
-
-echo str_replace($search, $replace, $theme);
 
 ?>

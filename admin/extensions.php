@@ -5,6 +5,23 @@ require "common.php";
 // Get extension directories.
 $directories = glob("../extensions/*", GLOB_ONLYDIR);
 
+if (isset($_GET["code"]) && isset($_GET["message"])) {
+
+  if ($_GET["code"] == 0) {
+
+    // Failure notice.
+    $body .= "<span class=\"failure\">Notice: ";
+  }
+  else if ($_GET["code"] == 1) {
+
+    // Success notice.
+    $body .= "<span class=\"success\">Notice: ";
+  }
+
+  // Encode { and } to prevent them from being replaced by the output buffer.
+  $body .= str_replace(["{", "}"], ["&#123;", "&#125;"], $_GET["message"]) . ".</span>";
+}
+
 if (count($directories) > 0) {
 
   $body .= "
@@ -41,9 +58,9 @@ if (count($directories) > 0) {
 
     $statement = "
 
-        SELECT activate
+        SELECT status
         FROM " . DB_PREF . "extensions
-        WHERE title = '{$class_name}'
+        WHERE hash = '" . md5($class_name) . "'
         ORDER BY id DESC
         LIMIT 1
       ";
@@ -61,7 +78,7 @@ if (count($directories) > 0) {
       if ($Query->rowCount() > 0) {
 
         // Get activation status.
-        $activation_status = $Query->fetch(PDO::FETCH_OBJ)->activate;
+        $activation_status = $Query->fetch(PDO::FETCH_OBJ)->status;
       }
 
       $body .= "<tr>";

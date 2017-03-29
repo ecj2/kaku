@@ -603,9 +603,9 @@ if (!checkTableExistence("extensions")) {
 
       id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
 
-      title VARCHAR(99) NOT NULL,
+      hash CHAR(32) NOT NULL,
 
-      activate TINYINT(1) NOT NULL
+      status TINYINT(1) NOT NULL
     )
   ")) {
 
@@ -616,15 +616,15 @@ if (!checkTableExistence("extensions")) {
 
     INSERT INTO " . DB_PREF . "extensions (
 
-      title,
+      hash,
 
-      activate
+      status
     )
     VALUES (
 
-      'Search',
+      '" . md5("Search") . "',
 
-      '1'
+      1
     )
   ")) {
 
@@ -635,15 +635,15 @@ if (!checkTableExistence("extensions")) {
 
     INSERT INTO " . DB_PREF . "extensions (
 
-      title,
+      hash,
 
-      activate
+      status
     )
     VALUES (
 
-      'DisqusForum',
+      '" . md5("DisqusForum") . "',
 
-      '1'
+      1
     )
   ")) {
 
@@ -654,15 +654,15 @@ if (!checkTableExistence("extensions")) {
 
     INSERT INTO " . DB_PREF . "extensions (
 
-      title,
+      hash,
 
-      activate
+      status
     )
     VALUES (
 
-      'Pagination',
+      '" . md5("Pagination") . "',
 
-      '1'
+      1
     )
   ")) {
 
@@ -673,15 +673,15 @@ if (!checkTableExistence("extensions")) {
 
     INSERT INTO " . DB_PREF . "extensions (
 
-      title,
+      hash,
 
-      activate
+      status
     )
     VALUES (
 
-      'Truncate',
+      '" . md5("Truncate") . "',
 
-      '1'
+      1
     )
   ")) {
 
