@@ -402,7 +402,7 @@ if (!checkTableExistence("content")) {
 
       epoch_created INT(11) NOT NULL,
 
-      epoch_edited INT(11),
+      identifier CHAR(32) NOT NULL,
 
       author_id INT NOT NULL,
 
@@ -435,6 +435,8 @@ if (!checkTableExistence("content")) {
 
       epoch_created,
 
+      identifier,
+
       author_id,
 
       type,
@@ -454,9 +456,9 @@ if (!checkTableExistence("content")) {
       '" . str_replace(["  ", "\n"], ["", " "], trim("
 
         Hi there. Welcome to Kaku. This is the very first post.
-        Head over to the <a href=\"{%blog_url%}/admin\">admin
-        panel</a> to get started. The username is admin and the
-        password is password.
+        Head over to the <a href=\"{%blog_url%}/admin\">admin panel</a>
+        to get started. The username is <strong>admin</strong> and the
+        password is <strong>password</strong>.
       ")) . "',
 
       'The very first post.',
@@ -464,6 +466,8 @@ if (!checkTableExistence("content")) {
       'first, post',
 
       UNIX_TIMESTAMP(),
+
+      '" . md5(microtime()) . "',
 
       1,
 
@@ -494,6 +498,8 @@ if (!checkTableExistence("content")) {
 
       epoch_created,
 
+      identifier,
+
       author_id,
 
       type,
@@ -515,6 +521,8 @@ if (!checkTableExistence("content")) {
       'Search for posts and pages.',
 
       UNIX_TIMESTAMP(),
+
+      '" . md5(microtime()) . "',
 
       1,
 
@@ -545,6 +553,8 @@ if (!checkTableExistence("content")) {
 
       epoch_created,
 
+      identifier,
+
       author_id,
 
       type,
@@ -566,6 +576,8 @@ if (!checkTableExistence("content")) {
       'Error code 404: page not found.',
 
       UNIX_TIMESTAMP(),
+
+      '" . md5(microtime()) . "',
 
       1,
 

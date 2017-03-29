@@ -18,6 +18,8 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
 
       epoch_created,
 
+      identifier,
+
       title,
 
       keywords,
@@ -41,6 +43,8 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
       ?,
 
       UNIX_TIMESTAMP(),
+
+      '" . md5(microtime()) . "',
 
       ?,
 

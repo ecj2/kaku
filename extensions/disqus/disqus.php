@@ -16,12 +16,11 @@ class DisqusForum extends Extension {
 
   public function getDisqusForum() {
 
-    $url = "";
     $identifier = "";
 
     $statement = "
 
-      SELECT id, url
+      SELECT identifier
       FROM " . DB_PREF . "content
       WHERE url = ?
       ORDER BY id DESC
@@ -38,7 +37,7 @@ class DisqusForum extends Extension {
     if (!$Query) {
 
       // Something went wrong.
-      $GLOBALS["Utility"]->displayError("failed to get content ID and URL");
+      $GLOBALS["Utility"]->displayError("failed to get content identifier");
     }
 
     if ($Query->rowCount() > 0) {
@@ -46,8 +45,7 @@ class DisqusForum extends Extension {
       // Fetch the result as an object.
       $Result = $Query->fetch(PDO::FETCH_OBJ);
 
-      $url = $Result->url;
-      $identifier = $Result->id;
+      $identifier = $Result->identifier;
     }
 
     $statement = "
@@ -84,7 +82,7 @@ class DisqusForum extends Extension {
 
         <script>
 
-          var disqus_shortname = \"{%disqus_shortname%}\";
+          var disqus_shortname = \"{$shortname}\";
 
           var disqus_config = function () {
 
@@ -113,7 +111,7 @@ class DisqusForum extends Extension {
       ";
 
       // Display the Disqus forum.
-      return str_replace("{%disqus_shortname%}", $shortname, $markup);
+      return $markup;
     }
   }
 }

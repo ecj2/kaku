@@ -21,7 +21,6 @@ $Content->getColumn("title");
 $Content->getColumn("keywords");
 $Content->getColumn("author_id");
 $Content->getColumn("description");
-$Content->getColumn("epoch_edited");
 $Content->getColumn("epoch_created");
 $Content->getColumn("allow_comments");
 $Content->getColumn("show_on_search");
