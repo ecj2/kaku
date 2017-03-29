@@ -28,7 +28,9 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
 
       author_id,
 
-      epoch_created
+      epoch_created,
+
+      identifier
     )
     VALUES (
 
@@ -52,7 +54,9 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
 
       " . $_SESSION["user_id"] . ",
 
-      " . time() . "
+      " . time() . ",
+
+      '" . md5(microtime()) . "'
     )
   ";
 
