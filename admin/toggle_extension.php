@@ -143,4 +143,6 @@ else {
   exit();
 }
 
+echo $Buffer->flush();
+
 ?>

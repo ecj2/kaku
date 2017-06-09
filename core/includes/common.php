@@ -21,6 +21,10 @@ foreach ($classes as $class) {
   $$class_name = new $class_name;
 }
 
+$Buffer->start();
+
+require KAKU_ROOT . "/core/includes/functions.php";
+
 if (file_exists(KAKU_ROOT . "/core/includes/install.php")) {
 
   // Install Kaku.

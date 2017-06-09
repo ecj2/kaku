@@ -10,13 +10,16 @@ class Buffer {
 
   public function __construct() {
 
-    ob_start();
-
     $this->search = [];
     $this->replace = [];
   }
 
-  public function __destruct() {
+  public function start() {
+
+    ob_start();
+  }
+
+  public function flush() {
 
     for ($i = 0; $i < 5; ++$i) {
 
@@ -32,7 +35,7 @@ class Buffer {
 
     $GLOBALS["Hook"]->addAction("buffer_contents", $buffer_contents);
 
-    echo $GLOBALS["Hook"]->doAction("buffer_contents");
+    return $GLOBALS["Hook"]->doAction("buffer_contents");
   }
 
   public function replaceTags() {

@@ -39,4 +39,6 @@ $replace[] = $body;
 
 echo str_replace($search, $replace, $theme);
 
+echo $Buffer->flush();
+
 ?>
