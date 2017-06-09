@@ -15,7 +15,7 @@ body {
 
 #wrap {
 
-  width: 500px;
+  width: 550px;
   margin: auto;
 }
 
@@ -92,7 +92,7 @@ a:hover {
   text-decoration: underline;
 }
 
-.failure {
+.failure, .success {
 
   display: block;
   padding: 5px;
