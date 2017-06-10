@@ -1,35 +1,12 @@
 <?php
 
-session_start();
-
-if (!isset($_SESSION["username"])) {
-
-  // User is not logged in.
-  header("Location: ./login.php");
-
-  exit();
-}
-
-require "../core/includes/common.php";
-
-$Output->startBuffer();
-
-$Output->loadExtensions();
-
-// Get template markup.
-$template = $Template->getFileContents("template", 0, 1);
-
-$search = [];
-$replace = [];
-
-$search[] = "{%page_title%}";
-$search[] = "{%page_body%}";
+require "common.php";
 
 if (isset($_POST["title"]) && isset($_POST["body"])) {
 
   $statement = "
 
-    INSERT INTO " . DB_PREF . "pages (
+    INSERT INTO " . DB_PREF . "content (
 
       url,
 
@@ -41,7 +18,19 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
 
       description,
 
-      show_on_search
+      show_on_search,
+
+      allow_comments,
+
+      type,
+
+      draft,
+
+      author_id,
+
+      epoch_created,
+
+      identifier
     )
     VALUES (
 
@@ -55,7 +44,19 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
 
       ?,
 
-      ?
+      ?,
+
+      0,
+
+      1,
+
+      0,
+
+      " . $_SESSION["user_id"] . ",
+
+      " . time() . ",
+
+      '" . md5(microtime()) . "'
     )
   ";
 
@@ -81,18 +82,16 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
   if (!$Query) {
 
     // Failed to create page.
-    header("Location: ./pages.php?code=0&message=failed to create page");
+    header("Location: pages.php?code=0&message=failed to create page");
 
     exit();
   }
 
   // Successfully added page.
-  header("Location: ./pages.php?code=1&message=page created successfully");
+  header("Location: pages.php?code=1&message=page created successfully");
 
   exit();
 }
-
-$body = "";
 
 if (isset($_GET["code"]) && isset($_GET["message"])) {
 
@@ -141,7 +140,8 @@ $body .= "
 $statement = "
 
   SELECT id, title
-  FROM " . DB_PREF . "pages
+  FROM " . DB_PREF . "content
+  WHERE type = 1
   ORDER BY id DESC
 ";
 
@@ -189,14 +189,8 @@ if ($Query->rowCount() > 0) {
 $replace[] = "Pages";
 $replace[] = $body;
 
-echo str_replace($search, $replace, $template);
+echo str_replace($search, $replace, $theme);
 
-// Clear the admin_head_content and admin_body_content tags if they go unused.
-$Hook->addAction("admin_head_content", "");
-$Hook->addAction("admin_body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
+echo $Buffer->flush();
 
 ?>

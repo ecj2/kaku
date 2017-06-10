@@ -1,29 +1,6 @@
 <?php
 
-session_start();
-
-if (!isset($_SESSION["username"])) {
-
-  // User is not logged in.
-  header("Location: ./login.php");
-
-  exit();
-}
-
-require "../core/includes/common.php";
-
-$Output->startBuffer();
-
-$Output->loadExtensions();
-
-// Get template markup.
-$template = $Template->getFileContents("template", 0, 1);
-
-$search = [];
-$replace = [];
-
-$search[] = "{%page_title%}";
-$search[] = "{%page_body%}";
+require "common.php";
 
 if (isset($_POST["title"]) && isset($_POST["body"])) {
 
@@ -54,18 +31,16 @@ if (isset($_POST["title"]) && isset($_POST["body"])) {
   if (!$Query) {
 
     // Failed to create tag.
-    header("Location: ./tags.php?code=0&message=failed to create tag");
+    header("Location:/tags.php?code=0&message=failed to create tag");
 
     exit();
   }
 
   // Successfully added tag.
-  header("Location: ./tags.php?code=1&message=tag created successfully");
+  header("Location: tags.php?code=1&message=tag created successfully");
 
   exit();
 }
-
-$body = "";
 
 if (isset($_GET["code"]) && isset($_GET["message"])) {
 
@@ -104,7 +79,7 @@ $statement = "
 
   SELECT id, title
   FROM " . DB_PREF . "tags
-  ORDER BY id DESC
+  ORDER BY title ASC
 ";
 
 $Query = $Database->getHandle()->query($statement);
@@ -151,14 +126,8 @@ if ($Query->rowCount() > 0) {
 $replace[] = "Tags";
 $replace[] = $body;
 
-echo str_replace($search, $replace, $template);
+echo str_replace($search, $replace, $theme);
 
-// Clear the admin_head_content and admin_body_content tags if they go unused.
-$Hook->addAction("admin_head_content", "");
-$Hook->addAction("admin_body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
+echo $Buffer->flush();
 
 ?>

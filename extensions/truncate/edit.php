@@ -1,10 +1,7 @@
 <?php
 
-if (!defined("KAKU_ACCESS")) {
-
-  // Deny direct access to this file.
-  exit();
-}
+// Deny direct access to this file.
+if (!defined("KAKU_ACCESS")) exit();
 
 if (isset($_POST["lure"])) {
 
@@ -51,7 +48,7 @@ else {
       echo "Lure text has been updated.";
     }
 
-    echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
+    echo "<a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>";
   }
   else {
 
@@ -71,7 +68,7 @@ else {
 
       echo "Error: failed to get lure text!";
 
-      echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
+      echo "<a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>";
     }
     else {
 
@@ -92,7 +89,7 @@ else {
         Use the form below to edit the extension.<br><br>
 
         <form method=\"post\" class=\"edit_lure\">
-          <label for=\"lure\">Lure text</label>
+          <label for=\"lure\">Lure Text</label>
           <input type=\"text\" id=\"lure\" name=\"lure\" value=\"{$lure}\">
           <input type=\"submit\" value=\"Save\">
         </form>

@@ -1,31 +1,6 @@
 <?php
 
-session_start();
-
-if (isset($_SESSION["username"])) {
-
-  // User is already logged in.
-  header("Location: ./dashboard.php");
-
-  exit();
-}
-
-require "../core/includes/common.php";
-
-$Output->startBuffer();
-
-$Output->loadExtensions();
-
-// Get login markup.
-$template = $Template->getFileContents("login", 0, 1);
-
-$search = [];
-$replace = [];
-
-$search[] = "{%page_title%}";
-$search[] = "{%page_body%}";
-
-$body = "";
+require "common.php";
 
 if (isset($_GET["verify"])) {
 
@@ -54,7 +29,7 @@ if (isset($_GET["verify"])) {
   if ($Query->rowCount() == 0) {
 
     // This hash does not exist.
-    Header("Location: ./reset_password.php?code=0&message=no matches for that verification hash");
+    Header("Location: reset_password.php?code=0&message=no matches for that verification hash");
 
     exit();
   }
@@ -93,7 +68,7 @@ if (isset($_GET["verify"])) {
       $Utility->displayError("failed to reset user password");
     }
 
-    Header("Location: ./reset_password.php?code=1&message=password reset to \"{$new_password_string}\"");
+    Header("Location: reset_password.php?code=1&message=password reset to \"{$new_password_string}\"");
 
     exit();
   }
@@ -125,7 +100,7 @@ if (isset($_POST["email"])) {
   if ($Query->rowCount() == 0) {
 
     // The email does not exist in the database.
-    Header("Location: ./reset_password.php?code=0&message=that email address does not belong to any user");
+    Header("Location: reset_password.php?code=0&message=that email address does not belong to any user");
 
     exit();
   }
@@ -168,12 +143,12 @@ if (isset($_POST["email"])) {
     if (mail($email, "Kaku Password Reset", $message)) {
 
       // Successfully sent reset instructions.
-      Header("Location: ./reset_password.php?code=1&message=an email has been sent to you with reset instructions");
+      Header("Location: reset_password.php?code=1&message=an email has been sent to you with reset instructions");
     }
     else {
 
       // Failed to send reset instructions.
-      Header("Location: ./reset_password.php?code=0&message=the server failed to send you a reset email");
+      Header("Location: reset_password.php?code=0&message=the server failed to send you a reset email");
     }
 
     exit();
@@ -209,21 +184,15 @@ else {
       <input type=\"submit\" value=\"Reset Password\">
     </form>
 
-    Click <a href=\"{%blog_url%}/admin/index.php\">here</a> to return to the login page.
+    <a href=\"{%blog_url%}/admin/index.php\">Return to log in</a>
   ";
 }
 
 $replace[] = "Reset Password";
 $replace[] = $body;
 
-echo str_replace($search, $replace, $template);
+echo str_replace($search, $replace, $theme);
 
-// Clear the admin_head_content and admin_body_content tags if they go unused.
-$Hook->addAction("admin_head_content", "");
-$Hook->addAction("admin_body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
+echo $Buffer->flush();
 
 ?>

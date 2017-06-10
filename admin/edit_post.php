@@ -1,36 +1,13 @@
 <?php
 
-session_start();
-
-if (!isset($_SESSION["username"])) {
-
-  // User is not logged in.
-  header("Location: ./login.php");
-
-  exit();
-}
-
-require "../core/includes/common.php";
-
-$Output->startBuffer();
-
-$Output->loadExtensions();
-
-// Get template markup.
-$template = $Template->getFileContents("template", 0, 1);
-
-$search = [];
-$replace = [];
-
-$search[] = "{%page_title%}";
-$search[] = "{%page_body%}";
+require "common.php";
 
 if (isset($_GET["id"]) && isset($_POST["title"]) && isset($_POST["body"])) {
 
   $statement = "
 
-    UPDATE " . DB_PREF . "posts
-    SET url = ?, body = ?, draft = ?, epoch = ?, title = ?, keywords = ?, description = ?, allow_comments = ?
+    UPDATE " . DB_PREF . "content
+    SET url = ?, body = ?, draft = ?, epoch_created = ?, title = ?, keywords = ?, description = ?, allow_comments = ?
     WHERE id = ?
   ";
 
@@ -50,11 +27,16 @@ if (isset($_GET["id"]) && isset($_POST["title"]) && isset($_POST["body"])) {
     $allow_comments = "1";
   }
 
+  $date_time = $_POST["year"] . "-" . $_POST["month"] . "-" . $_POST["day"];
+  $date_time .= " " . $_POST["hour"] . ":" . $_POST["minute"] . ":" . $_POST["second"];
+
+  $epoch = strtotime($date_time);
+
   // Prevent SQL injections.
   $Query->bindParam(1, $_POST["url"]);
   $Query->bindParam(2, $_POST["body"]);
   $Query->bindParam(3, $draft);
-  $Query->bindParam(4, $_POST["epoch"]);
+  $Query->bindParam(4, $epoch);
   $Query->bindParam(5, $_POST["title"]);
   $Query->bindParam(6, $_POST["keywords"]);
   $Query->bindParam(7, $_POST["description"]);
@@ -66,26 +48,25 @@ if (isset($_GET["id"]) && isset($_POST["title"]) && isset($_POST["body"])) {
   if (!$Query) {
 
     // Failed to update post.
-    header("Location: ./posts.php?code=0&message=failed to update post");
+    header("Location: posts.php?code=0&message=failed to update post");
 
     exit();
   }
 
   // Successfully updated post.
-  header("Location: ./posts.php?code=1&message=post updated successfully");
+  header("Location: posts.php?code=1&message=post updated successfully");
 
   exit();
 }
-
-$body = "";
 
 if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
   $statement = "
 
-    SELECT url, body, title, epoch, keywords, description, draft, allow_comments
-    FROM " . DB_PREF . "posts
+    SELECT url, body, title, epoch_created, keywords, description, draft, allow_comments
+    FROM " . DB_PREF . "content
     WHERE id = ?
+    AND type = 0
     ORDER BY id DESC
     LIMIT 1
   ";
@@ -120,7 +101,7 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
     $post_url = $Post->url;
     $post_body = $Post->body;
     $post_draft = $Post->draft;
-    $post_epoch = $Post->epoch;
+    $post_epoch = $Post->epoch_created;
     $post_title = $Post->title;
     $post_keywords = $Post->keywords;
     $post_description = $Post->description;
@@ -162,10 +143,127 @@ if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
         <label for=\"description\">Description (optional)</label>
         <textarea id=\"description\" name=\"description\">{$post_description}</textarea>
-
-        <label for=\"epoch\">Epoch</label>
-        <input type=\"text\" id=\"epoch\" name=\"epoch\" value=\"{$post_epoch}\" required>
     ";
+
+    $body .= "
+
+      <label for=\"year\">Year</label>
+      <select id=\"year\" name=\"year\">
+    ";
+
+    for ($i = 1970; $i < 2099; ++$i) {
+
+      if ($i == date("Y", $post_epoch)) {
+
+        $body .= "<option value=\"{$i}\" selected>{$i}</option>";
+      }
+      else {
+
+        $body .= "<option value=\"{$i}\">{$i}</option>";
+      }
+    }
+
+    $body .= "</select>";
+
+    $body .= "
+
+      <label for=\"month\">Month</label>
+      <select id=\"month\" name=\"month\">
+    ";
+
+    for ($i = 1; $i < 13; ++$i) {
+
+      if ($i == date("n", $post_epoch)) {
+
+        $body .= "<option value=\"{$i}\" selected>{$i}</option>";
+      }
+      else {
+
+        $body .= "<option value=\"{$i}\">{$i}</option>";
+      }
+    }
+
+    $body .= "</select>";
+
+    $body .= "
+
+      <label for=\"day\">Day</label>
+      <select id=\"day\" name=\"day\">
+    ";
+
+    for ($i = 1; $i < 32; ++$i) {
+
+      if ($i == date("j", $post_epoch)) {
+
+        $body .= "<option value=\"{$i}\" selected>{$i}</option>";
+      }
+      else {
+
+        $body .= "<option value=\"{$i}\">{$i}</option>";
+      }
+    }
+
+    $body .= "</select>";
+
+    $body .= "
+
+      <label for=\"hour\">Hour</label>
+      <select id=\"hour\" name=\"hour\">
+    ";
+
+    for ($i = 0; $i < 24; ++$i) {
+
+      if ($i == date("H", $post_epoch)) {
+
+        $body .= "<option value=\"{$i}\" selected>{$i}</option>";
+      }
+      else {
+
+        $body .= "<option value=\"{$i}\">{$i}</option>";
+      }
+    }
+
+    $body .= "</select>";
+
+    $body .= "
+
+      <label for=\"minute\">Minute</label>
+      <select id=\"minute\" name=\"minute\">
+    ";
+
+    for ($i = 0; $i < 60; ++$i) {
+
+      if ($i == date("i", $post_epoch)) {
+
+        $body .= "<option value=\"{$i}\" selected>{$i}</option>";
+      }
+      else {
+
+        $body .= "<option value=\"{$i}\">{$i}</option>";
+      }
+    }
+
+    $body .= "</select>";
+
+    $body .= "
+
+      <label for=\"second\">Second</label>
+      <select id=\"second\" name=\"second\">
+    ";
+
+    for ($i = 0; $i < 60; ++$i) {
+
+      if ($i == date("s", $post_epoch)) {
+
+        $body .= "<option value=\"{$i}\" selected>{$i}</option>";
+      }
+      else {
+
+        $body .= "<option value=\"{$i}\">{$i}</option>";
+      }
+    }
+
+    $body .= "</select>";
 
     if ($post_draft) {
 
@@ -211,14 +309,8 @@ else {
 $replace[] = "Edit Post";
 $replace[] = $body;
 
-echo str_replace($search, $replace, $template);
+echo str_replace($search, $replace, $theme);
 
-// Clear the admin_head_content and admin_body_content tags if they go unused.
-$Hook->addAction("admin_head_content", "");
-$Hook->addAction("admin_body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
+echo $Buffer->flush();
 
 ?>

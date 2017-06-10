@@ -11,7 +11,7 @@ body {
 
 #bar {
 
-  background: #474747;
+  background: #3ca9e7;
   height: 55px;
 }
 
@@ -41,7 +41,7 @@ header.top h1 {
   color: white;
   font-weight: normal;
   margin: 0;
-  width: 14%;
+  width: 39%;
 }
 
 header.top h1 a {
@@ -63,7 +63,7 @@ header.top nav {
   float: right;
   margin: -34px 0 0 0;
   text-align: right;
-  width: 85%;
+  width: 60%;
   position: relative;
   top: -42px;
 }
@@ -83,7 +83,11 @@ header.top nav ul li a {
 
 header.top nav ul li a:hover {
 
-  text-decoration: underline;
+  background: #fff;
+  color: #3ca9e7;
+  padding: 5px;
+  margin: -5px;
+  border-radius: 3px;
 }
 
 @media screen and (max-width: 700px) {
@@ -95,29 +99,10 @@ header.top nav ul li a:hover {
   }
 }
 
-footer {
-
-  text-align: center;
-  color: #333;
-  margin-top: 16px;
-  margin-bottom: 32px;
-}
-
-footer a {
-
-  color: blue;
-  text-decoration: none;
-}
-
-footer a:hover {
-
-  text-decoration: underline;
-}
-
 a {
 
-  color: blue;
-  text-decoration: underline;
+  color: #3ca9e7;
+  text-decoration: none;
 }
 
 a:hover {
@@ -143,14 +128,19 @@ form label {
   display: block;
 }
 
-form input[type="text"], form input[type="password"], form input[type="email"] {
+select {
+
+  height: 47px;
+}
+
+form input[type="text"], form input[type="password"], form input[type="email"], select {
 
   background: #fff;
   font-family: "Open Sans", sans-serif;
   font-size: 18px;
   color: #333;
   line-height: 35px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   outline: 0;
   padding: 5px;
   box-sizing: border-box;
@@ -162,7 +152,7 @@ input[type="submit"] {
 
   background: #fff;
   outline: 0;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   padding: 5px;
   font-family: "Open Sans", sans-serif;
   font-size: 18px;
@@ -187,7 +177,7 @@ form textarea {
   font-size: 18px;
   color: #333;
   line-height: 35px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   outline: 0;
   padding: 5px;
   box-sizing: border-box;
@@ -203,21 +193,23 @@ form #body {
 
 .success {
 
-  color: green;
+  color: #3ca9e7;
   display: block;
-  margin-bottom: 16px;
+  margin: 16px 0 16px 0;
 }
 
 .failure {
 
-  color: red;
+  color: #e73c3c;
   display: block;
-  margin-bottom: 16px;
+  margin: 16px 0 16px 0;
 }
 
 table {
 
   width: 100%;
+  background: #fff;
+  margin-bottom: 32px;
 }
 
 td {
@@ -263,7 +255,7 @@ a.button {
   font-size: 18px;
   color: #333;
   line-height: 35px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   outline: 0;
   padding: 5px;
   width: 45%;
@@ -285,7 +277,7 @@ a.button_return {
   font-size: 18px;
   color: #333;
   line-height: 35px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   outline: 0;
   padding: 5px;
   width: 100%;
@@ -309,12 +301,14 @@ a.button_return:hover {
 
 input[type="checkbox"] {
 
-  margin-bottom: 32px;
+  margin: 0 4px 32px 0;
+  outline: 0;
+  cursor: pointer;
 }
 
 table.two-column {
 
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
   padding: 20px;
 }
 
@@ -326,4 +320,37 @@ table.two-column th:nth-of-type(2), table.two-column td:nth-of-type(2) {
 table.two-column td:nth-of-type(1) {
 
   width: 80%;
+}
+
+a.button:active, a.button_return:active, input[type="submit"]:active {
+
+  background: #f5f5f5;
+}
+
+input[type="checkbox"]:before {
+
+  position: relative;
+  display: block;
+  width: 11px;
+  height: 11px;
+  border: 1px solid #ccc;
+  content: "";
+  background: #fff;
+}
+
+input[type="checkbox"]:after {
+
+  position: relative;
+  display: block;
+  left: 2px;
+  top: -11px;
+  width: 9px;
+  height: 9px;
+  border: 0;
+  content: "";
+}
+
+input[type="checkbox"]:checked:after {
+
+  background: #bbb;
 }

@@ -1,37 +1,15 @@
 <?php
 
-session_start();
-
-if (!isset($_SESSION["username"])) {
-
-  // User is not logged in.
-  header("Location: ./login.php");
-
-  exit();
-}
-
-require "../core/includes/common.php";
-
-$Output->startBuffer();
-
-$Output->loadExtensions();
-
-// Get template markup.
-$template = $Template->getFileContents("template", 0, 1);
-
-$search = [];
-$replace = [];
-
-$search[] = "{%page_title%}";
-$search[] = "{%page_body%}";
+require "common.php";
 
 if (isset($_GET["id"]) && isset($_POST["title"]) && isset($_POST["body"])) {
 
   $statement = "
 
-    UPDATE " . DB_PREF . "pages
+    UPDATE " . DB_PREF . "content
     SET url = ?, body = ?, title = ?, keywords = ?, description = ?, show_on_search = ?
     WHERE id = ?
+    AND type = 1
   ";
 
   $Query = $Database->getHandle()->prepare($statement);
@@ -57,26 +35,25 @@ if (isset($_GET["id"]) && isset($_POST["title"]) && isset($_POST["body"])) {
   if (!$Query) {
 
     // Failed to update page.
-    header("Location: ./pages.php?code=0&message=failed to update page");
+    header("Location: pages.php?code=0&message=failed to update page");
 
     exit();
   }
 
   // Successfully updated page.
-  header("Location: ./pages.php?code=1&message=page updated successfully");
+  header("Location: pages.php?code=1&message=page updated successfully");
 
   exit();
 }
-
-$body = "";
 
 if (isset($_GET["id"]) && !empty($_GET["id"])) {
 
   $statement = "
 
     SELECT url, body, title, keywords, description, show_on_search
-    FROM " . DB_PREF . "pages
+    FROM " . DB_PREF . "content
     WHERE id = ?
+    AND type = 1
     ORDER BY id DESC
     LIMIT 1
   ";
@@ -181,14 +158,8 @@ else {
 $replace[] = "Edit Page";
 $replace[] = $body;
 
-echo str_replace($search, $replace, $template);
+echo str_replace($search, $replace, $theme);
 
-// Clear the admin_head_content and admin_body_content tags if they go unused.
-$Hook->addAction("admin_head_content", "");
-$Hook->addAction("admin_body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
+echo $Buffer->flush();
 
 ?>

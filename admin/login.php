@@ -1,31 +1,6 @@
 <?php
 
-session_start();
-
-if (isset($_SESSION["username"])) {
-
-  // User is already logged in.
-  header("Location: ./dashboard.php");
-
-  exit();
-}
-
-require "../core/includes/common.php";
-
-$Output->startBuffer();
-
-$Output->loadExtensions();
-
-// Get login markup.
-$template = $Template->getFileContents("login", 0, 1);
-
-$search = [];
-$replace = [];
-
-$search[] = "{%page_title%}";
-$search[] = "{%page_body%}";
-
-$body = "";
+require "common.php";
 
 if (isset($_POST["username"]) && isset($_POST["password"])) {
 
@@ -48,14 +23,14 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
   if (!$Query) {
 
     // Something went wrong.
-    header("Location: ./login.php?error=an unknown error occurred");
+    header("Location: login.php?error=an unknown error occurred");
 
     exit();
   }
   else if ($Query->rowCount() == 0) {
 
     // Username doesn't exist.
-    header("Location: ./login.php?error=incorrect username and/or password");
+    header("Location: login.php?error=incorrect username and/or password");
 
     exit();
   }
@@ -72,14 +47,14 @@ if (isset($_POST["username"]) && isset($_POST["password"])) {
       $_SESSION["username"] = $_POST["username"];
 
       // Redirect to dashboard.
-      header("Location: ./dashboard.php");
+      header("Location: dashboard.php");
 
       exit();
     }
     else {
 
       // Incorrect password.
-      header("Location: ./login.php?error=incorrect username and/or password");
+      header("Location: login.php?error=incorrect username and/or password");
 
       exit();
     }
@@ -103,23 +78,17 @@ $body .= "
     <label for=\"password\">Password</label>
     <input type=\"password\" id=\"password\" name=\"password\" required>
 
-    <input type=\"submit\" value=\"Login\">
+    <input type=\"submit\" value=\"Log In\">
   </form>
 
   <a href=\"{%blog_url%}/admin/reset_password.php\">Forgot password?</a>
 ";
 
-$replace[] = "Login";
+$replace[] = "Log In";
 $replace[] = $body;
 
-echo str_replace($search, $replace, $template);
+echo str_replace($search, $replace, $theme);
 
-// Clear the admin_head_content and admin_body_content tags if they go unused.
-$Hook->addAction("admin_head_content", "");
-$Hook->addAction("admin_body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
+echo $Buffer->flush();
 
 ?>

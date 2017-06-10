@@ -1,108 +1,106 @@
 <?php
 
-if (!defined("KAKU_ACCESS")) {
-
-  // Deny direct access to this file.
-  exit();
-}
+// Deny direct access to this file.
+if (!defined("KAKU_ACCESS")) exit();
 
 class Hook {
 
   private $actions;
   private $filters;
-  private $filter_objects;
-  private $filter_methods;
-  private $action_contents;
 
   public function __construct() {
 
     $this->actions = [];
     $this->filters = [];
-    $this->filter_objects = [];
-    $this->filter_methods = [];
-    $this->action_contents = [];
   }
 
-  public function doAction($action) {
+  public function doAction($action_title) {
 
-    if (in_array($action, $this->actions)) {
+    if (isset($this->actions[$action_title])) {
 
-      if (array_key_exists($action, $this->filters)) {
+      if (isset($this->filters[$action_title])) {
 
-        // Get the contents of the original action.
-        $callback = $this->action_contents[$action];
+        // Get the original contents of the action.
+        $action_contents = $this->actions[$action_title];
 
-        for ($i = 0; $i < count($this->filters[$action]); ++$i) {
+        for ($i = 0; $i < count($this->filters[$action_title]); ++$i) {
 
-          // Pass the callback to filter methods to be manipulated.
-          $callback = call_user_func(
+          $arguments = [];
+
+          $arguments[0] = $action_contents;
+
+          $arguments = array_merge($arguments, $this->filters[$action_title][$i]["arguments"]);
+
+          // Pass the action contents to filter methods to be manipulated.
+          $action_contents = call_user_func_array(
 
             [
 
-              $this->filter_objects[$action][$i],
+              $this->filters[$action_title][$i]["object"],
 
-              $this->filter_methods[$action][$i]
+              $this->filters[$action_title][$i]["method"]
             ],
 
-            $callback
+            $arguments
           );
         }
 
         // Return the modified contents of the action.
-        return $callback;
+        return $action_contents;
       }
       else {
 
         // Return the original contents of the action.
-        return $this->action_contents[$action];
+        return $this->actions[$action_title];
       }
     }
   }
 
-  public function addAction($action, $contents) {
+  public function addAction($action_title, $action_contents) {
 
-    if (!in_array($action, $this->actions)) {
+    if (!isset($this->actions[$action_title])) {
 
-      $this->actions[$action] = $action;
-
-      $this->action_contents[$action] = $contents;
+      // Add the action only if it does not already exist.
+      $this->actions[$action_title] = $action_contents;
     }
   }
 
-  public function addFilter($action, $object, $method) {
+  public function addFilter() {
 
-    if (!isset($this->filters[$action])) {
+    $action_title = func_get_arg(0);
+    $filter_object = func_get_arg(1);
+    $filter_method = func_get_arg(2);
 
-      $this->filters[$action] = [];
+    $arguments = [];
+
+    for ($i = 3; $i < func_num_args(); ++$i) {
+
+      $arguments[] = func_get_arg($i);
     }
 
-    if (!isset($this->filter_objects[$action])) {
+    $this->filters[$action_title][] = [
 
-      $this->filter_objects[$action] = [];
-    }
+      "object" => $filter_object,
 
-    if (!isset($this->filter_objects[$action])) {
+      "method" => $filter_method,
 
-      $this->filter_objects[$action] = [];
-    }
-
-    if (!isset($this->filter_methods[$action])) {
-
-      $this->filter_methods[$action] = [];
-    }
-
-    $this->filters[$action][] = $action;
-
-    $this->filter_objects[$action][] = $object;
-
-    $this->filter_methods[$action][] = $method;
+      "arguments" => $arguments
+    ];
   }
 
-  public function removeAction($action) {
+  public function removeAction($action_title) {
 
-    if (in_array($action, $this->actions)) {
+    if (isset($this->actions[$action_title])) {
 
-      unset($this->actions[$action]);
+      unset($this->actions[$action_title]);
+    }
+  }
+
+  public function removeFilter($action_title) {
+
+    if (isset($this->filters[$action_title])) {
+
+      unset($this->filters[$action_title]);
     }
   }
 }

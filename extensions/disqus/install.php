@@ -1,19 +1,16 @@
 <?php
 
-if (!defined("KAKU_ACCESS")) {
+// Deny direct access to this file.
+if (!defined("KAKU_ACCESS")) exit();
 
-  // Deny direct access to this file.
-  exit();
-}
-
-if (!$Database->checkTableExistence("extension_disqus")) {
+if (!checkTableExistence("extension_disqus")) {
 
   // Create the extension_disqus table.
-  if (!$Database->performQuery(
+  if (!performQuery(
 
     "CREATE TABLE " . DB_PREF . "extension_disqus (
 
-      forum_name TEXT NOT NULL
+      shortname TEXT NOT NULL
     )"
   )) {
 
@@ -22,11 +19,11 @@ if (!$Database->checkTableExistence("extension_disqus")) {
   }
 
   // Set a default value for the forum name.
-  if (!$Database->performQuery(
+  if (!performQuery(
 
     "INSERT INTO " . DB_PREF . "extension_disqus (
 
-      forum_name
+      shortname
     )
     VALUES (
 

@@ -2,155 +2,98 @@
 
 require "core/includes/common.php";
 
-$Output->startBuffer();
+$Extension->loadExtensions();
 
-$Output->loadExtensions();
+if (!empty($_GET["path"]) && substr($_GET["path"], 0, 4) == "page") {
 
-if (isset($_GET["post"])) {
+  $range = substr($_GET["path"], 5);
 
-  // Load the template file for viewing posts.
-  $Template->getFileContents("post", true);
+  $offset = $GLOBALS["Utility"]->getTag("posts_per_page") * ($range - 1);
 
-  // Get the post's title.
-  $Post->getTitle();
+  // Get posts by range.
+  $statement = "
 
-  // Get the post's body.
-  $Post->getBody();
+    SELECT *
+    FROM " . DB_PREF . "content
+    WHERE draft = 0
+    AND type = 0
+    ORDER BY epoch_created DESC
+    LIMIT " . $GLOBALS["Utility"]->getTag("posts_per_page") . "
+    OFFSET {$offset}
+  ";
 
-  // Get the post's author.
-  $Post->getAuthor();
+  $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-  // Get the post's keywords.
-  $Post->getKeywords();
+  if (!$Query || $Query->rowCount() == 0) {
 
-  // Get the post's description.
-  $Post->getDescription();
+    showErrorPage();
+  }
+  else {
 
-  // Get the post's absolute epoch.
-  $Post->getAbsoluteEpoch();
+    $posts = getPosts($Query);
 
-  // Get the post's relative epoch.
-  $Post->getRelativeEpoch();
+    // Let extensions to hook into this.
+    $GLOBALS["Hook"]->addAction("content_range", $posts);
 
-  // Get the post's date time epoch.
-  $Post->getDateTimeEpoch();
-
-  // Get the post's uniform resource locator.
-  $Post->getUniformResourceLocator();
-
-  // Get the source for comments.
-  $Comment->getSource();
+    // Viewing posts by a pagination range.
+    echo $Theme->getFileContents("range");
+  }
 }
-else if (isset($_GET["range"])) {
+else if (!empty($_GET["path"])) {
 
-  // Load the template file for viewing posts by ranges.
-  $Template->getFileContents("range", true);
+  // Get unique content data.
+  $Content->getEpoch();
+  $Content->getAuthor();
+  $Content->getKeywords();
+  $Content->getDescription();
+  $Content->getCommentSource();
 
-  // Get the range posts' blocks.
-  $Post->getBlocks();
+  // Get additional content data.
+  $Content->getColumn("url");
+  $Content->getColumn("body");
+  $Content->getColumn("type");
+  $Content->getColumn("draft");
+  $Content->getColumn("title");
+  $Content->getColumn("keywords");
+  $Content->getColumn("author_id");
+  $Content->getColumn("description");
+  $Content->getColumn("epoch_created");
+  $Content->getColumn("allow_comments");
+  $Content->getColumn("show_on_search");
 
-  // Get the posts' title.
-  $Post->getTitle();
-
-  // Get the posts' body.
-  $Post->getBody();
-
-  // Get the posts' author.
-  $Post->getAuthor();
-
-  // Get the posts' keywords.
-  $Post->getKeywords();
-
-  // Get the posts' description.
-  $Post->getDescription();
-
-  // Get the posts' absolute epoch.
-  $Post->getAbsoluteEpoch();
-
-  // Get the posts' relative epoch.
-  $Post->getRelativeEpoch();
-
-  // Get the posts' date time epoch.
-  $Post->getDateTimeEpoch();
-
-  // Get the posts' uniform resource locator.
-  $Post->getUniformResourceLocator();
-}
-else if (isset($_GET["page"])) {
-
-  // Load the template file for viewing pages.
-  $Template->getFileContents("page", true);
-
-  // Get the page's title.
-  $Page->getTitle();
-
-  // Get the page's body.
-  $Page->getBody();
-
-  // Get the page's description.
-  $Page->getDescription();
-}
-else if (in_array("feed", $_GET)) {
-
-  // View the feed.
-  require "core/includes/feed.php";
-}
-else if (in_array("error", $_GET)) {
-
-  // Redirect error codes.
-  require "core/includes/error.php";
+  // Viewing a single post or page.
+  echo $Theme->getFileContents($Hook->doAction("content_type") == 0 ? "post" : "page");
 }
 else {
 
-  if (!empty($_GET["path"])) {
+  // Get recent posts.
+  $statement = "
 
-    // Redirect stray paths to 404 page.
+    SELECT id
+    FROM " . DB_PREF . "content
+    WHERE draft = 0
+    AND type = 0
+    ORDER BY epoch_created DESC
+    LIMIT " . $GLOBALS["Utility"]->getTag("posts_per_page") . "
+  ";
 
-    $_GET["code"] = 404;
+  $Query = $GLOBALS["Database"]->getHandle()->query($statement);
 
-    require "core/includes/error.php";
+  if (!$Query) {
+
+    // Selection failed.
+    $GLOBALS["Utility"]->displayError("failed to select recent posts");
   }
 
-  // Load the template file for viewing the latest posts.
-  $Template->getFileContents("latest", true);
+  $posts = getPosts($Query);
 
-  // Get the latest posts' blocks.
-  $Post->getBlocks();
+  // Let extensions to hook into this.
+  $GLOBALS["Hook"]->addAction("content_recent", $posts);
 
-  // Get the posts' title.
-  $Post->getTitle();
-
-  // Get the posts' body.
-  $Post->getBody();
-
-  // Get the posts' author.
-  $Post->getAuthor();
-
-  // Get the posts' keywords.
-  $Post->getKeywords();
-
-  // Get the posts' description.
-  $Post->getDescription();
-
-  // Get the posts' absolute epoch.
-  $Post->getAbsoluteEpoch();
-
-  // Get the posts' relative epoch.
-  $Post->getRelativeEpoch();
-
-  // Get the posts' date time epoch.
-  $Post->getDateTimeEpoch();
-
-  // Get the posts' uniform resource locator.
-  $Post->getUniformResourceLocator();
+  // Viewing recent posts.
+  echo $Theme->getFileContents("recent");
 }
 
-// Clear the head_content and body_content tags if they go unused.
-$Hook->addAction("head_content", "");
-$Hook->addAction("body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
+echo $Buffer->flush();
 
 ?>

@@ -1,23 +1,20 @@
 <?php
 
-if (!defined("KAKU_ACCESS")) {
-
-  // Deny direct access to this file.
-  exit();
-}
+// Deny direct access to this file.
+if (!defined("KAKU_ACCESS")) exit();
 
 class Utility {
 
-  public function displayError($message) {
+  public function displayError($error_message) {
 
     if (ob_get_status()["level"] > 0) {
 
-      // Clear the buffer.
+      // Clear the output buffer.
       ob_end_clean();
     }
 
-    // Terminate with an error message.
-    exit("Error: {$message}.");
+    // Display the error message.
+    exit("<b>Error</b>: {$error_message}.");
   }
 
   public function getProtocol() {
@@ -45,59 +42,29 @@ class Utility {
 
     $protocol = $this->getProtocol();
 
-    $sub_directory = substr(
-
-      dirname(dirname(__DIR__)),
-
-      strlen($_SERVER["DOCUMENT_ROOT"])
-    );
+    $sub_directory = substr(dirname(dirname(__DIR__)), strlen($_SERVER["DOCUMENT_ROOT"]));
 
     // Get the absolute URL of where Kaku is installed.
     $root_address = $protocol . $host . $sub_directory;
 
-    $GLOBALS["Hook"]->addAction(
-
-      "root_address",
-
-      $root_address
-    );
+    // Let extensions hook into the root address.
+    $GLOBALS["Hook"]->addAction("root_address", $root_address);
 
     return $GLOBALS["Hook"]->doAction("root_address");
   }
 
+  public function getTag($tag_title) {
+
+    // Get the specified tag and replace any nested tags contained within it.
+    return $this->replaceNestedTags("{%{$tag_title}%}");
+  }
+
   public function replaceNestedTags($content) {
-
-    // Select the recursion depth tag.
-    $statement = "
-
-      SELECT body
-      FROM " . DB_PREF . "tags
-      WHERE title = 'recursion_depth'
-      ORDER BY id DESC
-      LIMIT 1
-    ";
-
-    $Query = $GLOBALS["Database"]->getHandle()->query($statement);
-
-    if (!$Query) {
-
-      // Something went wrong.
-      $this->displayError("failed to select recursion_depth");
-    }
-
-    if ($Query->rowCount() == 0) {
-
-      // The recursion_depth tag does not exist.
-      $this->displayError("the recursion_depth tag does not exist");
-    }
-
-    // Get the recursion depth.
-    $recursion_depth = $Query->fetch(PDO::FETCH_OBJ)->body;
 
     $search = [];
     $replace = [];
 
-    for ($i = 0; $i < $recursion_depth; ++$i) {
+    for ($i = 0; $i < 5; ++$i) {
 
       // Select the tags.
       $statement = "
@@ -111,14 +78,14 @@ class Utility {
 
       if (!$Query) {
 
-        // Something went wrong.
+        // Selection failed.
         $this->displayError("failed to select tags");
       }
 
       if ($Query->rowCount() == 0) {
 
-        // The tags do not exist.
-        $this->displayError("tags do not exist");
+        // The tags table is empty.
+        $this->displayError("\"tags\" table returned zero rows");
       }
 
       while ($Tag = $Query->fetch(PDO::FETCH_OBJ)) {
@@ -127,19 +94,14 @@ class Utility {
 
           // Replace tag calls with values from the database.
 
-          $GLOBALS["Hook"]->addAction(
-
-            $Tag->title,
-
-            $Tag->body
-          );
+          $GLOBALS["Hook"]->addAction($Tag->title, $Tag->body);
 
           $search[] = "{%{$Tag->title}%}";
           $replace[] = $GLOBALS["Hook"]->doAction($Tag->title);
         }
       }
 
-      // Replace nested tags inside the content.
+      // Replace nested tags within the given content.
       $content = str_replace($search, $replace, $content);
     }
 

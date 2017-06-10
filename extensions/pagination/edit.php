@@ -1,10 +1,7 @@
 <?php
 
-if (!defined("KAKU_ACCESS")) {
-
-  // Deny direct access to this file.
-  exit();
-}
+// Deny direct access to this file.
+if (!defined("KAKU_ACCESS")) exit();
 
 if (isset($_POST["next_page_text"]) && isset($_POST["previous_page_text"])) {
 
@@ -51,7 +48,7 @@ else {
       echo "Pagination text has been updated.";
     }
 
-    echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
+    echo "<a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>";
   }
   else {
 
@@ -71,7 +68,7 @@ else {
 
       echo "Error: failed to get pagination text!";
 
-      echo "<a href=\"./extensions.php\" class=\"button_return\">Return</a>";
+      echo "<a href=\"{%blog_url%}/admin/extensions.php\" class=\"button_return\">Return</a>";
     }
     else {
 
@@ -95,9 +92,9 @@ else {
         Use the form below to edit the extension.<br><br>
 
         <form method=\"post\" class=\"edit_pagination_text\">
-          <label for=\"next_page_text\">Next page text</label>
+          <label for=\"next_page_text\">Next Page Text</label>
           <input type=\"text\" id=\"next_page_text\" name=\"next_page_text\" value=\"{$next_page_text}\">
-          <label for=\"previous_page_text\">Previous page text</label>
+          <label for=\"previous_page_text\">Previous Page Text</label>
           <input type=\"text\" id=\"previous_page_text\" name=\"previous_page_text\" value=\"{$previous_page_text}\">
           <input type=\"submit\" value=\"Save\">
         </form>

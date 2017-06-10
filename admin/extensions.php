@@ -1,32 +1,26 @@
 <?php
 
-session_start();
-
-if (!isset($_SESSION["username"])) {
-
-  // User is not logged in.
-  header("Location: ./login.php");
-
-  exit();
-}
-
-require "../core/includes/common.php";
-
-$Output->startBuffer();
-
-// Get template markup.
-$template = $Template->getFileContents("template", 0, 1);
-
-$search = [];
-$replace = [];
-
-$search[] = "{%page_title%}";
-$search[] = "{%page_body%}";
-
-$body = "";
+require "common.php";
 
 // Get extension directories.
 $directories = glob("../extensions/*", GLOB_ONLYDIR);
+
+if (isset($_GET["code"]) && isset($_GET["message"])) {
+
+  if ($_GET["code"] == 0) {
+
+    // Failure notice.
+    $body .= "<span class=\"failure\">Notice: ";
+  }
+  else if ($_GET["code"] == 1) {
+
+    // Success notice.
+    $body .= "<span class=\"success\">Notice: ";
+  }
+
+  // Encode { and } to prevent them from being replaced by the output buffer.
+  $body .= str_replace(["{", "}"], ["&#123;", "&#125;"], $_GET["message"]) . ".</span>";
+}
 
 if (count($directories) > 0) {
 
@@ -34,7 +28,7 @@ if (count($directories) > 0) {
 
     Extensions are displayed below.<br><br>
 
-    <table class=\"extensions\">
+    <table class=\"extensions two-column\">
       <tr>
         <th>Title</th>
         <th>Action</th>
@@ -64,9 +58,9 @@ if (count($directories) > 0) {
 
     $statement = "
 
-        SELECT activate
+        SELECT status
         FROM " . DB_PREF . "extensions
-        WHERE title = '{$class_name}'
+        WHERE hash = '" . md5($class_name) . "'
         ORDER BY id DESC
         LIMIT 1
       ";
@@ -84,7 +78,7 @@ if (count($directories) > 0) {
       if ($Query->rowCount() > 0) {
 
         // Get activation status.
-        $activation_status = $Query->fetch(PDO::FETCH_OBJ)->activate;
+        $activation_status = $Query->fetch(PDO::FETCH_OBJ)->status;
       }
 
       $body .= "<tr>";
@@ -143,14 +137,8 @@ else {
 $replace[] = "Extensions";
 $replace[] = $body;
 
-echo str_replace($search, $replace, $template);
+echo str_replace($search, $replace, $theme);
 
-// Clear the admin_head_content and admin_body_content tags if they go unused.
-$Hook->addAction("admin_head_content", "");
-$Hook->addAction("admin_body_content", "");
-
-$Output->replaceTags();
-
-$Output->flushBuffer();
+echo $Buffer->flush();
 
 ?>

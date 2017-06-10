@@ -1,0 +1,103 @@
+html, body {
+
+  margin: 32px 0 0 0;
+}
+
+body {
+
+  background: #f1f1f1;
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  color: #333;
+  line-height: 32px;
+  text-align: left;
+}
+
+#wrap {
+
+  width: 550px;
+  margin: auto;
+}
+
+article {
+
+  background: #fff;
+  padding: 20px;
+  border-radius: 3px;
+  border: 1px solid #dcdcdc;
+}
+
+h1 {
+
+  margin: 0;
+  font-weight: normal;
+}
+
+label {
+
+  display: block;
+}
+
+form input[type="text"], form input[type="password"], form input[type="email"] {
+
+  background: #fbfbfb;
+  font-family: "Open Sans", sans-serif;
+  font-size: 18px;
+  color: #333;
+  line-height: 35px;
+  border: 1px solid #dcdcdc;
+  outline: 0;
+  padding: 5px;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+input[type="submit"] {
+
+  background: #fbfbfb;
+  outline: 0;
+  border: 1px solid #dcdcdc;
+  padding: 5px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 18px;
+  color: #333;
+  line-height: 35px;
+  text-align: center;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 32px;
+  margin-top: 16px;
+}
+
+input[type="submit"]:hover {
+
+  background: #f4f4f4;
+  cursor: pointer;
+}
+
+input[type="submit"]:active {
+
+  background: #eeeeee;
+}
+
+a {
+
+  color: blue;
+  text-decoration: none;
+}
+
+a:hover {
+
+  text-decoration: underline;
+}
+
+.failure, .success {
+
+  display: block;
+  padding: 5px;
+  border: 1px solid #dcdcdc;
+  text-align: center;
+  background: #fbfbfb;
+  margin: 16px 0 16px 0;
+}

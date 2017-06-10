@@ -2,10 +2,10 @@
 <html lang="{%blog_language%}">
   <head>
     <meta charset="utf-8">
-    <title>{%post_title%} &raquo; {%blog_title%}</title>
+    <title>{%blog_title%}</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans%7CMerriweather:300%7CSource+Code+Pro">
-    <link rel="stylesheet" href="{%template_directory%}/{%template_name%}/css/main.css">
-    <meta name="description" content="{%post_description%}">
+    <link rel="stylesheet" href="{%blog_url%}/themes/default/css/main.css">
+    <meta name="description" content="{%blog_description%}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {%head_content%}
   </head>
@@ -17,17 +17,11 @@
           {%navigation_items%}
         </nav>
       </header>
-      <article>
-        <header>
-          <h1>{%post_title%}</h1>
-          <time datetime="{%post_date_time_epoch%}">{%post_absolute_epoch%}</time>
-        </header>
-        {%post_body%}
-        {%post_keywords%}
-      </article>
-      {%comments%}
+      {%content_recent%}
       <footer>
-        {%footer%}
+        <span class="text">{%footer%}</span>
+        <span class="previous_page">{%previous_page%}</span>
+        <span class="next_page">{%next_page%}</span>
       </footer>
     </div>
     {%body_content%}

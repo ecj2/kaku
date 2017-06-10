@@ -2,9 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>{%page_title%} &raquo; Kaku</title>
-    <link rel="stylesheet" href="{%admin_template_directory%}/{%admin_template_name%}/css/main.css">
+    <title>{%page_title%}</title>
+    <link rel="stylesheet" href="{%blog_url%}/admin/themes/default/css/main.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+    <link rel="icon" href="{%blog_url%}/admin/themes/default/img/favorite.png">
     {%admin_head_content%}
   </head>
   <body>
@@ -19,7 +20,7 @@
             <li><a href="{%blog_url%}/admin/posts.php">Posts</a></li>
             <li><a href="{%blog_url%}/admin/users.php">Users</a></li>
             <li><a href="{%blog_url%}/admin/extensions.php">Extensions</a></li>
-            <li><a href="{%blog_url%}/admin/logout.php">Logout</a></li>
+            <li><a href="{%blog_url%}/admin/logout.php">Log Out</a></li>
           </ul>
         </nav>
       </header>
@@ -29,9 +30,6 @@
         </header>
         {%page_body%}
       </article>
-      <footer>
-        Powered by <a href="https://github.com/ecj2/kaku">Kaku</a>
-      </footer>
     </div>
     {%admin_body_content%}
   </body>
