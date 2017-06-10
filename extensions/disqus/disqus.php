@@ -5,8 +5,6 @@ if (!defined("KAKU_ACCESS")) exit();
 
 class DisqusForum extends Extension {
 
-  private $DatabaseHandle;
-
   public function __construct() {
 
     Extension::setName("Disqus Forum");
