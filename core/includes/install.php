@@ -83,7 +83,7 @@ if (!checkTableExistence("tags")) {
 
       'front_theme_name',
 
-      'default'
+      'kantan'
     )
   ")) {
 
